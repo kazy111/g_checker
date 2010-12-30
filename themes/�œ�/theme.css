@@ -1,0 +1,67 @@
+body{
+  background-color: black;
+  color: white;
+}
+a{
+  color: orange;
+}
+
+h1{
+  font-size: 20pt;
+}
+
+.streamer{
+  padding: 2px;
+}
+div.online {
+  font-size: 14pt;
+  float: left;
+}
+.online {
+  font-weight: bold;
+}
+.online .time_since{
+  display: none;
+}
+
+.offline{
+  display: inline;
+}
+
+br{
+  clear: both;
+}
+.option div{
+  float: left;
+  margin-right: 2em;
+}
+
+/*popup*/
+.program img.thumb {
+  display: block;
+  top: -10000px;
+  left: -10000px;
+  position: absolute;
+}
+.program a:hover {
+  position: relative;
+}
+.program a:hover img.thumb{
+  top: 20px;
+  left: -340px;
+}
+
+#view #name{
+  font-size: 16pt;
+  font-weight: bold;
+  margin-right: 1.5em;
+}
+#view #description{
+  font-size: 10pt;
+}
+#view #select{
+  margin: 0.5em;
+}
+#view #movie {
+  float: left;
+}

@@ -1,0 +1,97 @@
+@charset "utf-8";
+h1{
+  font-size: 30pt;
+  text-align: center;
+}
+
+table.list-table{
+  max-width: 1000px;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+table.list-table td{
+  padding: 3px;
+  border: 2px black solid;
+  text-align: center;
+}
+table.list-table th{
+  background-color: #ffaaaa;
+  border: 2px black solid;
+}
+
+.option div{
+  float: left;
+  margin-right: 2em;
+}
+
+.link{
+  clear: both;
+  padding-top: 1em;
+}
+
+.streamer{
+  padding: 2px;
+}
+.online {
+  font-size: 11pt;
+  font-weight: bold;
+}
+.offline {
+  font-size: 11pt;
+}
+.online .live {
+  color: red;
+}
+.online .time_since{
+  display: none;
+}
+.offline .time_diff{
+  display: none;
+}
+
+.box{
+  border: 1px solid black;
+  padding: 4px 1em;
+  float: left;
+}
+br {
+  clear: both;
+}
+
+.list{
+  margin-bottom: 2em;
+}
+.footer{
+  margin-top: 2em;
+  text-align: center;
+}
+
+/*popup*/
+.program img.thumb {
+  display: block;
+  top: -10000px;
+  left: -10000px;
+  position: absolute;
+}
+.program a:hover {
+  position: relative;
+}
+.program a:hover img.thumb{
+  top: 20px;
+  left: -340px;
+}
+
+#view #name{
+  font-size: 16pt;
+  font-weight: bold;
+  margin-right: 1.5em;
+}
+#view #description{
+  font-size: 10pt;
+}
+#view #select{
+  margin: 0.5em;
+}
+#view #movie {
+  float: left;
+}

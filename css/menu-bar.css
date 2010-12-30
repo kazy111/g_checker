@@ -1,0 +1,109 @@
+#wrap {
+	margin-left: auto;
+	margin-right: auto;
+	min-width: 600px;
+	position: relative;
+	min-height: 35px;
+}
+#main-nav {
+	margin: 0px 0px 0px 5px;
+	text-align: left;
+	min-height: 22px;
+	padding-top: 7px;
+	padding-left: 0px;
+}
+#main-handle {
+	width: 290px;
+	float: right;
+	margin: -1px 5px 0 0;
+}
+#main-nav li {
+	display: inline;
+	list-style: none;
+}
+#main-nav li a {
+	margin-right: 5px;
+	font-size: 13px;
+	text-decoration: none;
+	color: #f2f2f2 !important;
+	font-family: Arial, Helvetica, sans-serif;
+	text-transform: uppercase;
+	font-weight: bold;
+	padding: 7px;
+	outline: 0;
+	position: relative;
+	top: -2px;
+}
+#main-nav li a:hover, #main-nav li a.active {
+	background: #333;
+}
+#sub-link-bar {
+	background: #333;
+	min-height: 7px;
+	border-bottom: #666 1px solid;
+}
+.sub-links {
+	display: none;
+	position: absolute;
+	width: 100%;
+	top: -25px;
+	text-align: left;
+	left: 0px;
+	background: #333
+}
+#main-nav li .sub-links li a:hover{
+	background: #111;
+}
+#main-nav li a.close{
+	display: none;	
+	position: absolute;
+}
+#main-nav li a.close:hover{
+	background: #900;
+}
+<!--Thanks Spiffy Corners--> 
+.round {
+	display:block
+}
+.round * {
+	display:block;
+	height:1px;
+	overflow:hidden;
+	font-size:.01em;
+	background:#666
+}
+.round1 {
+	margin-left:3px;
+	margin-right:3px;
+	padding-left:1px;
+	padding-right:1px;
+	border-left:1px solid #777;
+	border-right:1px solid #777;
+	background:#777
+}
+.round2 {
+	margin-left:1px;
+	margin-right:1px;
+	padding-right:1px;
+	padding-left:1px;
+	border-left:1px solid #777;
+	border-right:1px solid #777;
+	background:#777
+}
+.round3 {
+	margin-left:1px;
+	margin-right:1px;
+	border-left:1px solid #777;
+	border-right:1px solid #777;
+}
+.round4 {
+	border-left:1px solid #777;
+	border-right:1px solid #777
+}
+.round5 {
+	border-left:1px solid #777;
+	border-right:1px solid #777
+}
+.roundfg {
+	background:#666
+}

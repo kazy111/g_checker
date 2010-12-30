@@ -1,0 +1,140 @@
+
+body{
+  background: #C0DEED url(bg-clouds.png) repeat-x;
+}
+
+a, a:hover, a:visited{
+  color: #0084B4 !important;
+}
+a{
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+img{
+  border: none;
+}
+
+.name a{
+  color: black !important;
+  font-weight: bold;
+}
+.name a:hover{
+  color: #0084B4 !important;
+}
+.main{
+  width: 680px;
+  margin: auto;
+}
+.footer{
+  background-color: white;
+  border-radius: 5px 5px;
+  margin: 0px auto 5px auto;
+  width: 640px;
+  word-wrap: break-word;
+  padding: 5px 20px 5px 20px;
+}
+.streamer{
+  clear: both;
+  width: 99%;
+  border-top: 1px solid #eee;
+}
+.streamer:hover {
+  background-color: #F7F7F7;
+}
+
+.tweet-img{
+  display: block;
+  float: left;
+  width: 80px;
+  height: 60px;
+  text-align: center;
+}
+.tweet-body{
+  display: block;
+  margin-left: 86px;
+  width: 540px;
+  min-height: 65px;
+  padding: 4px;
+}
+
+.meta{
+  display: block;
+  font-size: small;
+  color: grey;
+  margin-top: 4px;
+}
+.meta a, .meta a:hover, .meta a:visited{
+  color: grey !important;
+}
+.online .time_diff{
+  display: none;
+}
+.online .time_since{
+  display: inline;
+}
+
+.streamer .tweet-menu{
+  display: none;
+}
+
+.streamer:hover .tweet-menu{
+  display: block;
+  float: right;
+}
+
+.content-arrow{
+  background-image: url(arr2.gif);
+  background-position: 22px 0px;
+  background-repeat: no-repeat;
+  height: 11px;
+  margin-top: 6px;
+  overflow: hidden;
+  zoom: 1;
+}
+
+.contents {
+  background-color: white;
+  border-radius: 5px 5px;
+  margin-top: 0px;
+  width: 640px;
+  word-wrap: break-word;
+  padding: 20px;
+}
+
+.old {
+  display: none;
+}
+
+#notice{
+  background-color: #fbeaee;
+  border: 1px solid #f4cdd6;
+}
+
+#article{
+  width: 99%;
+  padding: 0;
+}
+#article_list{
+  border-radius: 5px 5px;
+  border-color: #eee;
+  background-color: #f6f6f6;
+  width: 100%;
+  height: 120px;
+}
+.article{
+  border-bottom: 1px solid white;
+  padding: 8px;
+}
+
+.option div{
+  float: left;
+}
+.thumb_offline{
+  position: relative;
+  top: -1.2em;
+  left: 0;
+  background-color: yellow;
+}

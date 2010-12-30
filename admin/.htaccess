@@ -1,0 +1,5 @@
+AuthType Digest
+AuthName "admin only"
+AuthDigestDomain /checker/admin/
+AuthUserFile /home/kazy/g_checker.htdigest
+require valid-user

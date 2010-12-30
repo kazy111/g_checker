@@ -1,0 +1,50 @@
+body{
+  background: #fff url(amako.png) no-repeat fixed right bottom;
+  
+}
+h1{
+  font-size: 20pt;
+}
+
+.option div{
+  float: left;
+  margin-right: 2em;
+}
+
+.streamer{
+  padding: 2px;
+}
+.online {
+  font-size: 14pt;
+  background-color: #ffeeee;
+}
+.offline {
+  font-size: 11pt;
+}
+.online {
+  font-weight: bold;
+}
+.online .time_since{
+  display: none;
+}
+.offline .time_diff{
+  display: none;
+}
+.old{
+  display: none;
+}
+
+/*popup*/
+.popup img.thumb {
+  display: block;
+  top: -10000px;
+  left: -10000px;
+  position: absolute;
+}
+.popup a:hover {
+  position: relative;
+}
+.popup a:hover img.thumb{
+  top: 20px;
+  left: 100px;
+}

@@ -1,0 +1,75 @@
+body{
+  background: #000 url(amako.png) no-repeat fixed right bottom;
+  color: white;
+}
+a{
+  color: orange;
+}
+h1{
+  font-size: 20pt;
+}
+
+#article_list{
+  border: 2px solid white;
+}
+#notice{
+  background-color: #dd0;
+}
+
+table.list-table{
+  max-width: 2000px;
+  min-width: 600px;
+  border-collapse: collapse;
+  border: 3px #700 solid;
+}
+table.list-table td{
+  padding: 3px;
+  border: 2px #700 solid;
+}
+table.list-table th{
+  background-color: #990022;
+  border: 2px #700 solid;
+}
+
+.option div{
+  float: left;
+  margin-right: 2em;
+}
+
+.streamer{
+  padding: 2px;
+}
+.online {
+  font-size: 14pt;
+  background-color: #550000;
+}
+.offline {
+  font-size: 11pt;
+}
+.online {
+  font-weight: bold;
+}
+.online .time_since{
+  display: none;
+}
+.offline .time_diff{
+  display: none;
+}
+
+/*popup*/
+.popup img.thumb {
+  display: block;
+  top: -10000px;
+  left: -10000px;
+  position: absolute;
+}
+.popup a:hover {
+  position: relative;
+}
+.popup a:hover img.thumb{
+  top: 20px;
+  left: 100px;
+}
+.old{
+  display: none;
+}

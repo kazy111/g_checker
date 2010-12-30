@@ -1,0 +1,111 @@
+@charset "utf-8";
+
+@import url("font.css");
+
+body{
+  font-family: 'Misaki', sans-serif;
+  font-size: 12pt;
+  background-color: #000;
+  font-weight: normal;
+  font-style: normal;
+  line-height:normal;
+  color: #ddd;
+}
+a{
+  color: orange;
+}
+h1#title{
+  font-family: 'FAManiaRegular', sans-serif;
+  font-size: 24pt;
+}
+
+table.list-table{
+  max-width: 2000px;
+  min-width: 600px;
+  border-collapse: collapse;
+  border: 3px #eee solid;
+/*
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;*/
+}
+
+#notice{
+  background-color: orange;
+  border: 2px solid #d90;
+}
+
+#header{
+  background: #000 url(amako_rpg_120.png) no-repeat left top;
+  min-height: 140px;
+  padding-left: 120px;
+  text-align: right;
+}
+
+#title{
+  margin: 4px;
+  border: 4px solid  white;
+  padding: 10px;
+  text-align: center;
+  width: auto;
+  min-width: 300px
+}
+
+
+table.list-table td{
+  padding: 3px;
+  border: 2px #eee solid;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+}
+table.list-table th{
+  background-color: #092;
+  border: 2px #eee solid;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+}
+
+.option div{
+  float: left;
+  margin-right: 2em;
+}
+
+.streamer{
+  padding: 2px;
+}
+.online {
+  font-size: 16pt;
+  background-color: #050;
+}
+.offline {
+  font-size: 14pt;
+}
+.online {
+  font-weight: bold;
+}
+.online .time_since{
+  display: none;
+}
+.offline .time_diff{
+  display: none;
+}
+
+/*popup*/
+.popup img.thumb {
+  display: block;
+  top: -10000px;
+  left: -10000px;
+  position: absolute;
+}
+.popup a:hover {
+  position: relative;
+}
+.popup a:hover img.thumb{
+  top: 20px;
+  left: 100px;
+}
+.old{
+  display: none;
+}

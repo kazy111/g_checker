@@ -1,0 +1,18 @@
+body { behavior:url("csshover.htc"); }
+
+body,legend {
+  background-color: black;
+  color: white;
+  margin: 4px;
+}
+div, table, tbody, tr, td{
+  margin: 0; padding: 0;
+}
+.mbox table {
+  border-collapse: collapse;
+}
+a { color: orange; }
+.name { color: white; }
+.mbox .name { line-height: 1.5em; }
+
+.title_button img { position: relative; top: 5px; border: none;}

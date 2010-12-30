@@ -1,0 +1,81 @@
+#title, #summary{
+  text-align: center;
+}
+#tab{
+  margin: 5px 0 0 0;
+  padding: 0;
+  white-space: nowrap;
+}
+#tab li{
+  display: inline;
+  padding: 1em;
+  line-height: 3em;
+  background-color: #fee;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+}
+#tab li.selected{
+  background-color: #faa;
+}
+
+.tab_content{
+  border: 2px solid black;
+}
+
+body{
+  background: #fff url(amako.png) no-repeat fixed right bottom;
+  
+}
+h1{
+  font-size: 20pt;
+}
+
+.option{
+  padding-bottom: 15px;
+}
+.option div{
+  float: left;
+  margin-right: 2em;
+}
+
+.streamer{
+  padding: 2px;
+}
+.online {
+  font-size: 14pt;
+  background-color: #ffeeee;
+}
+.offline {
+  font-size: 11pt;
+}
+.online {
+  font-weight: bold;
+}
+.online .time_since{
+  display: none;
+}
+.offline .time_diff{
+  display: none;
+}
+.old{
+  display: none;
+}
+
+/*popup*/
+.popup img.thumb {
+  display: block;
+  top: -10000px;
+  left: -10000px;
+  position: absolute;
+}
+.popup a:hover {
+  position: relative;
+}
+.popup a:hover img.thumb{
+  top: 20px;
+  left: 100px;
+}
+table.list-table{
+  border: none;
+}

@@ -1,0 +1,69 @@
+
+
+h1{
+  font-size: 20pt;
+}
+
+.odd{
+  clear: both;
+  float: left;
+}
+.even{
+  float: left;
+}
+
+.streamer{
+  margin: 2px;
+  padding: 2px;
+  width: 48%;
+  border: 1px solid black;
+}
+
+#online{
+}
+#offline{
+}
+#link, #continue{
+  clear: both;
+}
+.st_live{
+  color: red;
+  font-weight: bold;
+}
+.st_name{
+  font-size: 15pt;
+  font-weight: bold;
+}
+.st_topic{
+  font-weight: bold;
+}
+.online {
+  background-color: #ffeeee;
+}
+
+br{
+  clear: both;
+}
+.option div{
+  float: left;
+  margin-right: 2em;
+}
+
+.old{
+  display: none;
+}
+
+#view #name{
+  font-size: 16pt;
+  font-weight: bold;
+  margin-right: 1.5em;
+}
+#view #description{
+  font-size: 10pt;
+}
+#view #select{
+  margin: 0.5em;
+}
+#view #movie {
+  float: left;
+}

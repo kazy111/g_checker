@@ -1,0 +1,113 @@
+<?php
+class Page{
+  
+  var $title;
+  var $header;
+  var $pname;
+  var $data = array();
+  var $theme = 'default';
+  var $theme_dir = './themes/';
+  var $theme_url = './themes/';
+
+  function Page()
+  {
+    $this->header = array();
+    $this->theme_dir = $GLOBALS['file_path'].'/themes/';
+    $this->theme_url = $GLOBALS['site_url'].'/themes/';
+  }
+  function set_title($t)
+  {
+    $this->title = $t;
+  }
+  function add_header($h)
+  {
+    $this->header[] = $h;
+  }
+  function get_header()
+  {
+    return $this->header;
+  }
+
+  function set($pname, $data)
+  {
+    $this->pname = $pname;
+    $this->data = $data;
+  }
+
+  function get_css(){
+    if( file_exists($this->theme_dir.$this->theme.'/theme.css') )
+      $tpl = $this->theme_url.$this->theme.'/theme.css';
+    else
+      $tpl = $this->theme_url.'default/theme.css';
+    return $tpl;
+  }
+  
+  function get_template($page){
+    if( file_exists($this->theme_dir.$this->theme.'/'.$page.'.tpl') )
+      $tpl = $this->theme_dir.$this->theme.'/'.$page.'.tpl';
+    else
+      $tpl = $this->theme_dir.'default/'.$page.'.tpl';
+
+    return $tpl;
+  }
+  function get_themes(){
+    $themes = array();
+    if( is_dir($this->theme_dir) ){
+      if( $dh = opendir($this->theme_dir) ){
+        readdir($dh); readdir($dh);
+        while(($file = readdir($dh)) !== false){
+          if(filetype($this->theme_dir.$file) == 'dir'
+             && strpos($file, '_') !== 0)
+            $themes[] = $file;
+        }
+        closedir($dh);
+      }
+    }
+    sort($themes);
+    return $themes;
+  }
+
+  function get()
+  {
+    global $site_title;
+    if(!$this->pname) return '';
+    //header('Content-Type: text/html; charset=utf8');
+    $dwoo = new Dwoo();
+    $data = new Dwoo_Data();
+    $this->header[] = '<link rel="stylesheet" type="text/css" href="'.$this->get_css().'" />';
+    $data->assign('site_url', $GLOBALS['site_url']);
+    $data->assign('file_path', $GLOBALS['file_path']);
+    $data->assign('curr_time', time());
+    $data->assign('site_title', ($this->title?$this->title.' - ':'').$site_title);
+    $data->assign('additional_header', implode("\n", $this->header));
+    $ret = '';
+    
+    $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template(is_mobile()?'header_mobile':'header')), $data);
+
+    if($this->data){
+      if(is_array($this->data)){
+        $this->data['site_url'] = $GLOBALS['site_url'];
+        $this->data['file_path'] = $GLOBALS['file_path'];
+        $this->data['site_title'] = $site_title;
+      }else{
+        $this->data->assign('site_url', $GLOBALS['site_url']);
+        $this->data->assign('file_path', $GLOBALS['file_path']);
+        $this->data->assign('site_title', $site_title);
+      }
+    }
+    $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template($this->pname)), $this->data);
+
+    $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template('footer')), array());
+    return $ret;
+  }
+  function get_once($page, $data)
+  {
+    $dwoo = new Dwoo();
+    return $dwoo->get(new Dwoo_Template_File($this->get_template($page)), $data);
+  }
+  function output()
+  {
+    print $this->get();
+  }
+}
+?>
