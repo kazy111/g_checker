@@ -6,8 +6,8 @@ include 'header.php';
 // switch every programs
 
 
-
-$id = validate_num($_GET['id']) ? $_GET['id'] : 0;
+$id = number_trim($_GET['id']);
+$id = validate_num($id) ? $id : 0;
 $sql = 'select live, name, description, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
       .' from streamer_table as s, program_table as p, chat_table c '
       .' where s.id = '.$id.' and s.id = p.streamer_id and c.id = p.chat_id';

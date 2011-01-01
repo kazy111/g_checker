@@ -1,5 +1,11 @@
 <?php
 
+function number_trim($str)
+{
+  preg_match('/^([0-9]+).*$/', $str, $match);
+  return $match[1];
+}
+
 function validate_num($str)
 {
   return preg_match('/^[0-9]+$/',$str);
