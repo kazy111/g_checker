@@ -97,9 +97,9 @@ function get_streamer_data($arrs)
   // diff time calc
   $diff = $live ? time() - $stime : time() - $etime;
   $dday = floor($diff / (60*60*24));
-  $dhour = floor($diff / (60*60));
+  $dhour = floor($diff / (60*60) % 24);
   $dmin = floor($diff / 60 % 60);
-  $diff = ($dday>0 ? $dday.'日': ( ($dhour>0 ? $dhour.'時間' :'').$dmin.'分'))
+  $diff = ($dday>0 ? $dday.'日と': '') . ( ($dhour>0 ? $dhour.'時間' :'').$dmin.'分')
           .($live ? '' : '前');
 
   // create data for sort

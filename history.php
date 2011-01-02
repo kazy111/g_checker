@@ -38,9 +38,9 @@ function get_list($id){
       // diff time calc
       $diff = strtotime($end_time) - strtotime($start_time);
       $dday = floor($diff / (60*60*24));
-      $dhour = floor($diff / (60*60));
+      $dhour = floor($diff / (60*60) % 24);
       $dmin = floor($diff / 60 % 60);
-      $diff = ($dday>0 ? $dday.'日': ( ($dhour>0 ? $dhour.'時間' :'').$dmin.'分'));
+      $diff = ($dday>0 ? $dday.'日と':''). ($dhour>0 ? $dhour.'時間' :'').$dmin.'分';
       
       //$ret .= '<li>start: '.date('Y-m-d H:i:s', $start_time).', end: '.date('Y-m-d H:i:s',$end_time).' ('.$diff.')</li>';
       $ret .= '<li>start: '.$start_time.', end: '.$end_time.' ('.$diff.')</li>';
