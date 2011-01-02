@@ -97,7 +97,7 @@ class Page{
     }
     $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template($this->pname)), $this->data);
 
-    $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template('footer')), array());
+    $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template('footer')), $data);
     return $ret;
   }
   function get_once($page, $data)

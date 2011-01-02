@@ -21,10 +21,7 @@ function openMultiview()
 
 <h1 id="title">{$site_title}</h1>
 
-<summary>
-<a href="http://www.gokusotsu.com/top/?cat=3">獄卒ch</a>関係な人の配信をチェック/視聴するページ
- ／ 獄卒チェッカー通知Twitter→<a href="http://twitter.com/g_checker">&psi;</a>
-</summary>
+{include file="$file_path/themes/default/header_text.tpl"}
 
 <div id="menu"></div>
 
@@ -74,6 +71,7 @@ function openMultiview()
 <input id="continue" type="button" value="全て表示" onclick="var n=document.getElementById('list-table').childNodes; for(var i in n){ try{ n[i].className = n[i].className.replace('old',''); }catch(e){ ; } }" />
 
 
+{include file="$file_path/themes/default/footer_text.tpl"}
 </div>
 
 <script type="text/javascript" src="./js/base64.js"></script>

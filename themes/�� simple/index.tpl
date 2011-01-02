@@ -2,12 +2,8 @@
 
 <h1 id="title">{$site_title}</h1>
 
-<summary>
-<div id="summary">
-<a href="http://www.gokusotsu.com/top/?cat=3">獄卒ch</a>関係な人の配信をチェック/視聴するページ
- ／ 獄卒チェッカー通知Twitter→<a href="http://twitter.com/g_checker">&psi;</a>
-</div>
-</summary>
+
+{include file="$file_path/themes/default/header_text.tpl"}
 
 <div id="article">
 <h2>お知らせ</h2>
@@ -90,4 +86,4 @@ Twitterのじゃわてぃーまで気軽にDMを飛ばして下さい。
 
 </div>
 
-
+{include file="$file_path/themes/default/footer_text.tpl"}

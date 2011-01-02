@@ -2,6 +2,8 @@
 
 <h1 id="title">{$site_title}</h1>
 
+{include file="$file_path/themes/default/header_text.tpl"}
+
 <div id="article">
 <h2>お知らせ</h2>
 <div id="article_list">
@@ -40,6 +42,7 @@
 </table>
 <input id="continue" type="button" value="全て表示" onclick="var n=document.getElementById('list-table').childNodes; for(var i in n){ try{ n[i].className = n[i].className.replace('old',''); }catch(e){ ; } }" />
 
+{include file="$file_path/themes/default/footer_text.tpl"}
 </div>
 
 </div>

@@ -20,6 +20,8 @@ function openMultiview()
 
 <h1 id="title">獄チェ</h1>
 
+{include file="$file_path/themes/default/header_text.tpl"}
+
 <div id="article">
 <h2>お知らせ</h2>
 <div id="article_list">
@@ -66,7 +68,10 @@ function openMultiview()
 
 </div>
 
+
 </div>
+<br/>
+{include file="$file_path/themes/default/footer_text.tpl"}
 
 <script type="text/javascript" src="./js/base64.js"></script>
 <script type="text/javascript" src="./js/rawdeflate.js"></script>
