@@ -167,9 +167,9 @@ function start_tweet($data)
 
   $url = ' '.$site_url.'/view.php?id='.$data['sid'];
 
-  $cutlen = 140-strlen($hash)-mb_strlen($str)-strlen($url)-strlen($time);
-  if(mb_strlen($topic) > $cutlen)
-    $topic = mb_substr($topic, 0, $cutlen-1).'…';
+  $cutlen = 140-strlen($hash)-mb_strlen($str, 'UTF-8')-strlen($url)-strlen($time);
+  if(mb_strlen($topic, 'UTF-8') > $cutlen)
+    $topic = mb_substr($topic, 0, $cutlen-1, 'UTF-8').'…';
   
   tweet($str.$topic.$url.$time.$hash);
 }
@@ -181,9 +181,9 @@ function end_tweet($data)
   $time = date(' [H:i]');
   $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , $data['topic']);
 
-  $cutlen = 140-strlen($hash)-mb_strlen($str)-strlen($url)-strlen($time);
-  if(mb_strlen($topic) > $cutlen)
-    $topic = mb_substr($topic, 0, $cutlen-1).'…';
+  $cutlen = 140-strlen($hash)-mb_strlen($str, 'UTF-8')-strlen($url)-strlen($time);
+  if(mb_strlen($topic, 'UTF-8') > $cutlen)
+    $topic = mb_substr($topic, 0, $cutlen-1, 'UTF-8').'…';
   
   tweet($str.$topic.$time.$hash);
 }
