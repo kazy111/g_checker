@@ -18,7 +18,7 @@ function tweet($str)
   //$content = $to->OAuthRequest('https://twitter.com/account/verify_credentials.xml', array(), 'GET');
   print("\nTweet: ".$str." #g_checker\n");
   $content = $to->OAuthRequest('https://twitter.com/statuses/update.xml',
-                               'POST', array('status' => $str.' #g_checker'));
+                               'POST', array('status' => $str));
   //$content = $to->OAuthRequest('https://twitter.com/statuses/replies.xml', array(), 'POST');
   print($content);
 }

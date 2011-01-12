@@ -159,20 +159,33 @@ function check_ustream()
 
 function start_tweet($data)
 {
+  global $site_url;
   $str = $data['name'].'配信開始！／';
+  $hash = ' #g_checker';
+  $time = date(' [H:i]');
   $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , $data['topic']);
-  // TODO site url
-  $url = ' http://kazy111.info/checker/view.php?id='.$data['sid'];
-  $topic = trim(mb_strimwidth($topic, 0, 140-11-strlen($str)-strlen($url), '…', "UTF-8"));
-  tweet($str.$topic.$url);
+
+  $url = ' '.$site_url.'/view.php?id='.$data['sid'];
+
+  $cutlen = 140-strlen($hash)-mb_strlen($str)-strlen($url)-strlen($time);
+  if(mb_strlen($topic) > $cutlen)
+    $topic = mb_substr($topic, 0, $cutlen-1).'…';
+  
+  tweet($str.$topic.$url.$time.$hash);
 }
 
 function end_tweet($data)
 {
   $str = $data['name'].'配信終了…／';
+  $hash = ' #g_checker';
+  $time = date(' [H:i]');
   $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , $data['topic']);
-  $topic = mb_strimwidth($topic, 0, 140-11-strlen($str), '…', "UTF-8");
-  tweet($str.$topic);
+
+  $cutlen = 140-strlen($hash)-mb_strlen($str)-strlen($url)-strlen($time);
+  if(mb_strlen($topic) > $cutlen)
+    $topic = mb_substr($topic, 0, $cutlen-1).'…';
+  
+  tweet($str.$topic.$time.$hash);
 }
 
 
