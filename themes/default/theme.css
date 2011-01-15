@@ -48,3 +48,7 @@ h1{
   top: 20px;
   left: 100px;
 }
+
+.article_title:before {
+  content: "+ ";
+}
