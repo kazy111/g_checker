@@ -263,19 +263,9 @@ function display_list($sort)
       }
     }
   }
-  
-  global $db;
-  $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, wiki, twitter, '
-        .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail'
-        .' from streamer_table as s, program_table as p, chat_table as c '
-        .' where s.id = p.streamer_id '
-        .' and c.id = p.chat_id order by sid, pid;';
-  $result = $db->query($sql);
-  $list = array();
-  while($arr = $db->fetch($result)){
-    if(!$list[$arr['sid']]) $list[$arr['sid']] = array();
-    $list[$arr['sid']][] = $arr;
-  }
+
+  global $manager;
+  $list = $manager->get_index_datas();
 
   $streamer_data = array();
   $live_num  = 0;
@@ -321,11 +311,10 @@ function display_list($sort)
   $contents_sort = assoc2select($GLOBALS['sort_assoc'], 'sort', $sort)
       .'<input type="button" value="変更" onclick="WriteCookie(\'sort\', document.getElementById(\'sort\').options[document.getElementById(\'sort\').selectedIndex].value, 90);location.reload();" />';
 
-  $sql = 'select id, title, body, priority, created from article_table '
-        .' order by priority desc, created desc limit 5;';
-  $result = $db->query($sql);
+  // get article section
+  $result = $manager->get_articles(5, 0);
   $contents_article = '';
-  while(($arr = $db->fetch($result)) != NULL ){
+  foreach($result as $arr){
     $contents_article .= $page->get_once('article_item', $arr);
   }
 
