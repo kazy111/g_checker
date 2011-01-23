@@ -44,8 +44,8 @@ class MySQLDataManager implements IDataManager {
     return $this->db->query_ex('select id, name, description, twitter, url, wiki from streamer_table where id = '.$streamer_id.'');
   }
   
-  function get_channel($channel_id){
-    return $this->db->query_ex('select type, ch_name, optional_id, streamer_id, chat_id from program_table where id = '.$channel_id);
+  function get_program($program_id){
+    return $this->db->query_ex('select type, ch_name, optional_id, streamer_id, chat_id from program_table where id = '.$program_id);
   }
   
   function get_chat($chat_id){
@@ -65,7 +65,7 @@ class MySQLDataManager implements IDataManager {
     }
     return $list;
   }
-  function get_channels(){
+  function get_programs(){
     $sql = 'select id, ch_name, type, streamer_id, chat_id from program_table order by id';
     $result = $this->db->query($sql);
     $list = array();
@@ -120,7 +120,7 @@ class MySQLDataManager implements IDataManager {
                        .$data['url'].'\', wiki = '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' ).' where id='.$data['id']);
     }
   }
-  function set_channel($id, $data){
+  function set_program($id, $data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into program_table (type, ch_name, optional_id, streamer_id, chat_id, viewer) values ('
@@ -179,7 +179,7 @@ class MySQLDataManager implements IDataManager {
           .' where s.id = '.$id.' and  s.id = p.streamer_id';
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
-        $this->delete_channel($arr['id']);
+        $this->delete_program($arr['id']);
       }
 
       $sql = 'select id from streamer_table where id = '.$id;
@@ -193,8 +193,8 @@ class MySQLDataManager implements IDataManager {
     }
   }
   
-  function delete_channel($channel_id){
-    $this->db->query('delete from program_table where id = '.$channel_id);
+  function delete_program($program_id){
+    $this->db->query('delete from program_table where id = '.$program_id);
   }
   function delete_chat($chat_id){
     $this->db->query('delete from chat_table where id = '.$chat_id);

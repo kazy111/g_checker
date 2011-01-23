@@ -8,20 +8,27 @@ include 'header.php';
 
 $id = number_trim($_GET['id']);
 $id = validate_num($id) ? $id : 0;
+
+/*
 $sql = 'select live, name, description, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
       .' from streamer_table as s, program_table as p, chat_table c '
       .' where s.id = '.$id.' and s.id = p.streamer_id and c.id = p.chat_id';
-
 $result = $db->query($sql);
+
+*/
+
+$result = get_streamer($id);
 
 $cids = array();
 $pids = array();
-while($arr = $db->fetch($result)){
+
+// 
+foreach($result as $arr){
   $tmp = array();
   $tmp['id'] = $arr['cid'];
   $tmp['room'] = $arr['room'];
   $tmp['type'] = $arr['ctype'];
-  $cids[] = $tmp;
+  $cids[$arr['cid']] = $tmp;
   
   $tmp = array();
   $tmp['id'] = $arr['pid'];
@@ -30,16 +37,19 @@ while($arr = $db->fetch($result)){
   $tmp['opt_id'] = $arr['optional_id'];
   $tmp['type'] = $arr['ptype'];
   $tmp['live'] = $arr['live'];
-  $pids[] = $tmp;
+  $pids[$arr['pid']] = $tmp;
   $name = $arr['name'];
   $desc = $arr['description'];
 }
+
+// construct chat data
 $chat_data = array();
 foreach($cids as $a){
   $chat_data[] = ''.$a['id'].':{room:"'.$a['room'].'",type:'.$a['type'].'}';
 }
 $chat_data = '{'.implode(',', $chat_data).'}';
 
+// construct program data
 $program_data = array();
 foreach($pids as $a){
   $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id'].'",type:'.$a['type'].',cid:'.$a['cid'].'}';
