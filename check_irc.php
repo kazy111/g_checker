@@ -2,7 +2,6 @@
 
 include 'header.php';
 include_once 'classes/ircbot.php';
-include_once 'classes/ircbot_i.php';
 
 set_time_limit(50);
 
@@ -34,7 +33,7 @@ function check()
   $sid_chs = array();
   foreach($chs as $k => $v){
     $sid = $v['sid'];
-    if(!$sid_chs[$sid]) $sid_chs[$sid] = array();
+    if(!array_key_exists($sid, $sid_chs)) $sid_chs[$sid] = array();
     $sid_chs[$sid][] = $v;
   }
   
@@ -89,7 +88,7 @@ function check_irc()
   $db->open();
   foreach($ids as $k => $v){
     if($v == 0)
-      $arr = $ust_bot->info[$k];
+      $arr = array_key_exists($k, $ust_bot->info) ? $ust_bot->info[$k] : array(0, '');
     else if($v == 1) {
       if($GLOBALS['gokusotsu']){
         $ret = preg_match('/jus:「([^」]*)」/u', $ust_bot->info['#tenga15ch'][1], $match);

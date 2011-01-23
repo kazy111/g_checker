@@ -37,7 +37,7 @@ function check()
   $sid_chs = array();
   foreach($chs as $k => $v){
     $sid = $v['sid'];
-    if(!$sid_chs[$sid]) $sid_chs[$sid] = array();
+    if(!array_key_exists($sid, $sid_chs)) $sid_chs[$sid] = array();
     $sid_chs[$sid][] = $v;
   }
   
@@ -104,7 +104,7 @@ function check_ustream()
     }
 
     if(count($v) > 1){
-      if($res->results->err != '') // error
+      if($xml->results->err != '') // error
         log_print('error: '. implode(', ', $v)); // TODO fallback check
       foreach($xml->results->array as $res){
         $live_st = live_status($res->result->status);
@@ -310,7 +310,7 @@ function check_justin()
     }
   }
   
-  log_print('finish checking Ustream.tv.');
+  log_print('finish checking Justin.tv.');
 }
 
 check();
