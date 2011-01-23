@@ -3,14 +3,12 @@
 // view channel histroy
 // TODO sanitize, validation
 
-// TODO dropdown box of steamer
-// TODO editchat.php -> linktable dropdownbox
 
 include 'header.php';
 
 $id = validate_num($_GET['id']) ? $_GET['id'] : 0;
 
-function get_name($id){
+function get_streamer_name($id){
   global $db;
   if($id){
     $result = $db->query('select name from streamer_table where id = '.$id.'');
@@ -58,7 +56,7 @@ $contents = '';
 $contents .= get_list($id);
 
 $data = array();
-$data['name'] = get_name($id);
+$data['name'] = get_streamer_name($id);
 $data['site_title'] = $site_title;
 $data['contents'] = $contents;
 $page->set('history', $data);

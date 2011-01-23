@@ -1,6 +1,6 @@
 <?php
 
-include 'config.php';
+include '../config.php';
 
 function db_initialize($db)
 {
