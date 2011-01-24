@@ -1,35 +1,30 @@
 <?php
 
 // view channel histroy
-// TODO sanitize, validation
-
 
 include 'header.php';
 
-$id = validate_num($_GET['id']) ? $_GET['id'] : 0;
+$id = (array_key_exists('id', $_GET) && validate_num($_GET['id'])) ? $_GET['id'] : 0;
 
 function get_streamer_name($id){
-  global $db;
+  global $manager;
   if($id){
-    $result = $db->query('select name from streamer_table where id = '.$id.'');
-    if($arr = $db->fetch($result)){
-      return $arr['name'];
-    }
+    $result = $manager->get_streamer($id);
+    return $result['name'];
   }
 }
+
 function get_list($id){
-  global $db, $service_assoc, $chat_assoc;
+  global $manager, $service_assoc, $chat_assoc;
 
   $type = 0;
   $room = '';
   $program_id = null;
 
   $ret = '<ul>';
-  if($id){
-    // get info from DB
-    $result = $db->query('select h.start_time as stime, h.end_time as etime from program_table as p, history_table as h '
-                         .' where p.id = h.program_id and p.streamer_id = '.$id.' order by stime desc limit 100 ');
-    while($arr = $db->fetch($result)){
+  if(!is_null($id)){
+    $result = $manager->get_histories($id);
+    foreach($result as $arr){
       $start_time = $arr['stime'];
       $end_time = $arr['etime'];
 
@@ -40,9 +35,7 @@ function get_list($id){
       $dmin = floor($diff / 60 % 60);
       $diff = ($dday>0 ? $dday.'日と':''). ($dhour>0 ? $dhour.'時間' :'').$dmin.'分';
       
-      //$ret .= '<li>start: '.date('Y-m-d H:i:s', $start_time).', end: '.date('Y-m-d H:i:s',$end_time).' ('.$diff.')</li>';
       $ret .= '<li>start: '.$start_time.', end: '.$end_time.' ('.$diff.')</li>';
-
     }
   }
   

@@ -1,5 +1,5 @@
 <script type="text/javascript">
-//{$data}
+
 var c_data = {$c_data};
 var p_data = {$p_data};
 var cur_pid;

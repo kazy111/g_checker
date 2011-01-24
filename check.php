@@ -8,7 +8,6 @@ set_time_limit(50);
 
 // TODO
 // Ustream日本語ch 人数検証
-// IRCチェック
 $ust_apikey = '98F257180583948FC8FAD3042D2A0E7E';
 $chs;
 $sid_chs;
@@ -22,23 +21,16 @@ function log_print($str)
 // driver function (get channels and call check functions)
 function check()
 {
-  global $db, $chs, $sid_chs;
-  $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, s.name as name, start_time, '
-        .' ch_name, optional_id, room, p.type as ptype, c.type as ctype, topic, offline_count'
-        .' from streamer_table as s, program_table as p, chat_table as c '
-        .' where s.id = p.streamer_id '
-        .' and c.id = p.chat_id order by s.id;';
-  $result = $db->query($sql);
-  $chs = array();
-  while($arr = $db->fetch($result)){
-    $chs[$arr['pid']] = $arr;
-  }
+  
+  global $manager, $chs, $sid_chs;
 
-  $sid_chs = array();
-  foreach($chs as $k => $v){
-    $sid = $v['sid'];
-    if(!array_key_exists($sid, $sid_chs)) $sid_chs[$sid] = array();
-    $sid_chs[$sid][] = $v;
+  $sid_chs = $manager->get_index_datas();
+
+  $chs = array();
+  foreach($sid_chs as $arr){
+    foreach($arr as $p){
+      $chs[$p['pid']] = $p;
+    }
   }
   
   check_ustream();
@@ -49,7 +41,7 @@ function check()
 // check ustream function
 function check_ustream()
 {
-  global $chs, $sid_chs, $ust_apikey;
+  global $manager, $chs, $sid_chs, $ust_apikey;
   
   function live_status($xml_node){
     return $xml_node == 'live' ? TRUE : FALSE;
@@ -83,7 +75,7 @@ function check_ustream()
   log_print("start checking Ustream.tv...");
   
   foreach($chs as $k => $v){
-    if($v['ptype']==0){
+    if($v['type']==0){
       $hash[$v['ch_name']] = $v['pid'];
       $ids[] = $v['ch_name'];
     }
@@ -114,15 +106,16 @@ function check_ustream()
         $change_flag = ($chs[$pid]['live']=='t') ^ $live_st;
         $viewer = $live_st ? get_ustream_member($login, $res->result->id) : 0;
         $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$res->result->id.'_160x120_b.jpg';
-        if($live_st || $change_flag)
-          update_status($pid, $live_st, $viewer, $change_flag, $thumb);
+        if($live_st || $change_flag){
+          $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
+        }
         if($change_flag){
           if($live_st){
             if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
               start_tweet($chs[$pid]);
           }else{
             $start_time = $chs[$pid]['start_time'];
-            add_history($pid, $start_time, date('Y-m-d H:i:s'));
+            $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
             if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
               end_tweet($chs[$pid]);
           }
@@ -137,14 +130,14 @@ function check_ustream()
       $viewer = $live_st ? get_ustream_member($login, $xml->results->id) : 0;
       $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$xml->results->id.'_160x120_b.jpg';
       if($live_st || $change_flag)
-        update_status($pid, $live_st, $viewer, $change_flag, $thumb);
+        $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
       if($change_flag){
         if($live_st){
           if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
             start_tweet($chs[$pid]);
         }else{
           $start_time = $chs[$pid]['start_time'];
-          add_history($pid, $start_time, date('Y-m-d H:i:s'));
+          $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
           if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
             end_tweet($chs[$pid]);
         }
@@ -181,7 +174,7 @@ function end_tweet($data)
   $time = date(' [H:i]');
   $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , $data['topic']);
 
-  $cutlen = 140-strlen($hash)-mb_strlen($str, 'UTF-8')-strlen($url)-strlen($time);
+  $cutlen = 140-strlen($hash)-mb_strlen($str, 'UTF-8')-strlen($time);
   if(mb_strlen($topic, 'UTF-8') > $cutlen)
     $topic = mb_substr($topic, 0, $cutlen-1, 'UTF-8').'…';
   
@@ -202,12 +195,6 @@ function check_prev_live($pid, $chs)
   return $ret;
 }
 
-function increment_offline_count($pid)
-{
-  global $db;
-  $sql = 'update program_table set offline_count = offline_count + 1 where id = '.$pid;
-  $db->query($sql);
-}
 
 function update_status($pid, $live, $viewer, $change_flag, $thumb)
 {
@@ -248,7 +235,7 @@ function add_history($pid, $start_time, $end_time)
 
 function check_justin()
 {
-  global $chs, $sid_chs;
+  global $manager, $chs, $sid_chs;
 
   $ids = array();
   $hash = array();
@@ -257,7 +244,7 @@ function check_justin()
   log_print("start checking Justin.tv...");
   
   foreach($chs as $k => $v){
-    if($v['ptype']==1){
+    if($v['type']==1){
       $cn = strtolower($v['ch_name']);
       $hash[$cn] = $v['pid'];
       $ids[] = $cn;
@@ -287,7 +274,9 @@ function check_justin()
       $pid = $hash[$name];
       $change_flag = $chs[$pid]['live'] != 't';
       $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
-      update_status($pid, 1, $viewer, $change_flag, $thumb);
+      
+      $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
+      
       if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
         start_tweet($chs[$pid]);
       
@@ -299,13 +288,15 @@ function check_justin()
     if( $v == 0 && $chs[$k]['live']=='t' ){
       if(intval($chs[$k]['offline_count']) > 1){
         //$thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
-        update_status($k, 0, 0, 1, '');
+        
+        $manager->update_program($k, FALSE, 0, 1, '');
+        
         $start_time = $chs[$k]['start_time'];
-        add_history($k, $start_time, date('Y-m-d H:i:s'));
+        $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
         if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
           end_tweet($chs[$k]);
       }else{
-        increment_offline_count($k);
+        $manager->increment_offline_count($k);
       }
     }
   }

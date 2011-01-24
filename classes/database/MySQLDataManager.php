@@ -9,6 +9,10 @@ class MySQLDataManager implements IDataManager {
     $this->db = new MySQLDB($db_host, $db_name, $db_user, $db_passwd);
   }
 
+  function sanitize($str){
+    return $this->db->sanitize($str);
+  }
+
   // raw data for index page
   function get_index_datas(){
     $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, wiki, twitter, '
@@ -19,7 +23,7 @@ class MySQLDataManager implements IDataManager {
     $result = $this->db->query($sql);
     $list = array();
     while($arr = $this->db->fetch($result)){
-      if(!$list[$arr['sid']]) $list[$arr['sid']] = array();
+      if(!array_key_exists($arr['sid'], $list)) $list[$arr['sid']] = array();
       $list[$arr['sid']][] = $arr;
     }
     

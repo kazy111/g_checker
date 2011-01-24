@@ -5,5 +5,4 @@
 {$body}
 </span>
 
-<span class="article_created">{$article}</span>
 </div>

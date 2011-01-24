@@ -1,22 +1,18 @@
 <?php
 include 'header.php';
 
-$p = validate_num($_GET['p']) ? $_GET['p'] : 0;
+$p = validate_num(array_key_exists('p', $_GET)) ? $_GET['p'] : 0;
 
 function get_list($p, $pagesize){
-  global $db, $page;
+  global $manager, $page;
 
-  $program_id = null;
-
-  $sql = 'select id, title, body, priority, created from article_table '
-        .' order by priority desc, created desc limit '.$pagesize.' offset '.($pagesize * $p).';';
-  $result = $db->query($sql);
+  $result = $manager->get_articles($pagesize, $p);
+  
   $ret = '';
-  while(($arr = $db->fetch($result)) != NULL ){
+  foreach($result as $arr){
     $ret .= $page->get_once('article_item', $arr);
   }
 
-  
   return $ret;
 }
 

@@ -9,17 +9,21 @@ class PostgreSQLDataManager implements IDataManager {
     $this->db = new PostgreSQLDB($db_host, $db_name, $db_user, $db_passwd);
   }
 
+  function sanitize($str){
+    return $this->db->sanitize($str);
+  }
+
   // raw data for index page
   function get_index_datas(){
     $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, wiki, twitter, '
-        .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail'
+        .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail, offline_count'
         .' from streamer_table as s, program_table as p, chat_table as c '
         .' where s.id = p.streamer_id '
         .' and c.id = p.chat_id order by sid, pid;';
     $result = $this->db->query($sql);
     $list = array();
     while($arr = $this->db->fetch($result)){
-      if(!$list[$arr['sid']]) $list[$arr['sid']] = array();
+      if(!array_key_exists($arr['sid'], $list)) $list[$arr['sid']] = array();
       $list[$arr['sid']][] = $arr;
     }
     
@@ -29,8 +33,8 @@ class PostgreSQLDataManager implements IDataManager {
   // use in view.php
   function get_streamer_info($streamer_id){
     $sql = 'select live, name, description, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
-      .' from streamer_table as s, program_table as p, chat_table c '
-      .' where s.id = '.$streamer_id.' and s.id = p.streamer_id and c.id = p.chat_id';
+          .' from streamer_table as s, program_table as p, chat_table c '
+          .' where s.id = '.$streamer_id.' and s.id = p.streamer_id and c.id = p.chat_id';
 
     $result = $this->db->query($sql);
     $list = array();
@@ -39,7 +43,47 @@ class PostgreSQLDataManager implements IDataManager {
     }
     return $list;
   }
+  
+  function update_chat($cid, $member, $topic){
+    $sql = 'update chat_table set member='.$member
+          .' , topic=\''.$topic.'\' where id='.$cid;
+    $ret = $this->db->query($sql);
+  }
+  
+  function update_program($pid, $live, $viewer, $change_flag, $thumb){
+    $sql_live = $live ? 'TRUE' : 'FALSE';
+    // construct time SQL
+    $sql_time = '';
+    if($change_flag){
+      $now = date('Y-m-d H:i:s');
+      if($live){
+        $sql_time = ', start_time = \''.$now.'\' ';
+      }else{
+        $sql_time = ', end_time = \''.$now.'\' ';
+        // TODO add history
+      }
+    }
+    $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
+          . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 where id = '.$pid;
+    $this->db->query($sql);
+  }
+  
+  function increment_offline_count($pid){
+    $sql = 'update program_table set offline_count = offline_count + 1 where id = '.$pid;
+    $this->db->query($sql);
+  }
 
+  function add_history($pid, $start_time, $end_time) {
+    try{
+      $sql = 'insert into  history_table (program_id, start_time, end_time) '
+        .' values ('.$pid.', \''.$start_time.'\', \''.$end_time.'\')';
+      log_print($sql);
+      $this->db->query($sql);
+    } catch (Exception $e) {
+      print("例外キャッチ：". $e->getMessage(). "\n");
+    }
+  }
+  
   function get_streamer($streamer_id){
     return $this->db->query_ex('select id, name, description, twitter, url, wiki from streamer_table where id = '.$streamer_id.'');
   }
@@ -65,6 +109,7 @@ class PostgreSQLDataManager implements IDataManager {
     }
     return $list;
   }
+  
   function get_programs(){
     $sql = 'select id, ch_name, type, streamer_id, chat_id from program_table order by id';
     $result = $this->db->query($sql);
@@ -74,6 +119,7 @@ class PostgreSQLDataManager implements IDataManager {
     }
     return $list;
   }
+  
   function get_chats(){
     $sql = 'select id, type, room from chat_table order by id';
     $result = $this->db->query($sql);
@@ -86,7 +132,7 @@ class PostgreSQLDataManager implements IDataManager {
 
   function get_articles($pagesize, $page){
     $sql = 'select id, title, body, priority, created from article_table '
-      .' order by priority desc, created desc limit '.$pagesize.' offset '.($pagesize * $page).';';
+          .' order by priority desc, created desc limit '.$pagesize.' offset '.($pagesize * $page).';';
     $result = $this->db->query($sql);
     $list = array();
     while(($arr = $this->db->fetch($result)) != NULL ){
@@ -97,7 +143,7 @@ class PostgreSQLDataManager implements IDataManager {
   
   function get_histories($streamer_id){
     $result = $this->db->query('select h.start_time as stime, h.end_time as etime from program_table as p, history_table as h '
-                         .' where p.id = h.program_id and p.streamer_id = '.$streamer_id.' order by stime desc limit 100 ');
+                               .' where p.id = h.program_id and p.streamer_id = '.$streamer_id.' order by stime desc limit 100 ');
     
     $list = array();
     while($arr = $this->db->fetch($result)){
@@ -124,15 +170,15 @@ class PostgreSQLDataManager implements IDataManager {
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into program_table (type, ch_name, optional_id, streamer_id, chat_id, viewer) values ('
-                 .$data['type'].', \''.$data['ch_name'].'\', \''
-                 .$data['optional_id'].'\', '.$data['streamer_id'].', '.$data['chat_id'].', 0)');
+                       .$data['type'].', \''.$data['ch_name'].'\', \''
+                       .$data['optional_id'].'\', '.$data['streamer_id'].', '.$data['chat_id'].', 0)');
     } else {
       // update
       $this->db->query('update program_table set type = '.$data['type'].', ch_name = \''
-                 .$data['ch_name'].'\', optional_id = \''.$data['optional_id']
-                 .'\', streamer_id = '.$data['streamer_id']
-                 .', chat_id = '.$data['chat_id']
-                 .' where id='.$data['id']);
+                       .$data['ch_name'].'\', optional_id = \''.$data['optional_id']
+                       .'\', streamer_id = '.$data['streamer_id']
+                       .', chat_id = '.$data['chat_id']
+                       .' where id='.$data['id']);
     }
   }
   
@@ -188,7 +234,7 @@ class PostgreSQLDataManager implements IDataManager {
         $this->db->query('delete from streamer_table where id = '.$arr['id']);
       }
       $this->db->commit();
-    }catch(Exception $e){
+    } catch (Exception $e) {
       $this->db->rollback();
     }
   }

@@ -27,4 +27,6 @@ $ontop[] = 2;
 $ontop[] = 60;
 $ontop[] = 61;
 
+date_default_timezone_set('Asia/Tokyo');
+
 ?>

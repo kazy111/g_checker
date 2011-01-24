@@ -2,8 +2,8 @@
 include 'header.php';
 
 
-$p = validate_num($_GET['p']) ? $_GET['p'] : 0;
-$limit = validate_num($_GET['limit']) ? $_GET['limit'] : $page_size;
+$p = (array_key_exists('p', $_GET) && validate_num($_GET['p'])) ? $_GET['p'] : 0;
+$limit = (array_key_exists('limit', $_GET) && validate_num($_GET['limit'])) ? $_GET['limit'] : $page_size;
 // function 
 
 function fold_numbers($arrs, $key, $value)
@@ -11,7 +11,7 @@ function fold_numbers($arrs, $key, $value)
   $hash = array();
   $ret = 0;
   foreach($arrs as $k => $v){
-    if(!$hash[$v[$key]]){
+    if(!array_key_exists($v[$key], $hash)){
       $ret += $v[$value];
       $hash[$v[$key]] = true;
     }
@@ -67,31 +67,35 @@ function get_streamer_data($arrs)
       $thumb = '<img src="'.$v['thumbnail'].'" width="320" height="240" class="thumb"/>';
       switch($v['type']){
       case 0: //ustream
-        if(!$live_thumb){ $live_thumb = $v['thumbnail']; }
+        if(!isset($live_thumb)){ $live_thumb = $v['thumbnail']; }
         $ch_ust = $v['optional_id'];
         $ch_v = 1;
-        $programs .= '<a href="http://www.ustream.tv/channel/'.$v['ch_name'].'">'.Ust.$thumb.'</a> ';
+        $programs .= '<a href="http://www.ustream.tv/channel/'.$v['ch_name'].'">Ust'.$thumb.'</a> ';
         break;
       case 1: // justin
         $live_thumb = $v['thumbnail'];
         $ch_jus = $v['ch_name'];
         $ch_v = 3;
-        $programs .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">'.Jst.$thumb.'</a> ';
+        $programs .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">Jst'.$thumb.'</a> ';
         break;
       }
       $ch_chat = substr($v['room'],1);
     }else {
-      if(!$live_thumb) $live_thumb = $v['thumbnail'];
+      if(!isset($live_thumb)) $live_thumb = $v['thumbnail'];
       switch($v['type']){
       case 0: //ustream
-        if(!$ch_ust) $ch_ust = $v['optional_id'];  break;
+        if(!isset($ch_ust)) $ch_ust = $v['optional_id'];  break;
       case 1: // justin
-        if(!$ch_jus) $ch_jus = $v['ch_name']; break;
+        if(!isset($ch_jus)) $ch_jus = $v['ch_name']; break;
       }
-      if(!$ch_chat) $ch_chat = substr($v['room'],1);
+      if(!isset($ch_chat)) $ch_chat = substr($v['room'],1);
       $etime = $etime < strtotime($v['end_time']) ? strtotime($v['end_time']) : $etime;
     }
   }
+  if(!isset($live_thumb)) $live_thumb = '';
+  if(!isset($ch_ust))  $ch_ust = '';
+  if(!isset($ch_jus))  $ch_jus = '';
+  if(!isset($ch_chat)) $ch_chat = '';
   
   $i = $arrs[0];
 
@@ -127,7 +131,7 @@ function get_streamer_data($arrs)
     $t = preg_replace('/(jus|17ch):「[^」]*」/us', '', $data['topic']);
     if($t != NULL && $t != '') $data['topic'] = $t;
   }
-  $data['chats_raw'] = addslashes($chats_raw);
+  $data['chats_raw'] = $chats_raw;
   $data['time'] = $time;
   $data['time_raw'] = $live ? $stime : $etime;
   $data['start_raw'] = $stime;
@@ -155,13 +159,6 @@ function display_list($sort, $p, $limit)
       return $a['sid'] > $b['sid'];
     }
     
-    if( in_array($a['pid'], $ontop) && !in_array($a['pid'], $ontop) ){
-      return FALSE;
-    }
-    if( !in_array($a['pid'], $ontop) && in_array($a['pid'], $ontop) ){
-      return TRUE;
-    }
-    
     if( $a['live'] ){
       if( $b['live'] ){
         return $a['viewer'] < $b['viewer'];
@@ -172,7 +169,7 @@ function display_list($sort, $p, $limit)
       if( $b['live'] ){
         return TRUE;
       } else {
-        return $a['time_data'] < $b['time_data'];
+        return $a['time_raw'] < $b['time_raw'];
       }
     }
   }
@@ -187,7 +184,6 @@ function display_list($sort, $p, $limit)
       return $a['sid'] > $b['sid'];
     }
     
-    global $ontop;
     if( in_array($a['sid'], $ontop) && !in_array($a['sid'], $ontop) ){
       return FALSE;
     }
@@ -238,7 +234,7 @@ function display_list($sort, $p, $limit)
       if( $b['live'] ){
         return TRUE;
       } else {
-        return $a['time_data'] < $b['time_data'];
+        return $a['time_raw'] < $b['time_raw'];
       }
     }
   }
@@ -264,23 +260,13 @@ function display_list($sort, $p, $limit)
       if( $b['live'] ){
         return TRUE;
       } else {
-        return $a['time_data'] < $b['time_data'];
+        return $a['time_raw'] < $b['time_raw'];
       }
     }
   }
-  
-  global $db;
-  $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, wiki, twitter, '
-        .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail'
-        .' from streamer_table as s, program_table as p, chat_table as c '
-        .' where s.id = p.streamer_id '
-        .' and c.id = p.chat_id order by sid, pid;';
-  $result = $db->query($sql);
-  $list = array();
-  while($arr = $db->fetch($result)){
-    if(!$list[$arr['sid']]) $list[$arr['sid']] = array();
-    $list[$arr['sid']][] = $arr;
-  }
+
+  global $manager;
+  $list = $manager->get_index_datas();
 
   $streamer_data = array();
   $live_num  = 0;
@@ -291,7 +277,6 @@ function display_list($sort, $p, $limit)
   }
   usort($streamer_data, 'cmp_'.$sort);
 
-  //$live_num += $GLOBALS['list_extra_number'];
   if($p < 1){
     $st = array_slice($streamer_data, 0, $live_num);
   }else{
@@ -306,7 +291,7 @@ function display_list($sort, $p, $limit)
     $data['live'] =  $data['live'] ? 'online' : 'offline';
     $data['even'] = $even;
     $even = !$even;
-    $contents_streamer[] = $page->get_once('json_item'.$GLOBALS['extra'], $data);
+    $contents_streamer[] = $page->get_once('json_item', $data);
   }
   $contents_streamer = implode(',', $contents_streamer);
 
@@ -321,7 +306,7 @@ function display_list($sort, $p, $limit)
 
 
 $sort = 'random'; // viewer, time
-if($_COOKIE['sort'] && array_key_exists($_COOKIE['sort'], $sort_assoc)){
+if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sort_assoc)){
   $sort = $_COOKIE['sort'];
 }
 

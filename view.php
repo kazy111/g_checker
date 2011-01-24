@@ -9,20 +9,12 @@ include 'header.php';
 $id = number_trim($_GET['id']);
 $id = validate_num($id) ? $id : 0;
 
-/*
-$sql = 'select live, name, description, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
-      .' from streamer_table as s, program_table as p, chat_table c '
-      .' where s.id = '.$id.' and s.id = p.streamer_id and c.id = p.chat_id';
-$result = $db->query($sql);
-
-*/
 
 $result = get_streamer($id);
 
 $cids = array();
 $pids = array();
 
-// 
 foreach($result as $arr){
   $tmp = array();
   $tmp['id'] = $arr['cid'];
@@ -54,9 +46,14 @@ $program_data = array();
 foreach($pids as $a){
   $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id'].'",type:'.$a['type'].',cid:'.$a['cid'].'}';
   if($a['live'] == 't')
-    if( $a['type']==1 /*if justin*/ || !$first_id) $first_id = $a['id'];
+    if( $a['type'] == 1 /*if justin*/ || !$first_id) $first_id = $a['id'];
 }
-if(!$first_id) $first_id = $pids[0]['id'];
+if(!isset($first_id)){
+  foreach($pids as $p){
+    $first_id = $p['id'];
+    break;
+  }
+}
 
 $program_data = '{'.implode(',', $program_data).'}';
 
