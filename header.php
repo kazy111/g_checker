@@ -1,7 +1,7 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
-ini_set('log_errors', 'Off');
+//error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
+//ini_set('log_errors', 'Off');
 
 include_once 'config.php';
 include_once 'assoc_define.php';
