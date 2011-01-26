@@ -130,9 +130,11 @@ class PostgreSQLDataManager implements IDataManager {
     return $list;
   }
 
-  function get_articles($pagesize, $page){
+  function get_articles($pagesize = NULL, $page = 0){
     $sql = 'select id, title, body, priority, created from article_table '
-          .' order by priority desc, created desc limit '.$pagesize.' offset '.($pagesize * $page).';';
+          .' order by priority desc, created desc';
+    if($pagesize)
+      $sql .= ' limit '.$pagesize.' offset '.($pagesize * $page).';';
     $result = $this->db->query($sql);
     $list = array();
     while(($arr = $this->db->fetch($result)) != NULL ){
@@ -152,7 +154,7 @@ class PostgreSQLDataManager implements IDataManager {
     return $list;
   }
 
-  function set_streamer($id, $data){
+  function set_streamer($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into streamer_table (name, description, twitter, url, wiki) values (\''
@@ -166,7 +168,7 @@ class PostgreSQLDataManager implements IDataManager {
                        .$data['url'].'\', wiki = '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' ).' where id='.$data['id']);
     }
   }
-  function set_program($id, $data){
+  function set_program($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into program_table (type, ch_name, optional_id, streamer_id, chat_id, viewer) values ('
@@ -182,7 +184,7 @@ class PostgreSQLDataManager implements IDataManager {
     }
   }
   
-  function set_chat($id, $data){
+  function set_chat($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into chat_table (type, room, member) values ('
@@ -194,7 +196,7 @@ class PostgreSQLDataManager implements IDataManager {
     }
   }
   
-  function set_article($id, $data){
+  function set_article($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $now = date('Y-m-d H:i:s');
@@ -310,6 +312,45 @@ class PostgreSQLDataManager implements IDataManager {
                      .'created TIMESTAMP,'
                      .'priority SMALLINT,'
                      .'PRIMARY KEY(id))');
+  }
+
+  
+  function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc){
+    $this->db->begin();
+
+    try{
+      // PostgreSQL
+      $sql = 'select nextval(\'streamer_table_id_seq\')';
+      $arr = $this->db->query_ex($sql);
+      $sid = $arr['nextval']; // TODO => create get_sequence_id?
+      // -- PostgreSQL
+      $this->db->query('insert into streamer_table (id, name, description) values '
+                 .'('.$sid.', \''.$name.'\', \''.$desc.'\')');
+      //$sid = mysql_insert_id();// MySQL
+      
+      // PostgreSQL
+      $sql = 'select nextval(\'chat_table_id_seq\')';
+      $arr = $this->db->query_ex($sql);
+      $cid = $arr['nextval']; // TODO => create get_sequence_id?
+      // -- PostgreSQL
+      $this->db->query('insert into chat_table (id, room, type) values '
+                 .'('.$cid.', \''.$room.'\', '.$chat_type.')');
+      //$sid = mysql_insert_id();// MySQL
+      
+      if($ust_id){
+        $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'
+                         .' values ('.$sid.', '.$cid.', 0, \''.$ust_id.'\',\''.$ust_no.'\')');
+      }
+      if($jus_id){
+        $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name)'
+                         .' values ('.$sid.', '.$cid.', 1, \''.$jus_id.'\')');
+      }
+      
+      $this->db->commit();
+    }catch(Exception $e){
+      $this->db->rollback();
+    }
+    
   }
 }
 

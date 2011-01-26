@@ -2,7 +2,6 @@
 // TODO sanitize, validation
 
 // TODO dropdown box of steamer
-// TODO editchat.php -> linktable dropdownbox
 
 include '../header.php';
 
@@ -10,7 +9,7 @@ include '../header.php';
 // if no id, create new entry
 
 function get_form($id){
-  global $db;
+  global $manager;
 
   $title = '';
   $body = '';
@@ -18,12 +17,11 @@ function get_form($id){
 
   if($id){
     // get info from DB
-    $result = $db->query('select title, body, created, priority from article_table where id = '.$id);
+    $result = $manager->get_article($id);
     if($result){
-      $arr = $db->fetch($result);
-      $title = sanitize_html($arr['title']);
-      $body = sanitize_html($arr['body']);
-      $priority = sanitize_html($arr['priority']);
+      $title = sanitize_html($result['title']);
+      $body = sanitize_html($result['body']);
+      $priority = sanitize_html($result['priority']);
     }
   }
 
@@ -36,7 +34,7 @@ function get_form($id){
       <span class="form_title">title:</span>
       <input type="edit" name="title" value="$title" /><br />
       <span class="form_title">body:</span>
-      <textarea name="body">$body</textarea><br />
+      <textarea name="body" cols="40" rows="10">$body</textarea><br />
       <span class="form_title">priority:</span>
       <input type="edit" name="priority" value="$priority" /><br />
       <input type="submit" value="submit" />
@@ -46,30 +44,20 @@ EOD;
 }
 
 function register_program(){
-  global $_POST, $db;
+  global $_POST, $manager;
 
-  if($_POST['id'] && $_POST['id']!=''){
-    // update
-    $db->query('update article_table set title = \''.$_POST['title'].'\', body = \''
-               .$_POST['body'].'\', priority = '.$_POST['priority'].' where id='.$_POST['id']);
-  } else {
-    // create
-    $now = date('Y-m-d H:i:s');
-    $sql = 'insert into article_table (title, body, priority, created) values (\''
-               .$_POST['title'].'\', \''.$_POST['body'].'\', '.$_POST['priority'].', \''.$now.'\')';
-    $db->query($sql);
-  }
+  $manager->set_article($_POST);
 }
 
 $contents = '';
-if ( $_POST['mode'] ) {
+if ( array_key_exists('mode', $_POST) ) {
   // TODO validation
   
   register_program();
   $contents .= '<span class="message">updated information</span>';
 }
 
-$contents .= get_form($_GET['id']);
+$contents .= get_form(get_key($_GET, 'id'));
 $data = array();
 $data['contents'] = $contents;
 $page->set('raw', $data);

@@ -10,7 +10,7 @@ $id = number_trim($_GET['id']);
 $id = validate_num($id) ? $id : 0;
 
 
-$result = get_streamer($id);
+$result = $manager->get_streamer_info($id);
 
 $cids = array();
 $pids = array();
@@ -46,7 +46,7 @@ $program_data = array();
 foreach($pids as $a){
   $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id'].'",type:'.$a['type'].',cid:'.$a['cid'].'}';
   if($a['live'] == 't')
-    if( $a['type'] == 1 /*if justin*/ || !$first_id) $first_id = $a['id'];
+    if( $a['type'] == 1 /*if justin*/ || !isset($first_id)) $first_id = $a['id'];
 }
 if(!isset($first_id)){
   foreach($pids as $p){

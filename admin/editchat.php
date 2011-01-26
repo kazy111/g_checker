@@ -10,7 +10,7 @@ include '../header.php';
 // if no id, create new entry
 
 function get_form($id){
-  global $db, $service_assoc, $chat_assoc;
+  global $manager, $chat_assoc;
 
   $type = 0;
   $room = '';
@@ -18,11 +18,10 @@ function get_form($id){
 
   if($id){
     // get info from DB
-    $result = $db->query('select type, room from chat_table where id = '.$id);
+    $result = $manager->get_chat($id);
     if($result){
-      $arr = $db->fetch($result);
-      $type = $arr['type'];
-      $room = $arr['room'];
+      $type = $result['type'];
+      $room = $result['room'];
     }
   }
 
@@ -44,29 +43,21 @@ EOD;
 }
 
 function register_program(){
-  global $_POST, $db;
+  global $_POST, $manager;
 
-  if($_POST['id'] && $_POST['id']!=''){
-    // update
-    $db->query('update chat_table set type = '.$_POST['type'].', room = \''
-               .$_POST['room'].'\' where id='.$_POST['id']);
-  } else {
-    // create
-    $sql = 'insert into chat_table (type, room, member) values ('
-               .$_POST['type'].', \''.$_POST['room'].'\', 0)';
-    $db->query($sql);
-  }
+  $manager->set_chat($_POST);
+
 }
 
 $contents = '';
-if ( $_POST['mode'] ) {
+if ( array_key_exists('mode', $_POST) ) {
   // TODO validation
   
   register_program();
   $contents .= '<span class="message">updated information</span>';
 }
 
-$contents .= get_form($_GET['id']);
+$contents .= get_form(get_key($_GET, 'id'));
 $data = array();
 $data['contents'] = $contents;
 $page->set('raw', $data);

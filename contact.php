@@ -9,10 +9,10 @@ mb_language('ja'); // for mail encoding
 function get_form(){
   global $db;
 
-  $title   = $_POST['title'];
-  $name    = $_POST['name'];
-  $contact = $_POST['contact'];
-  $body    = $_POST['body'];
+  $title   = get_key($_POST, 'title');
+  $name    = get_key($_POST, 'name');
+  $contact = get_key($_POST, 'contact');
+  $body    = get_key($_POST, 'body');
   $now     = time();
 
   // display form
@@ -39,15 +39,16 @@ EOD;
 function check_and_submit(){
   global $_POST;
 
-  if(time() - intval($time) < 5){
-    return false;
-  }
-  
   $title   = '['.$GLOBALS['site_title'] .'] '. $_POST['title'];
   $name    = $_POST['name'];
   $contact = $_POST['contact'];
   $body    = $_POST['body'];
   $time    = $_POST['test'];
+  
+  if(time() - intval($time) < 5 || $body == ''){
+    return false;
+  }
+  
 
   mb_internal_encoding('UTF-8');
   mb_send_mail($GLOBALS['admin_mail'], $title, 'sender: ' . $name.' <'.$contact.">\n\n".$body);
@@ -57,7 +58,7 @@ function check_and_submit(){
 }
 
 $msg = '';
-if ( $_POST['test'] ) {
+if ( array_key_exists('test', $_POST) ) {
   // TODO validation
 
   if(check_and_submit()){

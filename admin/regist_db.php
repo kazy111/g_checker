@@ -18,71 +18,23 @@ function display_form(){
 }
 
 function register_program(){
-  global $_POST, $db;
+  global $_POST, $manager;
   
   //** register user at once
-  $name = $_POST['name'];
-  $room = $_POST['room'];
-  $chat_type = $_POST['chat_type'];
-  $ust_id = $_POST['ust_id'];
-  $jus_id = $_POST['jus_id'];
-  $ust_no = $_POST['ust_no'];
-  $desc = $_POST['desc'];
-  
-  // TODO lock transaction
-  
-  // TODO
-  $db->begin();
-  
-  // PostgreSQL
-  $sql = 'select nextval(\'streamer_table_id_seq\')';
-  $arr = $db->fetch($db->query($sql));
-  $sid = $arr['nextval']; // TODO => create get_sequence_id?
-  // -- PostgreSQL
-  
-  $sql = 'insert into streamer_table (id, name, description) values'
-        .'('.$sid.', \''.$name.'\', \''.$desc.'\')';
-  $db->query($sql);
-  //$sid = mysql_insert_id();// MySQL
-  
-  if(!$sid)
-    $db->rollback();
-  else
-    $db->commit();
+  $name = get_key($_POST, 'name');
+  $room = get_key($_POST, 'room');
+  $chat_type = get_key($_POST, 'chat_type');
+  $ust_id = get_key($_POST, 'ust_id');
+  $jus_id = get_key($_POST, 'jus_id');
+  $ust_no = get_key($_POST, 'ust_no');
+  $desc = get_key($_POST, 'desc');
 
-
-  // TODO
-  $db->begin();
-  // PostgreSQL
-  $sql = 'select nextval(\'chat_table_id_seq\')';
-  $arr = $db->fetch($db->query($sql));
-  $cid = $arr['nextval']; // TODO => create get_sequence_id?
-  // -- PostgreSQL
-  $sql = 'insert into chat_table (id, room, type) values ('.$cid.', \''.$room.'\', '.$chat_type.')';
-  $db->query($sql);
-  //$sid = mysql_insert_id();// MySQL
-  
-  // TODO
-  if(!$cid)
-    $db->rollback();
-  else
-    $db->commit();
-  
-  
-  if($ust_id){
-    $sql = 'insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'
-          .' values ('.$sid.', '.$cid.', 0, \''.$ust_id.'\',\''.$ust_no.'\')';
-    $db->query($sql);
-  }
-  if($jus_id){
-    $sql = 'insert into program_table (streamer_id, chat_id, type, ch_name)'
-          .' values ('.$sid.', '.$cid.', 1, \''.$jus_id.'\')';
-    $db->query($sql);
-  }
+  $manager->register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc);
   
 }
 
-if ( $_POST['mode'] ) {
+$message = '';
+if ( array_key_exists('mode', $_POST) ) {
   // TODO validation
   
   register_program();

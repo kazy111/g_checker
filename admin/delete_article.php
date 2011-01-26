@@ -2,18 +2,12 @@
 include '../header.php';
 // TOOD confirm
 
+if(!array_key_exists('id', $_GET)) exit();
 $id = $_GET['id'];
-if(!$id) exit();
 
-$sql = 'select id from article_table where id = '.$id;
-$result = $db->query($sql);
-$pids = array();
-
-while($arr = $db->fetch($result)){
-  $pids[$arr['id']] = 1;
-}
-foreach($pids as $k => $v){
-  $db->query('delete from article_table where id = '.$k);
+$result = $manager->get_article($id);
+if($result){
+  $manager->delete_article($id);
 }
 
 // redirect

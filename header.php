@@ -14,8 +14,6 @@ include_once 'classes/page.php';
 
 header('Content-type: text/html; charset=utf-8');
 
-$db = new DB($db_host, $db_name, $db_user, $db_passwd);
-
 $manager = new PostgreSQLDataManager($db_host, $db_name, $db_user, $db_passwd);
 
 $page = new Page();

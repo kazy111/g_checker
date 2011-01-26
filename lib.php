@@ -1,5 +1,10 @@
 <?php
 
+
+function get_key($array, $key){
+  return (array_key_exists($key, $array) ? $array[$key] : '');
+}
+
 function number_trim($str)
 {
   preg_match('/^([0-9]+).*$/', $str, $match);

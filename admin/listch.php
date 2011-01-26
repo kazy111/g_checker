@@ -2,12 +2,7 @@
 include '../header.php';
 
 
-$sql = 'select id, ch_name, type, streamer_id, chat_id from program_table order by id';
-$result = $db->query($sql);
-$list = array();
-while($arr = $db->fetch($result)){
-  $list[] = $arr;
-}
+$list = $manager->get_programs();
 
 // construct streamer output
 $contents_item = '';

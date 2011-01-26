@@ -25,10 +25,10 @@ interface IDataManager {
   function get_articles($pagesize, $page);
   function get_histories($streamer_id);
 
-  function set_streamer($id, $data);
-  function set_program($id, $data);
-  function set_chat($id, $data);
-  function set_article($id, $data);
+  function set_streamer($data);
+  function set_program($data);
+  function set_chat($data);
+  function set_article($data);
 
   function delete_streamer($streamer_id);
   function delete_program($program_id);
@@ -36,6 +36,7 @@ interface IDataManager {
   function delete_article($article_id);
 
   function initialize_db();
+  function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc);
 }
 
 ?>

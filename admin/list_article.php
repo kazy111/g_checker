@@ -2,12 +2,7 @@
 include '../header.php';
 
 
-$sql = 'select id, title, body, priority, created from article_table order by id';
-$result = $db->query($sql);
-$list = array();
-while($arr = $db->fetch($result)){
-  $list[] = $arr;
-}
+$list = $manager->get_articles();
 
 // construct streamer output
 $contents_item = '';

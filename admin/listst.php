@@ -1,13 +1,7 @@
 <?php
 include '../header.php';
 
-
-$sql = 'select id, name from streamer_table order by id';
-$result = $db->query($sql);
-$list = array();
-while($arr = $db->fetch($result)){
-  $list[] = $arr;
-}
+$list = $manager->get_streamers();
 
 // construct streamer output
 $contents_item = '';

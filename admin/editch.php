@@ -9,10 +9,8 @@ include '../header.php';
 // edit form & register
 // if no id, create new entry
 
-
-
 function get_form($id){
-  global $db, $service_assoc, $chat_assoc;
+  global $manager, $service_assoc, $chat_assoc;
 
   $type = 0;
   $ch_name = '';
@@ -22,32 +20,28 @@ function get_form($id){
 
   if($id){
     // get info from DB
-    $result = $db->query('select type, ch_name, optional_id, streamer_id, chat_id from program_table where id = '.$id);
+    $result = $manager->get_program($id);
     if($result){
-      $arr = $db->fetch($result);
-      $type = $arr['type'];
-      $ch_name = $arr['ch_name'];
-      $optional_id = $arr['optional_id'];
-      $streamer_id = $arr['streamer_id'];
-      $chat_id = $arr['chat_id'];
+      $type = $result['type'];
+      $ch_name = $result['ch_name'];
+      $optional_id = $result['optional_id'];
+      $streamer_id = $result['streamer_id'];
+      $chat_id = $result['chat_id'];
     }
   }
 
-  $result = $db->query('select id, name from streamer_table order by name');
+  $result = $manager->get_streamers();
   $assoc = array();
-  if($result){
-    while($arr = $db->fetch($result))
-      $assoc[$arr['id']] = $arr['name'];
-  }
+  foreach($result as $arr)
+    $assoc[$arr['id']] = $arr['name'];
   $sids_html = assoc2select($assoc, 'streamer_id', $streamer_id);
 
   
-  $result = $db->query('select id, type, room from chat_table order by room');
+  $result = $manager->get_chats();
   $assoc = array();
-  if($result){
-    while($arr = $db->fetch($result))
-      $assoc[$arr['id']] = $chat_assoc[$arr['type']].' '.$arr['room'];
-  }
+  foreach($result as $arr)
+    $assoc[$arr['id']] = $chat_assoc[$arr['type']].' '.$arr['room'];
+
   $cids_html = assoc2select($assoc, 'chat_id', $chat_id);
   
   $type_html = assoc2select($service_assoc, 'type', $type);
@@ -74,33 +68,20 @@ EOD;
 }
 
 function register_program(){
-  global $_POST, $db;
+  global $_POST, $manager;
 
-  if($_POST['id'] && $_POST['id']!=''){
-    // update
-    $db->query('update program_table set type = '.$_POST['type'].', ch_name = \''
-               .$_POST['ch_name'].'\', optional_id = \''.$_POST['optional_id']
-               .'\', streamer_id = '.$_POST['streamer_id']
-               .', chat_id = '.$_POST['chat_id']
-               .' where id='.$_POST['id']);
-  } else {
-    // create
-    $sql = 'insert into program_table (type, ch_name, optional_id, streamer_id, chat_id, viewer) values ('
-               .$_POST['type'].', \''.$_POST['ch_name'].'\', \''
-               .$_POST['optional_id'].'\', '.$_POST['streamer_id'].', '.$_POST['chat_id'].', 0)';
-    $db->query($sql);
-  }
+  $manager->set_program($_POST);
 }
 
 $contents = '';
-if ( $_POST['mode'] ) {
+if ( array_key_exists('mode', $_POST) ) {
   // TODO validation
   
   register_program();
   $contents .= '<span class="message">updated information</span>';
 }
 
-$contents .= get_form($_GET['id']);
+$contents .= get_form(get_key($_GET, 'id'));
 $data = array();
 $data['contents'] = $contents;
 $page->set('raw', $data);

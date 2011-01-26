@@ -2,12 +2,7 @@
 include '../header.php';
 
 
-$sql = 'select id, type, room from chat_table order by id';
-$result = $db->query($sql);
-$list = array();
-while($arr = $db->fetch($result)){
-  $list[] = $arr;
-}
+$list = $manager->get_chats();
 
 // construct streamer output
 $contents_item = '';

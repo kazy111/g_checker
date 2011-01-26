@@ -9,7 +9,7 @@ include '../header.php';
 // get args from post
 
 function view_form($id){
-  global $db;
+  global $manager;
   
   $name = '';
   $description = '';
@@ -19,15 +19,13 @@ function view_form($id){
   
   if($id){
     // get info from DB
-    // $name $descriptioin, twitter,
-    $result = $db->query('select id, name, description, twitter, url, wiki from streamer_table where id = '.$id);
+    $result = $manager->get_streamer($id);
     if($result){
-      $arr = $db->fetch($result);
-      $name = $arr['name'];
-      $description = $arr['description'];
-      $twitter = $arr['twitter'];
-      $url = $arr['url'];
-      $wiki = $arr['wiki'];
+      $name = $result['name'];
+      $description = $result['description'];
+      $twitter = $result['twitter'];
+      $url = $result['url'];
+      $wiki = $result['wiki'];
     }
   }
   // display form
@@ -53,32 +51,21 @@ EOD;
 }
 
 function register_streamer(){
-  global $_POST, $db;
+  global $_POST, $manager;
 
-  if($_POST['id'] && $_POST['id']!=''){
-    // update
-    $db->query('update streamer_table set name = \''
-               .$_POST['name'].'\', description = \''.$_POST['description']
-               .'\', twitter = \''.$_POST['twitter'].'\', url = \''
-               .$_POST['url'].'\', wiki = '.($_POST['wiki']&&$_POST['wiki']!='' ?$_POST['wiki']:'NULL' ).' where id='.$_POST['id']);
-  } else {
-    // create
-    $sql = 'insert into streamer_table (name, description, twitter, url, wiki) values (\''
-               .$_POST['name'].'\', \''.$_POST['description'].'\', \''
-               .$_POST['twitter'].'\', \''.$_POST['url'].'\', '.$_POST['wiki'].')';
-    $db->query($sql);
-  }
+  $manager->set_streamer($_POST);
+
 }
 
 $contents = '';
-if ( $_POST['mode'] ) {
+if ( array_key_exists('mode', $_POST) ) {
   // TODO validation
   
   register_streamer();
   $contents .= '<span class="message">updated information</span>';
 }
 
-$contents .= view_form($_GET['id']);
+$contents .= view_form(get_key($_GET, 'id'));
 $data = array();
 $data['contents'] = $contents;
 $page->set('raw', $data);
