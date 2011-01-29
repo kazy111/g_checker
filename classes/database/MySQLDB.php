@@ -37,8 +37,8 @@ class MySQLDB {
     mysql_close( $this->connect );
   }
  
-  function query( $SqlQuery ) {
-    $ret = mysql_query( $this->connect, $SqlQuery );
+  function query( $sql ) {
+    $ret = mysql_query( $this->connect, $sql );
     return $ret;
   }
 
@@ -55,7 +55,7 @@ class MySQLDB {
     return $ret;
   }
   function begin( ) {
-    mysql_query( $this->connect, 'begin' );
+    mysql_query( $this->connect, 'start transaction' );
   }
   function commit( ) {
     mysql_query( $this->connect, 'commit' );
@@ -72,10 +72,10 @@ class MySQLDB {
     return $field["server_version"];
   }
   
-  function query_ex( $SqlQuery='' ) {
+  function query_ex( $sql = '' ) {
     $ret = NULL;
-    if ( $SqlQuery != '' ) {
-      $result = $this->query( $SqlQuery );
+    if ( $sql != '' ) {
+      $result = $this->query( $sql );
       if ( $result ) {
         $ret = $this->fetch ( $result );
       }

@@ -326,7 +326,6 @@ class PostgreSQLDataManager implements IDataManager {
       // -- PostgreSQL
       $this->db->query('insert into streamer_table (id, name, description) values '
                  .'('.$sid.', \''.$name.'\', \''.$desc.'\')');
-      //$sid = mysql_insert_id();// MySQL
       
       // PostgreSQL
       $sql = 'select nextval(\'chat_table_id_seq\')';
@@ -335,7 +334,6 @@ class PostgreSQLDataManager implements IDataManager {
       // -- PostgreSQL
       $this->db->query('insert into chat_table (id, room, type) values '
                  .'('.$cid.', \''.$room.'\', '.$chat_type.')');
-      //$sid = mysql_insert_id();// MySQL
       
       if($ust_id){
         $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'

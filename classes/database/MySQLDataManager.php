@@ -43,7 +43,46 @@ class MySQLDataManager implements IDataManager {
     }
     return $list;
   }
+  function update_chat($cid, $member, $topic){
+    $sql = 'update chat_table set member='.$member
+          .' , topic=\''.$topic.'\' where id='.$cid;
+    $ret = $this->db->query($sql);
+  }
+  
+  function update_program($pid, $live, $viewer, $change_flag, $thumb){
+    $sql_live = $live ? 'TRUE' : 'FALSE';
+    // construct time SQL
+    $sql_time = '';
+    if($change_flag){
+      $now = date('Y-m-d H:i:s');
+      if($live){
+        $sql_time = ', start_time = \''.$now.'\' ';
+      }else{
+        $sql_time = ', end_time = \''.$now.'\' ';
+        // TODO add history
+      }
+    }
+    $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
+          . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 where id = '.$pid;
+    $this->db->query($sql);
+  }
 
+  function increment_offline_count($pid){
+    $sql = 'update program_table set offline_count = offline_count + 1 where id = '.$pid;
+    $this->db->query($sql);
+  }
+  
+  function add_history($pid, $start_time, $end_time) {
+    try{
+      $sql = 'insert into  history_table (program_id, start_time, end_time) '
+        .' values ('.$pid.', \''.$start_time.'\', \''.$end_time.'\')';
+      log_print($sql);
+      $this->db->query($sql);
+    } catch (Exception $e) {
+      print("例外キャッチ：". $e->getMessage(). "\n");
+    }
+  }
+  
   function get_streamer($streamer_id){
     return $this->db->query_ex('select id, name, description, twitter, url, wiki from streamer_table where id = '.$streamer_id.'');
   }
@@ -88,9 +127,11 @@ class MySQLDataManager implements IDataManager {
     return $list;
   }
 
-  function get_articles($pagesize, $page){
+  function get_articles($pagesize = NULL, $page = 0){
     $sql = 'select id, title, body, priority, created from article_table '
-      .' order by priority desc, created desc limit '.$pagesize.' offset '.($pagesize * $page).';';
+          .' order by priority desc, created desc';
+    if($pagesize)
+      $sql .= ' limit '.$pagesize.' offset '.($pagesize * $page).';';
     $result = $this->db->query($sql);
     $list = array();
     while(($arr = $this->db->fetch($result)) != NULL ){
@@ -124,23 +165,23 @@ class MySQLDataManager implements IDataManager {
                        .$data['url'].'\', wiki = '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' ).' where id='.$data['id']);
     }
   }
-  function set_program($id, $data){
+  function set_program($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into program_table (type, ch_name, optional_id, streamer_id, chat_id, viewer) values ('
-                 .$data['type'].', \''.$data['ch_name'].'\', \''
-                 .$data['optional_id'].'\', '.$data['streamer_id'].', '.$data['chat_id'].', 0)');
+                       .$data['type'].', \''.$data['ch_name'].'\', \''
+                       .$data['optional_id'].'\', '.$data['streamer_id'].', '.$data['chat_id'].', 0)');
     } else {
       // update
       $this->db->query('update program_table set type = '.$data['type'].', ch_name = \''
-                 .$data['ch_name'].'\', optional_id = \''.$data['optional_id']
-                 .'\', streamer_id = '.$data['streamer_id']
-                 .', chat_id = '.$data['chat_id']
-                 .' where id='.$data['id']);
+                       .$data['ch_name'].'\', optional_id = \''.$data['optional_id']
+                       .'\', streamer_id = '.$data['streamer_id']
+                       .', chat_id = '.$data['chat_id']
+                       .' where id='.$data['id']);
     }
   }
   
-  function set_chat($id, $data){
+  function set_chat($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into chat_table (type, room, member) values ('
@@ -152,7 +193,7 @@ class MySQLDataManager implements IDataManager {
     }
   }
   
-  function set_article($id, $data){
+  function set_article($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $now = date('Y-m-d H:i:s');
@@ -268,6 +309,36 @@ class MySQLDataManager implements IDataManager {
                      .'created TIMESTAMP,'
                      .'priority SMALLINT,'
                      .'PRIMARY KEY(id))');
+  }
+
+  
+  
+  function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc){
+    $this->db->begin();
+
+    try{
+      $this->db->query('insert into streamer_table (id, name, description) values '
+                 .'('.$sid.', \''.$name.'\', \''.$desc.'\')');
+      $sid = mysql_insert_id();// MySQL
+      
+      $this->db->query('insert into chat_table (id, room, type) values '
+                 .'('.$cid.', \''.$room.'\', '.$chat_type.')');
+      $sid = mysql_insert_id();// MySQL
+      
+      if($ust_id){
+        $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'
+                         .' values ('.$sid.', '.$cid.', 0, \''.$ust_id.'\',\''.$ust_no.'\')');
+      }
+      if($jus_id){
+        $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name)'
+                         .' values ('.$sid.', '.$cid.', 1, \''.$jus_id.'\')');
+      }
+      
+      $this->db->commit();
+    }catch(Exception $e){
+      $this->db->rollback();
+    }
+    
   }
 }
 
