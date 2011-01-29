@@ -100,6 +100,10 @@ div.navigation {
 #view #movie {
   float: left;
 }
+#view #emovie {
+  background-color: black;
+}
+
 #article{
   margin: auto;
   width: 90%;

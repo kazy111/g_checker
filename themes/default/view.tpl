@@ -12,6 +12,11 @@ var enable_chat = 1;
 
 width = ReadCookie('w');  if(width == '')  width = 500;
 height = ReadCookie('h'); if(height == '') height = 400;
+// ustream bar size = 25
+size = [ [375,295,'x0.75' ], [512,385,'x1.00'], [640,505,'x1.25'], [720,565,'x1.50'], [840,655,'x1.75'], [1024,745,'x2.00'],
+         [384,241,'x0.75 wide' ], [512,313,'x1.00 wide'], [640,385,'x1.25 wide'], [768,457,'x1.50 wide'], [896,529,'x1.75 wide'], [1024,601,'x2.00 wide'],
+         [480, 82, '17:2']];
+
 enable_chat = ReadCookie('enable_chat');
 if(enable_chat == '')
    enable_chat = 1;
@@ -57,7 +62,7 @@ function select(pid)
   }
   if(enable_chat && cur_cid != t.cid){
     var c = c_data[t.cid];
-    var _w = width*0.75; if(_w<320)_w = 320;
+    var _w = height*0.75; if(_w<320)_w = 320;
     switch(c.type){
       case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
       case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
@@ -89,6 +94,12 @@ function mibbitChat()
   loadWebChatMibbit(cboxid, c.room, width*0.75, height);
 }
 
+function resize_select(str)
+{
+  var x = str.split(',');
+  resize(x[0], x[1]);
+}
+
 function resize(w, h)
 {
   width = w; height = h;
@@ -102,7 +113,8 @@ function resize(w, h)
   if(t){
     t.style.top = '-'+h;
     t = t.childNodes[0];
-    var _w = width*0.75; if(_w<320)_w = 320;
+    // var _w = width*0.75; if(_w<320)_w = 320;
+    var _w = height*0.75; if(_w<320)_w = 320;
     if(t){ t.width = _w; t.height = h;  }
   }
   WriteCookie('w', w, 90);
@@ -174,12 +186,10 @@ function ReadCookie(key) {
 <br />
 
 <div class="navigation" id="resize">
-  サイズ変更: 
-<a href="javascript:resize(375,300)">x0.75</a>
-　<a href="javascript:resize(500,400)">x1</a>
-　<a href="javascript:resize(625,500)">x1.25</a>
-　<a href="javascript:resize(750,600)">x1.5</a>
-</div>
+  サイズ変更:
+<select id="resize_select" onchange="resize_select(this.options[this.selectedIndex].value)">
+</select>
+
 </div>
 
 <div class="navigation" id="link">
@@ -191,6 +201,17 @@ function ReadCookie(key) {
   テーマ変更: {$theme_data}</div>
 
 <script type="text/javascript">
+
+var sel  = document.getElementById('resize_select');
+for(var i = 0; i < size.length; i++){
+  var o = document.createElement('option');
+  var s = size[i];
+  o.value = s[0]+','+s[1];
+  o.label = s[2];
+  o.innerHTML = s[2];
+  if(width == s[0] && height == s[1]) o.selected = 'selected';
+  sel.appendChild(o);
+}
 
 add_select();
 select({$first_id});
