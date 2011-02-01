@@ -16,7 +16,7 @@ function fold_numbers($arrs, $key, $value)
   $hash = array();
   $ret = 0;
   foreach($arrs as $k => $v){
-    if(!$hash[$v[$key]]){
+    if(!array_key_exists($v[$key], $hash)){
       $ret += $v[$value];
       $hash[$v[$key]] = true;
     }
@@ -72,31 +72,36 @@ function get_streamer_data($arrs)
       $thumb = '<img src="'.$v['thumbnail'].'" width="320" height="240" class="thumb"/>';
       switch($v['type']){
       case 0: //ustream
-        if(!$live_thumb){ $live_thumb = $v['thumbnail']; }
+        if(!isset($live_thumb)){ $live_thumb = $v['thumbnail']; }
         $ch_ust = $v['optional_id'];
         $ch_v = 1;
-        $programs .= '<a href="http://www.ustream.tv/channel/'.$v['ch_name'].'">'.Ust.$thumb.'</a> ';
+        $programs .= '<a href="http://www.ustream.tv/channel/'.$v['ch_name'].'">Ust'.$thumb.'</a> ';
         break;
       case 1: // justin
         $live_thumb = $v['thumbnail'];
         $ch_jus = $v['ch_name'];
         $ch_v = 3;
-        $programs .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">'.Jst.$thumb.'</a> ';
+        $programs .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">Jst'.$thumb.'</a> ';
         break;
       }
       $ch_chat = substr($v['room'],1);
     }else {
-      if(!$live_thumb) $live_thumb = $v['thumbnail'];
+      if(!isset($live_thumb)) $live_thumb = $v['thumbnail'];
       switch($v['type']){
       case 0: //ustream
-        if(!$ch_ust) $ch_ust = $v['optional_id'];  break;
+        if(!isset($ch_ust)) $ch_ust = $v['optional_id'];  break;
       case 1: // justin
-        if(!$ch_jus) $ch_jus = $v['ch_name']; break;
+        if(!isset($ch_jus)) $ch_jus = $v['ch_name']; break;
       }
-      if(!$ch_chat) $ch_chat = substr($v['room'],1);
+      if(!isset($ch_chat)) $ch_chat = substr($v['room'],1);
       $etime = $etime < strtotime($v['end_time']) ? strtotime($v['end_time']) : $etime;
     }
   }
+
+  if(!isset($live_thumb)) $live_thumb = '';
+  if(!isset($ch_ust))  $ch_ust = '';
+  if(!isset($ch_jus))  $ch_jus = '';
+  if(!isset($ch_chat)) $ch_chat = '';
   
   $i = $arrs[0];
 
@@ -272,18 +277,8 @@ function display_list($sort)
     }
   }
   
-  global $db;
-  $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, wiki, twitter, '
-        .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail'
-        .' from streamer_table as s, program_table as p, chat_table as c '
-        .' where s.id = p.streamer_id '
-        .' and c.id = p.chat_id order by sid, pid;';
-  $result = $db->query($sql);
-  $list = array();
-  while($arr = $db->fetch($result)){
-    if(!$list[$arr['sid']]) $list[$arr['sid']] = array();
-    $list[$arr['sid']][] = $arr;
-  }
+  global $manager;
+  $list = $manager->get_index_datas();
 
   $streamer_data = array();
   $live_num  = 0;
@@ -336,15 +331,13 @@ function display_list($sort)
 
   $contents_sort = assoc2select($GLOBALS['sort_assoc'], 'sort', $sort)
       .'<input type="button" value="変更" onclick="WriteCookie(\'sort\', document.getElementById(\'sort\').options[document.getElementById(\'sort\').selectedIndex].value, 90);location.reload();" />';
-
   
-  $sql = 'select id, title, body, priority, created from article_table '
-        .' order by priority desc, created desc limit 5;';
-  $result = $db->query($sql);
+  $result = $manager->get_articles(5, 0);
   $contents_article = '';
-  while(($arr = $db->fetch($result)) != NULL ){
+  foreach($result as $arr){
     $contents_article .= $page->get_once('article', $arr);
   }
+
 
   // output page contents
   $data = new Dwoo_Data();
@@ -365,7 +358,7 @@ function display_list($sort)
 $extra =  '';
 
 $sort = 'random'; // viewer, time
-if($_COOKIE['sort'] && array_key_exists($_COOKIE['sort'], $sort_assoc))
+if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sort_assoc))
   $sort = $_COOKIE['sort'];
 $page->theme = '_mobile';
 $page->set('index'.$extra, display_list($sort));
