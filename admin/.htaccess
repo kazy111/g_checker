@@ -1,5 +1,17 @@
-AuthType Digest
+#AuthType Digest
+#AuthName "admin only"
+#AuthDigestDomain /checker/admin/
+## full path to .htdigest file
+#AuthUserFile /home/kazy/g_checker.htdigest
+
+AuthType Basic
 AuthName "admin only"
 AuthDigestDomain /checker/admin/
-AuthUserFile /home/kazy/g_checker.htdigest
+# full path to .htpasswd file
+AuthUserFile /home/kazy/public_html/checker/admin/.htpasswd
+
 require valid-user
+
+<Files ~ "^.(htpasswd|htaccess|htdigest)$">
+    deny from all
+</Files>

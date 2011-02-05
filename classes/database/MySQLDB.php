@@ -27,7 +27,7 @@ class MySQLDB {
     $this->connect = mysql_connect($this->Server,
                                    $this->User,
                                    $this->Password);
-    if(!mysql_select_db($this->DBName)){
+    if(!mysql_select_db($this->DbName)){
       // error
     }
     //$this->query_ex( "SET CLIENT_ENCODING TO 'SJIS'" );
@@ -38,7 +38,7 @@ class MySQLDB {
   }
  
   function query( $sql ) {
-    $ret = mysql_query( $this->connect, $sql );
+    $ret = mysql_query( $sql, $this->connect );
     return $ret;
   }
 
@@ -50,18 +50,18 @@ class MySQLDB {
     mysql_free_result($result);
   }
   
-  function execute( $SqlExec ) {
-    $ret = mysql_query( $this->connect, $SqlExec );
+  function execute( $sql ) {
+    $ret = mysql_query( $sql, $this->connect );
     return $ret;
   }
   function begin( ) {
-    mysql_query( $this->connect, 'start transaction' );
+    mysql_query( 'start transaction', $this->connect );
   }
   function commit( ) {
-    mysql_query( $this->connect, 'commit' );
+    mysql_query( 'commit', $this->connect );
   }
   function rollback( ) {
-    mysql_query( $this->connect, 'rollback' );
+    mysql_query( 'rollback', $this->connect );
   }
   function sanitize($text){
     return mysql_escape_string($text);
@@ -77,7 +77,7 @@ class MySQLDB {
     if ( $sql != '' ) {
       $result = $this->query( $sql );
       if ( $result ) {
-        $ret = $this->fetch ( $result );
+        $ret = $this->fetch( $result );
       }
       $this->free_result($result);
     }

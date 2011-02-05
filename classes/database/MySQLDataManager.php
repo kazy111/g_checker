@@ -151,7 +151,7 @@ class MySQLDataManager implements IDataManager {
     return $list;
   }
 
-  function set_streamer($id, $data){
+  function set_streamer($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into streamer_table (name, description, twitter, url, wiki) values (\''
@@ -317,13 +317,13 @@ class MySQLDataManager implements IDataManager {
     $this->db->begin();
 
     try{
-      $this->db->query('insert into streamer_table (id, name, description) values '
-                 .'('.$sid.', \''.$name.'\', \''.$desc.'\')');
+      $this->db->query('insert into streamer_table (name, description) values '
+                 .'(\''.$name.'\', \''.$desc.'\')');
       $sid = mysql_insert_id();// MySQL
       
-      $this->db->query('insert into chat_table (id, room, type) values '
-                 .'('.$cid.', \''.$room.'\', '.$chat_type.')');
-      $sid = mysql_insert_id();// MySQL
+      $this->db->query('insert into chat_table (room, type) values '
+                 .'(\''.$room.'\', '.$chat_type.')');
+      $cid = mysql_insert_id();// MySQL
       
       if($ust_id){
         $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'

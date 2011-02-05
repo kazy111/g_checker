@@ -152,7 +152,9 @@ function check_ustream()
 
 function start_tweet($data)
 {
-  global $site_url;
+  global $site_url, $tweet_start;
+  if(! $tweet_start) return;
+  
   $str = $data['name'].'配信開始！／';
   $hash = ' #g_checker';
   $time = date(' [H:i]');
@@ -169,6 +171,9 @@ function start_tweet($data)
 
 function end_tweet($data)
 {
+  global $tweet_end;
+  if(! $tweet_end) return;
+  
   $str = $data['name'].'配信終了…／';
   $hash = ' #g_checker';
   $time = date(' [H:i]');
