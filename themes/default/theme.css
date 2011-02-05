@@ -52,3 +52,16 @@ h1{
 .article_title:before {
   content: "+ ";
 }
+
+.main {
+  padding: 10px;
+}
+.contents {
+  word-wrap: break-word;
+  padding: 5px;
+}
+
+.footer {
+  text-align: center;
+  padding: 1em;
+}

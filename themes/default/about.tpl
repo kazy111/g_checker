@@ -13,8 +13,8 @@
 機能的にはテーマ切り替えによる見た目の変更などが特色です。
 
 <p>
-またソースコードを<a href="https://github.com/kazy111/g_checker">Github</a>で公開しています。
-動作環境は今のところPHP5+PostgreSQLです。そのうちMySQLにも対応する予定です。
+またソースコードを<a href="https://github.com/kazy111/g_checker/wiki">Github</a>で公開しています。
+動作環境は今のところPHP5 + MySQL or PostgreSQLです。設置方法などはリンク先へ。
 
 <p>
 ご意見、ご要望、依頼等があれば<a href="contact.php">問合せフォーム</a>か<a href="http://twitter.com/kazy111">じゃわてぃー</a>まで。
