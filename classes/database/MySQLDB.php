@@ -27,7 +27,7 @@ class MySQLDB {
     $this->connect = mysql_connect($this->Server,
                                    $this->User,
                                    $this->Password);
-    if(!mysql_select_db($this->DbName)){
+    if(!mysql_select_db($this->DbName, $this->connect)){
       // error
     }
     //$this->query_ex( "SET CLIENT_ENCODING TO 'SJIS'" );
