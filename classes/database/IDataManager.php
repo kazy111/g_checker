@@ -22,7 +22,7 @@ interface IDataManager {
   function get_streamers();
   function get_programs();
   function get_chats();
-  function get_articles($pagesize, $page);
+  function get_articles($pagesize = NULL, $page = 0);
   function get_histories($streamer_id);
 
   function set_streamer($data);
