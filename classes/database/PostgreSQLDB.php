@@ -44,11 +44,15 @@ class PostgreSQLDB {
   }
 
   function fetch( $result ) {
-    return pg_fetch_assoc( $result );
+    if( $result )
+      return pg_fetch_assoc( $result );
+    else
+      return NULL;
   }
 
   function free_result( $result ){
-    pg_free_result($result);
+    if( $result )
+      pg_free_result($result);
   }
   
   function execute( $SqlExec ) {

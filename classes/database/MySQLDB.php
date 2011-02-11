@@ -43,11 +43,15 @@ class MySQLDB {
   }
 
   function fetch( $result ) {
-    return mysql_fetch_assoc( $result );
+    if( $result )
+      return mysql_fetch_assoc( $result );
+    else
+      return NULL;
   }
 
   function free_result( $result ){
-    mysql_free_result($result);
+    if( $result )
+      mysql_free_result($result);
   }
   
   function execute( $sql ) {
