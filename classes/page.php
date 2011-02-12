@@ -50,6 +50,11 @@ class Page{
 
     return $tpl;
   }
+  function get_safe_contents($dwoo, $tpl, $data){
+    $tplfile = $this->get_template($tpl);
+    $hash = hash('md5', $tplfile);
+    return $dwoo->get(new Dwoo_Template_SafeFile($tplfile, 0, $hash, $hash), $data);
+  }
   function get_themes(){
     $themes = array();
     if( is_dir($this->theme_dir) ){
@@ -75,6 +80,7 @@ class Page{
     $dwoo = new Dwoo();
     $data = new Dwoo_Data();
     $this->header[] = '<link rel="stylesheet" type="text/css" href="'.$this->get_css().'" />';
+    $this->header[] = '<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />';
     $data->assign('site_url', $GLOBALS['site_url']);
     $data->assign('file_path', $GLOBALS['file_path']);
     $data->assign('curr_time', time());
@@ -83,6 +89,7 @@ class Page{
     $ret = '';
     
     $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template(is_mobile()?'header_mobile':'header')), $data);
+    //$ret .= $this->get_safe_contents($dwoo, is_mobile()?'header_mobile':'header', $data);
 
     if($this->data){
       if(is_array($this->data)){
@@ -96,14 +103,17 @@ class Page{
       }
     }
     $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template($this->pname)), $this->data);
-
     $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template('footer')), $data);
+    //$ret .= $this->get_safe_contents($dwoo, $this->pname, $this->data);
+    //$ret .= $this->get_safe_contents($dwoo, 'footer', $data);
+    
     return $ret;
   }
   function get_once($page, $data)
   {
     $dwoo = new Dwoo();
     return $dwoo->get(new Dwoo_Template_File($this->get_template($page)), $data);
+    //return $this->get_safe_contents($dwoo, $page, $data);
   }
   function output()
   {
