@@ -213,7 +213,7 @@ class MySQLDataManager implements IDataManager {
     try{
       $sql = 'select c.id as id '
           .' from streamer_table as s, program_table as p, chat_table as c '
-          .' where s.id = '.$id.' and  s.id = p.streamer_id and c.id = p.chat_id';
+          .' where s.id = '.$streamer_id.' and  s.id = p.streamer_id and c.id = p.chat_id';
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
         $this->delete_chat($arr['id']);
@@ -221,13 +221,13 @@ class MySQLDataManager implements IDataManager {
 
       $sql = 'select p.id as id '
           .' from streamer_table as s, program_table as p '
-          .' where s.id = '.$id.' and  s.id = p.streamer_id';
+          .' where s.id = '.$streamer_id.' and  s.id = p.streamer_id';
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
         $this->delete_program($arr['id']);
       }
 
-      $sql = 'select id from streamer_table where id = '.$id;
+      $sql = 'select id from streamer_table where id = '.$streamer_id;
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
         $this->db->query('delete from streamer_table where id = '.$arr['id']);
@@ -265,20 +265,20 @@ class MySQLDataManager implements IDataManager {
   function initialize_db() {
     $this->db->query('CREATE TABLE streamer_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
-                     .'name VARCHAR(255),'
+                     .'name TEXT,'
                      .'description TEXT,'
                      .'twitter VARCHAR(255),'
-                     .'url VARCHAR(255),'
+                     .'url TEXT,'
                      .'wiki INT,'
                      .'PRIMARY KEY (id))');
 
     $this->db->query('CREATE TABLE program_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
                      .'type SMALLINT,'
-                     .'ch_name VARCHAR(255),'
+                     .'ch_name TEXT,'
                      .'optional_id VARCHAR(255),'
                      .'thumbnail TEXT,'
-                     .'live BOOLEAN,'
+                     .'live BOOL,'
                      .'start_time TIMESTAMP,'
                      .'end_time TIMESTAMP,'
                      .'viewer INT,'
@@ -290,8 +290,8 @@ class MySQLDataManager implements IDataManager {
     $this->db->query('CREATE TABLE chat_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
                      .'type SMALLINT,'
-                     .'topic VARCHAR(512),'
-                     .'room VARCHAR(255),'
+                     .'topic TEXT,'
+                     .'room TEXT,'
                      .'member INT,'
                      .'PRIMARY KEY(id))');
     

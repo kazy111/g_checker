@@ -6,16 +6,6 @@ include '../header.php';
 // edit form & register
 // if no id, create new entry
 
-function display_form(){
-  global $dwoo;
-
-  $data = array();
-  $data['ctype_html'] = assoc2select($chat_assoc, 'chat_type', 0);
-  
-  $tpl = new Dwoo_Template_File('templates/regist_db.tpl');
-  $dwoo->output($tpl, $data);
-  
-}
 
 function register_program(){
   global $_POST, $manager;
