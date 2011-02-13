@@ -37,15 +37,27 @@ $ontop = array();
 $ontop[] = 2;
 $ontop[] = 60;
 $ontop[] = 61;
-// timezone
-date_default_timezone_set('Asia/Tokyo');
 
 
 /* twitter 投稿設定 */
+// http://dev.twitter.com/apps あたりでアプリ作成して取得のこと
+// Consumer key
+$consumer_key = '';
+// Consumer Secret
+$consumer_secret = '';
+$oauth_access_token = '';
+$oauth_access_token_secret = '';
+
 // 配信開始時につぶやくか
-$tweet_start = TRUE;
+$tweet_start = FALSE;
 // 配信終了時につぶやくか
-$tweet_end   = TRUE;
+$tweet_end   = FALSE;
+// つぶやくときの末尾
+$tweet_footer = ' #g_checker';
+
+
+// timezone
+date_default_timezone_set('Asia/Tokyo');
 
 // 獄卒ch専用の処理を行うか
 $gokusotsu = TRUE;
