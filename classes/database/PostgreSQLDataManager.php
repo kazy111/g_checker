@@ -287,7 +287,7 @@ class PostgreSQLDataManager implements IDataManager {
                      .'viewer INT,'
                      .'streamer_id INT,'
                      .'chat_id INT,'
-                     .'live_count INT DEFAULT 0,'
+                     .'offline_count INT DEFAULT 0,'
                      .'PRIMARY KEY (id))');
     
     $this->db->query('CREATE TABLE chat_table ('

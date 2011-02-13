@@ -24,6 +24,7 @@ class MySQLDataManager implements IDataManager {
     $list = array();
     while($arr = $this->db->fetch($result)){
       if(!array_key_exists($arr['sid'], $list)) $list[$arr['sid']] = array();
+      $arr['live'] = ($arr['live'] || $arr['live'] == 1) ? TRUE : FALSE;
       $list[$arr['sid']][] = $arr;
     }
     
@@ -50,7 +51,7 @@ class MySQLDataManager implements IDataManager {
   }
   
   function update_program($pid, $live, $viewer, $change_flag, $thumb){
-    $sql_live = $live ? 'TRUE' : 'FALSE';
+    $sql_live = $live ? '1' : '0';
     // construct time SQL
     $sql_time = '';
     if($change_flag){
@@ -64,6 +65,7 @@ class MySQLDataManager implements IDataManager {
     }
     $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
           . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 where id = '.$pid;
+    print($sql);
     $this->db->query($sql);
   }
 
@@ -284,7 +286,7 @@ class MySQLDataManager implements IDataManager {
                      .'viewer INT,'
                      .'streamer_id INT,'
                      .'chat_id INT,'
-                     .'live_count INT DEFAULT 0,'
+                     .'offline_count INT DEFAULT 0,'
                      .'PRIMARY KEY (id))');
     
     $this->db->query('CREATE TABLE chat_table ('

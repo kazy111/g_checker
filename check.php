@@ -103,7 +103,7 @@ function check_ustream()
         $login = $res->result->user->userName;
         $name = ''.$res->uid;
         $pid = $hash[$name];
-        $change_flag = ($chs[$pid]['live']=='t') ^ $live_st;
+        $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
         $viewer = $live_st ? get_ustream_member($login, $res->result->id) : 0;
         $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$res->result->id.'_160x120_b.jpg';
         if($live_st || $change_flag){
@@ -126,7 +126,7 @@ function check_ustream()
       $login = $xml->results->user->userName;
       $name = $v[0];
       $pid = $hash[$name];
-      $change_flag = ($chs[$pid]['live']=='t') ^ $live_st;
+      $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
       $viewer = $live_st ? get_ustream_member($login, $xml->results->id) : 0;
       $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$xml->results->id.'_160x120_b.jpg';
       if($live_st || $change_flag)
@@ -277,7 +277,7 @@ function check_justin()
       if($name == '') continue; // error
       $viewer = $res->stream_count;
       $pid = $hash[$name];
-      $change_flag = $chs[$pid]['live'] != 't';
+      $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0';
       $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
       
       $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
@@ -290,7 +290,7 @@ function check_justin()
   }
   
   foreach($live as $k => $v){
-    if( $v == 0 && $chs[$k]['live']=='t' ){
+    if( $v == 0 && ($chs[$k]['live']=='t' || $chs[$k]['live']=='1') ){
       if(intval($chs[$k]['offline_count']) > 1){
         //$thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
         
