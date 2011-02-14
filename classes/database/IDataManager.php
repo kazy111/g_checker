@@ -36,6 +36,7 @@ interface IDataManager {
   function delete_article($article_id);
 
   function initialize_db();
+  function delete_db();
   function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc);
 }
 

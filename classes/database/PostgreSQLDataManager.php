@@ -313,7 +313,14 @@ class PostgreSQLDataManager implements IDataManager {
                      .'priority SMALLINT,'
                      .'PRIMARY KEY(id))');
   }
-
+  
+  function delete_db(){
+    $this->db->query('drop table streamer_table;');
+    $this->db->query('drop table program_table;');
+    $this->db->query('drop table chat_table;');
+    $this->db->query('drop table history_table;');
+    $this->db->query('drop table article_table;');
+  }
   
   function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc){
     $this->db->begin();
