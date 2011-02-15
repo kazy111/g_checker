@@ -264,8 +264,16 @@ class MySQLDataManager implements IDataManager {
     return $flag;
   }
 
+  function try_query($sql){
+    if( $this->db->query($sql) ){
+      print '<b>success:</b> '.$sql."<br>\n";
+    }else{
+      print '<span style="color: red;"><b>fail:</b> '.$sql."</span><br>\n";
+    }
+  }
+
   function initialize_db() {
-    $this->db->query('CREATE TABLE streamer_table ('
+    $this->try_query('CREATE TABLE streamer_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
                      .'name TEXT,'
                      .'description TEXT,'
@@ -274,7 +282,7 @@ class MySQLDataManager implements IDataManager {
                      .'wiki INT,'
                      .'PRIMARY KEY (id))');
 
-    $this->db->query('CREATE TABLE program_table ('
+    $this->try_query('CREATE TABLE program_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
                      .'type SMALLINT,'
                      .'ch_name TEXT,'
@@ -289,7 +297,7 @@ class MySQLDataManager implements IDataManager {
                      .'offline_count INT DEFAULT 0,'
                      .'PRIMARY KEY (id))');
     
-    $this->db->query('CREATE TABLE chat_table ('
+    $this->try_query('CREATE TABLE chat_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
                      .'type SMALLINT,'
                      .'topic TEXT,'
@@ -297,14 +305,14 @@ class MySQLDataManager implements IDataManager {
                      .'member INT,'
                      .'PRIMARY KEY(id))');
     
-    $this->db->query('CREATE TABLE history_table ('
+    $this->try_query('CREATE TABLE history_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
                      .'program_id INT NOT NULL,'
                      .'start_time TIMESTAMP,'
                      .'end_time TIMESTAMP,'
                      .'PRIMARY KEY(id))');
     
-    $this->db->query('CREATE TABLE article_table ('
+    $this->try_query('CREATE TABLE article_table ('
                      .'id INT NOT NULL AUTO_INCREMENT,'
                      .'title TEXT,'
                      .'body TEXT,'
@@ -314,11 +322,11 @@ class MySQLDataManager implements IDataManager {
   }
 
   function delete_db(){
-    $this->db->query('drop table streamer_table;');
-    $this->db->query('drop table program_table;');
-    $this->db->query('drop table chat_table;');
-    $this->db->query('drop table history_table;');
-    $this->db->query('drop table article_table;');
+    $this->try_query('drop table streamer_table;');
+    $this->try_query('drop table program_table;');
+    $this->try_query('drop table chat_table;');
+    $this->try_query('drop table history_table;');
+    $this->try_query('drop table article_table;');
   }
   
   function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc){
