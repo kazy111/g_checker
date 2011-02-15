@@ -185,6 +185,7 @@ class PostgreSQLDataManager implements IDataManager {
   }
   
   function set_chat($data){
+
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
       $this->db->query('insert into chat_table (type, room, member) values ('
@@ -214,12 +215,15 @@ class PostgreSQLDataManager implements IDataManager {
     $this->db->begin();
 
     try{
-      $sql = 'select c.id as id '
+      $sql = 'select c.id as cid, p.id as pid '
           .' from streamer_table as s, program_table as p, chat_table as c '
           .' where s.id = '.$id.' and  s.id = p.streamer_id and c.id = p.chat_id';
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
-        $this->delete_chat($arr['id']);
+        $tmp = $this->db->query_ex('select id from program_table where chat_id = '.$arr['cid'].' and id <> '.$arr['pid']);
+        // if unused chat, then delete
+        if(is_null($tmp)  || !is_numeric($tmp['id']))
+          $this->delete_chat($arr['cid']);
       }
 
       $sql = 'select p.id as id '
@@ -343,12 +347,17 @@ class PostgreSQLDataManager implements IDataManager {
                  .'('.$sid.', \''.$name.'\', \''.$desc.'\')');
       
       // PostgreSQL
-      $sql = 'select nextval(\'chat_table_id_seq\')';
-      $arr = $this->db->query_ex($sql);
-      $cid = $arr['nextval']; // TODO => create get_sequence_id?
-      // -- PostgreSQL
-      $this->db->query('insert into chat_table (id, room, type) values '
-                 .'('.$cid.', \''.$room.'\', '.$chat_type.')');
+      $tmp = $this->db->query_ex('select id from chat_id where type='
+                                 .$chat_type.' and room=\''.$room.'\'');
+      if(is_null($tmp) || !is_numeric($tmp['id'])){
+        $arr = $this->db->query_ex('select nextval(\'chat_table_id_seq\')');
+        $cid = $arr['nextval']; // TODO => create get_sequence_id?
+        // -- PostgreSQL
+        $this->db->query('insert into chat_table (id, room, type) values '
+                         .'('.$cid.', \''.$room.'\', '.$chat_type.')');
+      }else{
+        $cid = $tmp['id'];
+      }
       
       if($ust_id){
         $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'

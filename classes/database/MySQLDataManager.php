@@ -24,7 +24,7 @@ class MySQLDataManager implements IDataManager {
     $list = array();
     while($arr = $this->db->fetch($result)){
       if(!array_key_exists($arr['sid'], $list)) $list[$arr['sid']] = array();
-      $arr['live'] = ($arr['live'] || $arr['live'] == 1) ? TRUE : FALSE;
+      $arr['live'] = ($arr['live'] || $arr['live'] == 1) ? 't' : 'f';
       $list[$arr['sid']][] = $arr;
     }
     
@@ -193,6 +193,7 @@ class MySQLDataManager implements IDataManager {
       $this->db->query('update chat_table set type = '.$data['type'].', room = \''
                        .$data['room'].'\' where id='.$data['id']);
     }
+    return NULL;
   }
   
   function set_article($data){
@@ -213,12 +214,15 @@ class MySQLDataManager implements IDataManager {
     $this->db->begin();
 
     try{
-      $sql = 'select c.id as id '
+      $sql = 'select c.id as cid, p.id as pid '
           .' from streamer_table as s, program_table as p, chat_table as c '
           .' where s.id = '.$streamer_id.' and  s.id = p.streamer_id and c.id = p.chat_id';
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
-        $this->delete_chat($arr['id']);
+        $tmp = $this->db->query_ex('select id from program_table where chat_id = '.$arr['cid'].' and id <> '.$arr['pid']);
+        // if unused chat, then delete
+        if( is_null($tmp) || !is_numeric($tmp['id']) )
+          $this->delete_chat($arr['cid']);
       }
 
       $sql = 'select p.id as id '
@@ -334,12 +338,17 @@ class MySQLDataManager implements IDataManager {
 
     try{
       $this->db->query('insert into streamer_table (name, description) values '
-                 .'(\''.$name.'\', \''.$desc.'\')');
+                       .'(\''.$name.'\', \''.$desc.'\')');
       $sid = mysql_insert_id();// MySQL
       
-      $this->db->query('insert into chat_table (room, type) values '
-                 .'(\''.$room.'\', '.$chat_type.')');
-      $cid = mysql_insert_id();// MySQL
+      $tmp = $this->db->query_ex('select id from chat_table where type='
+                                 .$chat_type.' and room=\''.$room.'\'');
+      if(is_null($tmp) || !is_numeric($tmp['id'])){
+        $this->db->query('insert into chat_table (room, type) values '
+                         .'(\''.$room.'\', '.$chat_type.')');
+        $cid = mysql_insert_id();// MySQL
+      }else
+        $cid = $tmp['id'];
       
       if($ust_id){
         $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'
