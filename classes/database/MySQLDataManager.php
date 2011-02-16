@@ -53,7 +53,7 @@ class MySQLDataManager implements IDataManager {
   function update_program($pid, $live, $viewer, $change_flag, $thumb){
     $sql_live = $live ? '1' : '0';
     // construct time SQL
-    $sql_time = '';
+    $sql_time = ', start_time = start_time, end_time = end_time ';
     if($change_flag){
       $now = date('Y-m-d H:i:s');
       if($live){
