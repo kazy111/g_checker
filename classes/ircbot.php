@@ -91,7 +91,7 @@ class IRCBot {
           while(1){
             $data = fgets($this->socket, 1024);
                 
-            echo nl2br($data);
+            //echo nl2br($data);
             
             flush();
 
@@ -110,9 +110,9 @@ class IRCBot {
                 $m = array_shift($this->ex); array_shift($this->ex);
                 //$m = substr($m, 1, strlen($m)-2);
                 $t = str_replace(array("\r\n", "\n", "\r"), '', implode(' ', $this->ex));
-                print 'ch: '.$r.' mem: '.$m.' topic: '.$t;
+                //print 'ch: '.$r.' mem: '.$m.' topic: '.$t;
                 $this->info[$r] = array($m, $t);
-                print'.';
+                //print'.';
               }
               break;
             case '323':
@@ -134,11 +134,11 @@ class IRCBot {
                 if($msg == null)
                 {
                         fputs($this->socket, $cmd."\r\n");
-                        echo '<strong>'.$cmd.'</strong><br />';
+                        //echo '<strong>'.$cmd.'</strong><br />';
                 } else {
 
                         fputs($this->socket, $cmd.' '.$msg."\r\n");
-                        echo '<strong>'.$cmd.' '.$msg.'</strong><br />';
+                        //echo '<strong>'.$cmd.' '.$msg.'</strong><br />';
                 }
 
         }
