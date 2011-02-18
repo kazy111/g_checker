@@ -58,21 +58,12 @@ if(!isset($first_id)){
 $program_data = '{'.implode(',', $program_data).'}';
 
 
-  $contents_theme = '<select id="theme">';
-  $themes = $page->get_themes();
-  foreach($themes as $t){
-    $contents_theme .= '<option value="'.urlencode($t).'"'.(($t == $page->theme)?' selected="selected"':'').'>'.$t.'</option>';
-  }
-  $contents_theme .= '</select>'
-      .'<input type="button" value="変更" onclick="WriteCookie(\'theme\', document.getElementById(\'theme\').options[document.getElementById(\'theme\').selectedIndex].value, 0);location.reload();" />';
-
-
 $data = new Dwoo_Data();
 
+$data->assign('site_title', $name.' - '.$GLOBALS['site_title']);
 $data->assign('name', $name);
 $data->assign('description', $desc);
 
-$data->assign('id', $id);
 $data->assign('p_data', $program_data);
 $data->assign('c_data', $chat_data);
 $data->assign('first_id', $first_id);
@@ -81,9 +72,11 @@ $data->assign('theme_data', $contents_theme);
 $page->add_header('<meta http-equiv="content-script-type" content="text/javascript" />');
 $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
 $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/nicoirc20100905.js"></script>');
-$page->set('view', $data);
-$page->set_title($name);
+print($page->get_once('view_pop',$data));
+//$page->set('view_pop', $data);
+//$page->set_title($name);
 
-include 'footer.php';
+
+//include 'footer.php';
 
 ?>

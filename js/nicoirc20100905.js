@@ -56,7 +56,7 @@ function showMovieMode(boxid, ust, jus, w, h, mode, quality)
 	    + '<param name="movie" value="http://www.justin.tv/widgets/live_embed_player.swf" />'
 	    + '<param name="hasPriority" value="true"/>'
 	    + '<param name="flashvars" value="channel='+ jus +'&amp;auto_play='
-	    + 'false&amp;start_volume=25'+  (false? '&amp;consumer_key=hQ3kBxqRXXBZJlPmu03JnA' : '') +'" />'
+	    + 'true&amp;start_volume=25'+  (false? '&amp;consumer_key=hQ3kBxqRXXBZJlPmu03JnA' : '') +'" />'
 	    + '</object>'
 	    + '</div>';
 
