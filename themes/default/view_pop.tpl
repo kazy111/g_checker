@@ -14,15 +14,14 @@
 var p_data = {$p_data};
 var cur_pid;
 var mboxid = 'movie';
-var width, height;
 var mode = 'direct';
 
-width = '100%';
-height = '100%';
 
 function select(pid)
 {
   var ust, jus, t = p_data[pid];
+  var width = $(window).width();
+  var height = $(window).height()-16;
   if(cur_pid != pid){
     switch(t.type){
       case 0: ust = t.opt_id; jus = ''; break;
@@ -44,12 +43,31 @@ function add_select()
   }
 }
 
-</script>
-<div id="view" style="width:100%;height:100%;">
+$(document).ready(function() {
+  var footmargin = 16;
+  function resizeContainer(e) {
+    var containerWidth = $(window).width();
+    var containerHeight = $(window).height() - footmargin;
+    //var containerHeight = document.documentElement.scrollHeight - footmargin;
+    (function(jq) {
+      for(var i = 0; i < jq.length; i++) {
+        jq[i].css("width", containerWidth);
+        jq[i].css("height", containerHeight);
+        jq[i].css("overflow-y", "hidden");
+        jq[i].css("overflow-x", "hidden");
+      }
+    })(new Array($("#mmovie"),$('#emovie'),$("#movie")));
+  }
+  $(window).bind("resize", resizeContainer);
+  resizeContainer(null);
+  resizeContainer(null);
+});
 
-<div id="movie" style="width:100%;height:100%;"></div>
+</script>
+<div id="view" style="width:100%;height:100%;"></div>
+<div id="movie" style="width:100%;height:100%;padding:0;margin:0"></div>
+
 <div id="select" style="margin: 0">画面切り替え: </div>
-</div>
 
 <script type="text/javascript">
 add_select();

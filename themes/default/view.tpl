@@ -172,7 +172,8 @@ function ReadCookie(key) {
 <span id="name">{$name}</span>
 <span id="description">{$description}</span>
 
-<div class="navigation" id="select"><a href="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no')">Pop</a> 
+<div class="navigation" id="select">
+<a onclick="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no,resizable=yes');">Pop</a> 
 チャット: <a href="javascript:toggleChat(cboxid)">■</a>
 &nbsp;<a href="javascript:mibbitChat(cboxid)">(退避用)</a>
  &nbsp;画面切り替え: </div>
