@@ -194,7 +194,7 @@ function check_prev_live($pid, $chs)
   foreach($chs as $c){
     print("check: ".$pid." ".$c['pid']." live: ".$c['live']." cur ret:".$ret."\n");
     if($c['pid'] != $pid)
-      $ret |= ($c['live'] == 't');
+      $ret |= ($c['live'] == 't' || $c['live'] == '1');
   }
   print($ret." - end\n");
   return $ret;
