@@ -156,7 +156,7 @@ function start_tweet($data)
   if(! $tweet_start) return;
   
   $str = $data['name'].'配信開始！／';
-  $hash = ' #g_checker';
+  $hash = $GLOBALS['tweet_footer'];
   $time = date(' [H:i]');
   $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , $data['topic']);
 
@@ -175,7 +175,7 @@ function end_tweet($data)
   if(! $tweet_end) return;
   
   $str = $data['name'].'配信終了…／';
-  $hash = ' #g_checker';
+  $hash = $GLOBALS['tweet_footer'];
   $time = date(' [H:i]');
   $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , $data['topic']);
 
