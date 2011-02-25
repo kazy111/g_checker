@@ -3,6 +3,7 @@
 include 'header.php';
 include_once 'tweet.php';
 // no cron, every 60 seconds check?
+include_once 'classes/JSON.php';
 
 set_time_limit(50);
 
@@ -256,21 +257,30 @@ function check_justin()
       $live[$v['pid']] = 0;
     }
   }
-  $url = 'http://api.justin.tv/api/stream/list.xml?channel='.implode(',', $ids);
+  $url = 'http://api.justin.tv/api/stream/list.json?channel='.implode(',', $ids);
   
   log_print($url);
   
   try{
-    $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+    $jsontxt = '';
+    $json = new Services_JSON();
+    // URL をオープン
+    $fp = fopen($url, 'r');
+    while (! feof($fp)) {
+      $jsontxt .= fread($fp, 1024) or '';
+    }
+    fclose($fp);
+
+    $xml = $json->decode($jsontxt);
   }catch(Exception $e){
     print $e->getMessage();
     return;
   }
-  print_r($xml);
 
   
-  if($xml && $xml->stream && $xml->stream[0] ){
-    foreach($xml->stream as $res){
+  if($xml){
+    foreach($xml as $res){
+      print_r($res);
       $ch = $res->channel;
       $name = ''.$ch->login;
       if($name == '') $name = ''.$ch->channel;
@@ -280,6 +290,7 @@ function check_justin()
       $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0';
       $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
       
+      print "\nname: ".$name." - ".$change_flag."\n";
       $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
       
       if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
