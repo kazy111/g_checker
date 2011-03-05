@@ -98,9 +98,9 @@ function mibbitChat()
 function socialStream()
 {
   var p = p_data[cur_pid];
-  if(p.opt_id != ''){
+  if(!p.opt_id){
     for(var i in p_data){
-      if(p_data && p_data[i].opt_id){
+      if(p_data[i].opt_id){
         p = p_data[i];
         break;
       }
