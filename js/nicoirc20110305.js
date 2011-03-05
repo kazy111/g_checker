@@ -94,6 +94,12 @@ function loadWebChatMibbit(boxid, ch, w, h)
 }
 
 
+function loadSocialStream(boxid, ustid, w, h)
+{
+  document.getElementById(boxid).innerHTML = '<iframe width="'+w+'" scrolling="no" height="' + h
+    + '" frameborder="0" style="border: 0px none transparent;" src="http://www.ustream.tv/socialstream/' + ustid
+    + '"></iframe>';
+}
 
 function unloadChat(boxid)
 {

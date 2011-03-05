@@ -52,13 +52,14 @@ function ReadCookie(key) {
 function select(pid)
 {
   var ust, jus, t = p_data[pid];
-  if(cur_pid != pid){
+  //if(cur_pid != pid){
+  if(true){
     switch(t.type){
       case 0: ust = t.opt_id; jus = ''; break;
       case 1: ust = ''; jus = t.ch_id; break;
     }
     showMovieMode(mboxid, ust, jus, width, height, mode, 'high');
-    //cur_pid = pid;
+    cur_pid = pid;
   }
   if(enable_chat && cur_cid != t.cid){
     var c = c_data[t.cid];
@@ -80,7 +81,7 @@ function toggleChat()
     var c = c_data[cur_cid];
     var _w = width*0.75; if(_w<320)_w = 320;
     switch(c.type){
-      case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
+      case 1: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
       case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
     }
     enable_chat = 1;
@@ -92,6 +93,20 @@ function mibbitChat()
 {
   var c = c_data[cur_cid];
   loadWebChatMibbit(cboxid, c.room, width*0.75, height);
+}
+
+function socialStream()
+{
+  var p = p_data[cur_pid];
+  if(p.opt_id != ''){
+    for(var i in p_data){
+      if(p_data && p_data[i].opt_id){
+        p = p_data[i];
+        break;
+      }
+    }
+  }
+  if(p.opt_id) loadSocialStream(cboxid, p.opt_id, width*0.75, height);
 }
 
 function resize_select(str)
@@ -173,10 +188,12 @@ function ReadCookie(key) {
 <span id="description">{$description}</span>
 
 <div class="navigation" id="select">
-<a onclick="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no,resizable=yes');">Pop</a> 
-チャット: <a href="javascript:toggleChat(cboxid)">■</a>
+<strong>チャット:</strong> <a href="javascript:toggleChat(cboxid)">■</a>
 &nbsp;<a href="javascript:mibbitChat(cboxid)">(退避用)</a>
- &nbsp;画面切り替え: </div>
+&nbsp;<a href="javascript:socialStream(cboxid)">(Twitter)</a>
+ &nbsp;<strong>画面切り替え:</strong>
+<a onclick="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no,resizable=yes');">Pop</a> 
+ </div>
 
 <div class="no-wrap">
 <div id="movie">
