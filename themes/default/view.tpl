@@ -81,7 +81,7 @@ function toggleChat()
     var c = c_data[cur_cid];
     var _w = width*0.75; if(_w<320)_w = 320;
     switch(c.type){
-      case 1: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
+      case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
       case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
     }
     enable_chat = 1;
