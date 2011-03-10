@@ -67,7 +67,6 @@ $data->assign('description', $desc);
 $data->assign('p_data', $program_data);
 $data->assign('c_data', $chat_data);
 $data->assign('first_id', $first_id);
-$data->assign('theme_data', $contents_theme);
 
 $page->add_header('<meta http-equiv="content-script-type" content="text/javascript" />');
 $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
