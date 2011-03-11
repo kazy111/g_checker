@@ -67,6 +67,7 @@ function select(pid)
     switch(c.type){
       case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
       case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
+      case 2: socialStream(); break;
     }
   }
   cur_cid = t.cid;
@@ -83,6 +84,7 @@ function toggleChat()
     switch(c.type){
       case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
       case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
+      case 2: socialStream(); break;
     }
     enable_chat = 1;
   }

@@ -6,7 +6,8 @@ $service_assoc = array(0 => 'ustream',
                        1 => 'justin');
 
 $chat_assoc = array(0 => 'c.ustream.tv',
-                       1 => 'irc.mibbit.com');
+                    1 => 'irc.mibbit.com',
+                    2 => 'Social Stream');
 
 $sort_assoc = array('random' => 'ランダム',
                     'viewer' => '視聴者数',
