@@ -185,7 +185,7 @@ function ReadCookie(key) {
 </script>
 
 <div id="view">
-<a href="http://kazy111.info/checker/">獄卒チェッカー</a> &gt;&gt; 
+<a href="{$site_url}">{$site_title}</a> &gt;&gt; 
 <span id="name">{$name}</span>
 <span id="description">{$description}</span>
 

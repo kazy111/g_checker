@@ -25,6 +25,10 @@ $file_path = '/usr/home/kazy/public_html/checker/';
 // メールフォームの送り先メールアドレス
 $admin_mail = 'kazy@kazy111.info';
 
+// トップページヘッダに表示する説明
+$header_description = '<a href="http://www.gokusotsu.com/top/?cat=3">獄卒ch</a>関係な人の配信をチェック/視聴するページ ／ 獄卒チェッカー通知Twitter→<a href="http://twitter.com/g_checker">&psi;</a>';
+// フッタに表示する説明
+$footer_description = '意見、報告、要望は<a href="contact.php">問合せフォーム</a>か<a href="http://twitter.com/kazy111">じゃわてぃー</a>まで';
 
 // indexで表示する、offlineの数 (onlineに加えて表示する数)
 $list_extra_number = 5;

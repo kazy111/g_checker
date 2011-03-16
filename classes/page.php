@@ -83,6 +83,8 @@ class Page{
     $this->header[] = '<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />';
     $data->assign('site_url', $GLOBALS['site_url']);
     $data->assign('file_path', $GLOBALS['file_path']);
+    $data->assign('header_description', $GLOBALS['header_description']);
+    $data->assign('footer_description', $GLOBALS['footer_description']);
     $data->assign('curr_time', time());
     $data->assign('site_title', ($this->title?$this->title.' - ':'').$site_title);
     $data->assign('additional_header', implode("\n", $this->header));
@@ -95,11 +97,15 @@ class Page{
       if(is_array($this->data)){
         $this->data['site_url'] = $GLOBALS['site_url'];
         $this->data['file_path'] = $GLOBALS['file_path'];
-        $this->data['site_title'] = $site_title;
+        $this->data['site_title'] = $GLOBALS['site_title'];
+        $this->data['header_description'] = $GLOBALS['header_description'];
+        $this->data['footer_description'] = $GLOBALS['footer_description'];
       }else{
         $this->data->assign('site_url', $GLOBALS['site_url']);
         $this->data->assign('file_path', $GLOBALS['file_path']);
-        $this->data->assign('site_title', $site_title);
+        $this->data->assign('site_title', $GLOBALS['site_title']);
+        $this->data->assign('header_description', $GLOBALS['header_description']);
+        $this->data->assign('footer_description', $GLOBALS['footer_description']);
       }
     }
     $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template($this->pname)), $this->data);

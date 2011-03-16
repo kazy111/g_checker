@@ -2,7 +2,7 @@
 
 <footer>
 <div class="footer">
-意見、報告、要望は<a href="contact.php">問合せフォーム</a>か<a href="http://twitter.com/kazy111">じゃわてぃー</a>まで
+{$footer_description}
 </div>
 </footer>
 
