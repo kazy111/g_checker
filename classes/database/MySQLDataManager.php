@@ -158,7 +158,7 @@ class MySQLDataManager implements IDataManager {
       // create
       $this->db->query('insert into streamer_table (name, description, twitter, url, wiki) values (\''
                        .$data['name'].'\', \''.$data['description'].'\', \''
-                       .$data['twitter'].'\', \''.$data['url'].'\', '.$data['wiki'].')');
+                       .$data['twitter'].'\', \''.$data['url'].'\', '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' ).')');
     } else {
       // update
       $this->db->query('update streamer_table set name = \''
