@@ -15,7 +15,7 @@ class PostgreSQLDataManager implements IDataManager {
 
   // raw data for index page
   function get_index_datas(){
-    $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, wiki, twitter, '
+    $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, description, wiki, twitter, '
         .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail, offline_count'
         .' from streamer_table as s, program_table as p, chat_table as c '
         .' where s.id = p.streamer_id '
@@ -217,7 +217,7 @@ class PostgreSQLDataManager implements IDataManager {
     try{
       $sql = 'select c.id as cid, p.id as pid '
           .' from streamer_table as s, program_table as p, chat_table as c '
-          .' where s.id = '.$id.' and  s.id = p.streamer_id and c.id = p.chat_id';
+          .' where s.id = '.$streamer_id.' and  s.id = p.streamer_id and c.id = p.chat_id';
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
         $tmp = $this->db->query_ex('select id from program_table where chat_id = '.$arr['cid'].' and id <> '.$arr['pid']);
@@ -228,13 +228,13 @@ class PostgreSQLDataManager implements IDataManager {
 
       $sql = 'select p.id as id '
           .' from streamer_table as s, program_table as p '
-          .' where s.id = '.$id.' and  s.id = p.streamer_id';
+          .' where s.id = '.$streamer_id.' and  s.id = p.streamer_id';
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
         $this->delete_program($arr['id']);
       }
 
-      $sql = 'select id from streamer_table where id = '.$id;
+      $sql = 'select id from streamer_table where id = '.$streamer_id;
       $result = $this->db->query($sql);
       while($arr = $this->db->fetch($result)){
         $this->db->query('delete from streamer_table where id = '.$arr['id']);
@@ -347,7 +347,7 @@ class PostgreSQLDataManager implements IDataManager {
                  .'('.$sid.', \''.$name.'\', \''.$desc.'\')');
       
       // PostgreSQL
-      $tmp = $this->db->query_ex('select id from chat_id where type='
+      $tmp = $this->db->query_ex('select id from chat_table where type='
                                  .$chat_type.' and room=\''.$room.'\'');
       if(is_null($tmp) || !is_numeric($tmp['id'])){
         $arr = $this->db->query_ex('select nextval(\'chat_table_id_seq\')');

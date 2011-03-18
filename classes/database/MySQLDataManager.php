@@ -15,7 +15,7 @@ class MySQLDataManager implements IDataManager {
 
   // raw data for index page
   function get_index_datas(){
-    $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, wiki, twitter, '
+    $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, description, wiki, twitter, '
         .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail, offline_count '
         .' from streamer_table as s, program_table as p, chat_table as c '
         .' where s.id = p.streamer_id '

@@ -60,7 +60,7 @@ function get_streamer_data($arrs)
     $chats_raw[$v['cid']] = array($v['ctype'], $v['room'], $v['topic']);
     if($v['live'] == 't'){
       $live = TRUE;
-      $stime = $stime > strtotime($v['start_time']) ? strtotime($v['start_time']) : $stime;
+      $stime = ($stime > strtotime($v['start_time']) && $v['start_time']!='') ? strtotime($v['start_time']) : $stime;
       $thumb = '<img src="'.$v['thumbnail'].'" width="320" height="240" class="thumb"/>';
       switch($v['type']){
       case 0: //ustream
@@ -136,6 +136,7 @@ function get_streamer_data($arrs)
   $data['time_data'] = $live ? $stime : $etime;
   $data['diff'] = $diff;
   $data['live'] = $live;
+  $data['description'] = $i['description'];
   $data['wiki'] = $i['wiki'];
   $data['twitter'] = $i['twitter'];
   $data['multi_data'] = '{\'name\':\''.$i['name'].'\',\'chat\':\''.$ch_chat.'\',\'ust\':\''.$ch_ust.'\',\'jus\':\''.$ch_jus.'\',\'v\':'.$ch_v.'}';
