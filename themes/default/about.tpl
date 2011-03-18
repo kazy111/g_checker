@@ -3,8 +3,9 @@
 <h1>{$site_title} >> このサイトについて</h1>
 <div class="contents">
 <p>
-獄卒ちゃんねる及び、そこで配信したことがある人の配信状況を
+配信状況を
 チェックするページです。
+<!--
 また<a href="http://twitter.com/g_checker">Twitterにて</a>配信開始、終了をトピック付きで通知しています。
 
 <p>
@@ -15,9 +16,10 @@
 <p>
 またソースコードを<a href="https://github.com/kazy111/g_checker/wiki">Github</a>で公開しています。
 動作環境は今のところPHP5 + MySQL or PostgreSQLです。設置方法などはリンク先へ。
+-->
 
 <p>
-ご意見、ご要望、依頼等があれば<a href="contact.php">問合せフォーム</a>か<a href="http://twitter.com/kazy111">じゃわてぃー</a>まで。
+ご意見、ご要望、依頼等があれば<a href="contact.php">問合せフォーム</a>まで。
 </div>
 
 </div>

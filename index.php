@@ -345,9 +345,12 @@ if(is_old_mobile()){
 $extra = is_mobile() ? '_mobile' : '';
 
 $sort = 'random'; // viewer, time
-if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sort_assoc))
+if(array_key_exists('default_sort', $GLOBALS) && array_key_exists($GLOBALS['default_sort'], $sort_assoc)){
+  $sort = $GLOBALS['default_sort'];
+}
+if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sort_assoc)){
   $sort = $_COOKIE['sort'];
-
+}
 $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/cookie.js"></script>');
 $page->set('index'.$extra, display_list($sort));
 
