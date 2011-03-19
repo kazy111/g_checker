@@ -1,6 +1,6 @@
 <?php
 
-include_once 'config.php';
+include_once(dirname(__FILE__) . "/config.php");
 
 if($debug){
   error_reporting(E_ALL);
@@ -8,12 +8,12 @@ if($debug){
   ini_set('log_errors', 'Off');
 }
 
-include_once 'assoc_define.php';
-include_once 'lib.php';
-include_once 'classes/dwooAutoload.php';
-include_once 'classes/database/PostgreSQLDataManager.php';
-include_once 'classes/database/MySQLDataManager.php';
-include_once 'classes/page.php';
+include_once(dirname(__FILE__) . "/assoc_define.php");
+include_once(dirname(__FILE__) . "/lib.php");
+include_once(dirname(__FILE__) . "/classes/dwooAutoload.php");
+include_once(dirname(__FILE__) . "/classes/database/PostgreSQLDataManager.php");
+include_once(dirname(__FILE__) . "/classes/database/MySQLDataManager.php");
+include_once(dirname(__FILE__) . "/classes/page.php");
 
 header('Content-type: text/html; charset=utf-8');
 
@@ -31,10 +31,13 @@ $page = new Page();
 
 session_start();
 
-
-if(array_key_exists('theme', $_COOKIE))
+// テーマの設定
+if(array_key_exists('default_theme', $GLOBALS)){
+  $page->theme = $GLOBALS['default_theme'];
+}
+if(array_key_exists('theme', $_COOKIE)){
   $page->theme = urldecode($_COOKIE['theme']);
-
+}
 // TODO theme を cookieに？ sessionに？
 // random = 存在しないtheme or nullを設定する
 
