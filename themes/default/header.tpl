@@ -4,8 +4,8 @@
 <title>{$site_title}</title>
 <link rel="shortcut icon" href="{$site_url}/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="{$site_url}/css/checker.css" />
-<meta name="keywords" content="{$site_title},獄卒ch,獄卒ちゃんねる" />
-<meta name="description" content="獄卒ch配信者の配信状況などをチェックするサイト" />
+<meta name="keywords" content="{$site_title}" />
+<meta name="description" content="{$site_title}" />
 <script type="text/javascript" src="{$site_url}/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="{$site_url}/js/auto_notice.js"></script>
 {$additional_header}

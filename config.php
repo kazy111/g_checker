@@ -2,7 +2,7 @@
 
 /* DB設定 */
 // DBの種類 (0: MySQL, 1: PostgreSQL)
-$db_type   = 1;
+$db_type   = 0;
 // ホスト名
 $db_host   = 'localhost';
 // ポート (NULLでデフォルト)
