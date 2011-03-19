@@ -2,10 +2,7 @@
 
 <h1 id="title">{$site_title}</h1>
 
-<summary>
-<a href="http://www.gokusotsu.com/top/?cat=3">獄卒ch</a>関係な人の配信をチェック/視聴するページ
- ／ 獄卒チェッカー通知Twitter→<a href="http://twitter.com/g_checker">&psi;</a>
-</summary>
+{include file="$file_path/themes/default/header_text.tpl"}
 
 <div id="menu"></div>
 <div class="option">
