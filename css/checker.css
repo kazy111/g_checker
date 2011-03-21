@@ -132,6 +132,9 @@ div.navigation {
 #view .tags{
   margin: 0.5em;
 }
+#view .tag{
+  font-size: medium;
+}
 .tag{
   color: #696F6F;
   margin: 1px;

@@ -5,6 +5,9 @@ body{
 a{
   color: orange;
 }
+a:visited{
+  color: orange;
+}
 h1{
   font-size: 20pt;
 }
@@ -72,4 +75,8 @@ table.list-table th{
 }
 .old{
   display: none;
+}
+.tag{
+  color: #898F8F;
+  border: solid 1px #898F8F;
 }
