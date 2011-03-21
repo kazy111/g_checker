@@ -161,7 +161,7 @@ class PostgreSQLDataManager implements IDataManager {
   function set_streamer($data){
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
-      $this->db->query('insert into streamer_table (name, description, twitter, url, wiki) values (\''
+      $this->db->query('insert into streamer_table (name, description, twitter, url, wiki, tag) values (\''
                        .$data['name'].'\', \''.$data['description'].'\', \''
                        .$data['twitter'].'\', \''.$data['url'].'\', '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' )
                        .', \''.$data['tag'].'\')');
