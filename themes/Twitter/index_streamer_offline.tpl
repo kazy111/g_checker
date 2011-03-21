@@ -33,6 +33,9 @@
   <span class="tags">{$tag}</span>
 
   <span class="tweet-menu">
+  {if $url != ''}URL:
+  <a target="_blank" href="{$url}">&psi;</a> / 
+  {/if}
   <span class="program">Archive:
 {foreach from=$program_raw item=p}
   {if $p[0] == 0}
