@@ -83,6 +83,7 @@ class Page{
     $this->header[] = '<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />';
     $data->assign('site_url', $GLOBALS['site_url']);
     $data->assign('file_path', $GLOBALS['file_path']);
+    $data->assign('site_title', $GLOBALS['site_title']);
     $data->assign('header_description', $GLOBALS['header_description']);
     $data->assign('footer_description', $GLOBALS['footer_description']);
     $data->assign('curr_time', time());
@@ -118,6 +119,22 @@ class Page{
   function get_once($page, $data)
   {
     $dwoo = new Dwoo();
+
+    if($data){
+      if(is_array($this->data)){
+        $data['site_url'] = $GLOBALS['site_url'];
+        $data['file_path'] = $GLOBALS['file_path'];
+        $data['site_title'] = $GLOBALS['site_title'];
+        $data['header_description'] = $GLOBALS['header_description'];
+        $data['footer_description'] = $GLOBALS['footer_description'];
+      }else{
+        $data->assign('site_url', $GLOBALS['site_url']);
+        $data->assign('file_path', $GLOBALS['file_path']);
+        $data->assign('site_title', $GLOBALS['site_title']);
+        $data->assign('header_description', $GLOBALS['header_description']);
+        $data->assign('footer_description', $GLOBALS['footer_description']);
+      }
+    }
     return $dwoo->get(new Dwoo_Template_File($this->get_template($page)), $data);
     //return $this->get_safe_contents($dwoo, $page, $data);
   }

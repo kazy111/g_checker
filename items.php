@@ -226,7 +226,7 @@ function display_list($sort, $p, $limit)
     
     if( $a['live'] ){
       if( $b['live'] ){
-        return $a['time_data'] > $b['time_data'];
+        return $a['start_raw'] > $b['start_raw'];
       } else {
         return FALSE;
       }
