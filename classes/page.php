@@ -121,7 +121,7 @@ class Page{
     $dwoo = new Dwoo();
 
     if($data){
-      if(is_array($this->data)){
+      if(is_array($data)){
         $data['site_url'] = $GLOBALS['site_url'];
         $data['file_path'] = $GLOBALS['file_path'];
         $data['site_title'] = $GLOBALS['site_title'];

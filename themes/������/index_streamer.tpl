@@ -3,8 +3,7 @@
     <input type="checkbox" name="view" value="{$multi_data}">
   </td>
   <td class="live">●</td>
-  <td class="name"><span><a href="view.php?id={$sid}" target="_blank">{$name}</a></span>
-    <span class="tags">{$tag}</span></td>
+  <td class="name"><span><a href="view.php?id={$sid}" target="_blank">{$name}</a></span></td>
   <td class="time"><span class="time_diff">{$diff}</span> <span class="time_since">{$time}</span></td>
   <td class="topic"><span>{$topic}</span></td>
   <td class="chat"><span>{$chat}</span></td>
