@@ -66,8 +66,11 @@ function is_mobile () {
 function format_tag($str){
   $arr = explode(',', $str);
   $result = '';
+  $cutlen = 20;
   foreach($arr as $v){
     if($v != NULL && $v != ''){
+      if(mb_strlen($v, 'UTF-8') > $cutlen)
+        $v = mb_substr($v, 0, $cutlen-1, 'UTF-8').'Åc';
       $result .= '<span class="tag" rel="tag">'.$v.'</span>';
     }
   }
