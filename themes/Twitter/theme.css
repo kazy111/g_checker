@@ -138,3 +138,10 @@ img{
   left: 0;
   background-color: yellow;
 }
+
+.tag{
+  font-size: medium;
+}
+#view .tag{
+  background-color: #DEF;
+}

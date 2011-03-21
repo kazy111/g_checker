@@ -16,6 +16,7 @@ function view_form($id){
   $twitter = '';
   $url = '';
   $wiki = '';
+  $tag = '';
   
   if($id){
     // get info from DB
@@ -26,6 +27,7 @@ function view_form($id){
       $twitter = $result['twitter'];
       $url = $result['url'];
       $wiki = $result['wiki'];
+      $tag = $result['tag'];
     }
   }
   // display form
@@ -44,6 +46,8 @@ function view_form($id){
       <input type="edit" name="wiki" value="$wiki" /><br />
       <span class="form_title">URL:</span>
       <input type="url" name="url" value="$url" /><br />
+      <span class="form_title">Tag:</span>
+      <input type="tag" name="tag" value="$tag" /><br />
       <input type="submit" value="submit" />
     </form>
 EOD;

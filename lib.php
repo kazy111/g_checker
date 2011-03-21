@@ -22,6 +22,14 @@ function sanitize_html($str)
   return htmlentities($str, ENT_QUOTES, 'UTF-8');
 }
 
+function sanitize_array($arr)
+{
+  foreach($arr as $k => $v){
+    $arr[$k] = sanitize_html($v);
+  }
+  return $arr;
+}
+
 function is_old_mobile () {
   $useragents = array(
     'DoCoMo',         // docomo
@@ -53,6 +61,17 @@ function is_mobile () {
     );
   $pattern = '/'.implode('|', $useragents).'/i';
   return preg_match($pattern, $_SERVER['HTTP_USER_AGENT']);
+}
+
+function format_tag($str){
+  $arr = explode(',', $str);
+  $result = '';
+  foreach($arr as $v){
+    if($v != NULL && $v != ''){
+      $result .= '<span class="tag" rel="tag">'.$v.'</span>';
+    }
+  }
+  return $result;
 }
 
 ?>

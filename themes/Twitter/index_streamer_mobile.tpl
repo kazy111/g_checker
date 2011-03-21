@@ -30,6 +30,7 @@
   <span class="viewer"><span>{$viewer} viewer / {$member} chat</span></span>
   </span><!-- end meta -->
 
+  <span class="tags">{$tag}</span>
 
   <span class="tweet-menu">
   <span class="program">Archive:

@@ -1,6 +1,6 @@
 <?php
 
-include_once(dirname(__FILE__) . "/config.php");
+include_once(dirname(__FILE__) . '/config.php');
 
 if($debug){
   error_reporting(E_ALL);
@@ -8,12 +8,12 @@ if($debug){
   ini_set('log_errors', 'Off');
 }
 
-include_once(dirname(__FILE__) . "/assoc_define.php");
-include_once(dirname(__FILE__) . "/lib.php");
-include_once(dirname(__FILE__) . "/classes/dwooAutoload.php");
-include_once(dirname(__FILE__) . "/classes/database/PostgreSQLDataManager.php");
-include_once(dirname(__FILE__) . "/classes/database/MySQLDataManager.php");
-include_once(dirname(__FILE__) . "/classes/page.php");
+include_once(dirname(__FILE__) . '/assoc_define.php');
+include_once(dirname(__FILE__) . '/lib.php');
+include_once(dirname(__FILE__) . '/classes/dwooAutoload.php');
+include_once(dirname(__FILE__) . '/classes/database/PostgreSQLDataManager.php');
+include_once(dirname(__FILE__) . '/classes/database/MySQLDataManager.php');
+include_once(dirname(__FILE__) . '/classes/page.php');
 
 header('Content-type: text/html; charset=utf-8');
 

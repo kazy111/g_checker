@@ -190,12 +190,17 @@ function ReadCookie(key) {
 <span id="description">{$description}</span>
 
 <div class="navigation" id="select">
-<strong>チャット:</strong> <a href="javascript:toggleChat(cboxid)">■</a>
-&nbsp;<a href="javascript:mibbitChat(cboxid)">(退避用)</a>
-&nbsp;<a href="javascript:socialStream(cboxid)">(Twitter)</a>
+ <strong>チャット:</strong> <a href="javascript:toggleChat(cboxid)">■</a>
+ &nbsp;<a href="javascript:mibbitChat(cboxid)">(退避用)</a>
+ &nbsp;<a href="javascript:socialStream(cboxid)">(Twitter)</a>
  &nbsp;<strong>画面切り替え:</strong>
-<a onclick="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no,resizable=yes');">Pop</a> 
- </div>
+ <a onclick="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no,resizable=yes');">Pop</a>
+</div>
+
+<div class="tags">
+ {$tag}
+ <a onclick="javascript:window.open('edit_tag.php?id={$id}', null, 'width=512,height=150,menubar=no,toolbar=no,resizable=yes');">タグ編集</a>
+</div>
 
 <div class="no-wrap">
 <div id="movie">

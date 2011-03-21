@@ -64,6 +64,7 @@ $(document).ready(function() {
 });
 
 </script>
+<body>
 <div id="view" style="width:100%;height:100%;"></div>
 <div id="movie" style="width:100%;height:100%;padding:0;margin:0"></div>
 

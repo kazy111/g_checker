@@ -137,6 +137,7 @@ function get_streamer_data($arrs)
   $data['diff'] = $diff;
   $data['live'] = $live;
   $data['description'] = $i['description'];
+  $data['tag'] = format_tag($i['tag']);
   $data['wiki'] = $i['wiki'];
   $data['twitter'] = $i['twitter'];
   $data['multi_data'] = '{\'name\':\''.$i['name'].'\',\'chat\':\''.$ch_chat.'\',\'ust\':\''.$ch_ust.'\',\'jus\':\''.$ch_jus.'\',\'v\':'.$ch_v.'}';

@@ -13,9 +13,13 @@ class PostgreSQLDataManager implements IDataManager {
     return $this->db->sanitize($str);
   }
 
+  function query($sql){
+    return $this->db->query($sql);
+  }
+
   // raw data for index page
   function get_index_datas(){
-    $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, description, wiki, twitter, '
+    $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, description, wiki, twitter, tag, '
         .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail, offline_count'
         .' from streamer_table as s, program_table as p, chat_table as c '
         .' where s.id = p.streamer_id '
@@ -32,7 +36,7 @@ class PostgreSQLDataManager implements IDataManager {
 
   // use in view.php
   function get_streamer_info($streamer_id){
-    $sql = 'select live, name, description, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
+    $sql = 'select live, name, description, tag, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
           .' from streamer_table as s, program_table as p, chat_table c '
           .' where s.id = '.$streamer_id.' and s.id = p.streamer_id and c.id = p.chat_id';
 
@@ -85,7 +89,7 @@ class PostgreSQLDataManager implements IDataManager {
   }
   
   function get_streamer($streamer_id){
-    return $this->db->query_ex('select id, name, description, twitter, url, wiki from streamer_table where id = '.$streamer_id.'');
+    return $this->db->query_ex('select id, name, description, twitter, url, wiki, tag from streamer_table where id = '.$streamer_id.'');
   }
   
   function get_program($program_id){
@@ -159,13 +163,16 @@ class PostgreSQLDataManager implements IDataManager {
       // create
       $this->db->query('insert into streamer_table (name, description, twitter, url, wiki) values (\''
                        .$data['name'].'\', \''.$data['description'].'\', \''
-                       .$data['twitter'].'\', \''.$data['url'].'\', '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' ).')');
+                       .$data['twitter'].'\', \''.$data['url'].'\', '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' )
+                       .', \''.$data['tag'].'\')');
     } else {
       // update
       $this->db->query('update streamer_table set name = \''
                        .$data['name'].'\', description = \''.$data['description']
                        .'\', twitter = \''.$data['twitter'].'\', url = \''
-                       .$data['url'].'\', wiki = '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' ).' where id='.$data['id']);
+                       .$data['url'].'\', wiki = '.($data['wiki']&&$data['wiki']!='' ?$data['wiki']:'NULL' )
+                       .', tag = \''.$data['tag'].'\''
+                       .' where id='.$data['id']);
     }
   }
   function set_program($data){
@@ -255,6 +262,22 @@ class PostgreSQLDataManager implements IDataManager {
     $this->db->query('delete from article_table where id = '.$article_id);
   }
 
+  // tag maintenance
+  function get_tag($id){
+    return $this->db->query_ex('select tag from streamer_table where id = '.$id);
+  }
+  function set_tag($data){
+    if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
+      // err
+      return FALSE;
+    } else {
+      // update
+      $this->db->query('update streamer_table set tag = \''.$data['tag']
+                       .'\' where id='.$data['id']);
+      return TRUE;
+    }
+  }
+
   function is_using_chat($chat_id){
     $sql = 'select p.id as id '
       .' from program_table as p, chat_table as c '
@@ -285,6 +308,7 @@ class PostgreSQLDataManager implements IDataManager {
                      .'twitter VARCHAR(255),'
                      .'url VARCHAR(255),'
                      .'wiki INT,'
+                     .'tag TEXT DEFAULT \'\','
                      .'PRIMARY KEY (id))');
 
     $this->try_query('CREATE TABLE program_table ('

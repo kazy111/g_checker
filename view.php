@@ -15,6 +15,10 @@ $result = $manager->get_streamer_info($id);
 $cids = array();
 $pids = array();
 
+$name = '';
+$desc = '';
+$tag = '';
+
 foreach($result as $arr){
   $tmp = array();
   $tmp['id'] = $arr['cid'];
@@ -32,6 +36,7 @@ foreach($result as $arr){
   $pids[$arr['pid']] = $tmp;
   $name = $arr['name'];
   $desc = $arr['description'];
+  $tag = format_tag($arr['tag']);
 }
 
 // construct chat data
@@ -71,6 +76,7 @@ $data = new Dwoo_Data();
 
 $data->assign('name', $name);
 $data->assign('description', $desc);
+$data->assign('tag', $tag);
 
 $data->assign('id', $id);
 $data->assign('p_data', $program_data);
