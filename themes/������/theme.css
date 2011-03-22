@@ -4,15 +4,25 @@ h1{
   text-align: center;
 }
 
+.main{
+  max-width: 1100px;
+  margin: auto;
+}
+
+#summary, .live, .wiki, .viewer{
+  text-align: center;
+}
+
+.program{
+  width: 4em;
+}
+
 table.list-table{
-  max-width: 1000px;
-  min-width: 600px;
   border-collapse: collapse;
 }
 table.list-table td{
   padding: 3px;
   border: 2px black solid;
-  text-align: center;
 }
 table.list-table th{
   background-color: #ffaaaa;

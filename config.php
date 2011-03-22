@@ -46,6 +46,8 @@ $ontop[] = 2;
 $ontop[] = 60;
 $ontop[] = 61;
 
+// wikiリンク用URL (このURL + wikiの値.html にリンクされます)
+$wiki_url = '';
 
 /* twitter 投稿設定 */
 // http://dev.twitter.com/apps あたりでアプリ作成して取得のこと

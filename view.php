@@ -18,6 +18,8 @@ $pids = array();
 $name = '';
 $desc = '';
 $tag = '';
+$url = '';
+$wiki = '';
 
 foreach($result as $arr){
   $tmp = array();
@@ -37,6 +39,8 @@ foreach($result as $arr){
   $name = $arr['name'];
   $desc = $arr['description'];
   $tag = format_tag($arr['tag']);
+  $url = $arr['url'];
+  $wiki = $arr['wiki'];
 }
 
 // construct chat data
@@ -76,6 +80,9 @@ $data = new Dwoo_Data();
 
 $data->assign('name', $name);
 $data->assign('description', $desc);
+$data->assign('wiki_url', $GLOBALS['wiki_url']);
+$data->assign('wiki', $wiki);
+$data->assign('url', $url);
 $data->assign('tag', $tag);
 
 $data->assign('id', $id);

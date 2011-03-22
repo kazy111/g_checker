@@ -186,7 +186,7 @@ function ReadCookie(key) {
 
 <div id="view">
 <a href="{$site_url}">{$site_title}</a> &gt;&gt; 
-<span id="name">{$name}</span>
+<span id="name">{if $url != ''}<a href="{$url}" target="_blank">{$name}</a>{else}{if $wiki}<a href="{$wiki_url}{$wiki}.html" target="_blank">{$name}</a>{else}{$name}{/if}{/if}</span>
 <span id="description">{$description}</span>
 
 <div class="navigation" id="select">

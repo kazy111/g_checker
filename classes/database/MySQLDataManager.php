@@ -37,7 +37,7 @@ class MySQLDataManager implements IDataManager {
 
   // use in view.php
   function get_streamer_info($streamer_id){
-    $sql = 'select live, name, description, tag, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
+    $sql = 'select live, name, description, tag, url, wiki, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
       .' from streamer_table as s, program_table as p, chat_table c '
       .' where s.id = '.$streamer_id.' and s.id = p.streamer_id and c.id = p.chat_id';
 

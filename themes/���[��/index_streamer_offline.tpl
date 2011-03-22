@@ -16,7 +16,7 @@
   <div>{$viewer}/{$member}</div>
   <span>{$chat}</span>
   {if $twitter!=''}<span><a href="http://twitter.com/{$twitter}">Tw</a></span>{/if} 
-  {if $wiki!=''}<span><a href="http://www21.atwiki.jp/tenga18/{$wiki}.html">Wiki</a></span>{/if}
+  {if $wiki!=''}<span><a href="{$wiki_url}{$wiki}.html">Wiki</a></span>{/if}
  </td>
 </tr>
 </tbody>

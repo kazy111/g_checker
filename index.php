@@ -139,6 +139,7 @@ function get_streamer_data($arrs)
   $data['description'] = $i['description'];
   $data['tag'] = format_tag($i['tag']);
   $data['wiki'] = $i['wiki'];
+  $data['wiki_url'] = $GLOBALS['wiki_url'];
   $data['url'] = $i['url'];
   $data['twitter'] = $i['twitter'];
   $data['multi_data'] = '{\'name\':\''.$i['name'].'\',\'chat\':\''.$ch_chat.'\',\'ust\':\''.$ch_ust.'\',\'jus\':\''.$ch_jus.'\',\'v\':'.$ch_v.'}';
