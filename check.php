@@ -287,7 +287,7 @@ function check_justin()
       if($name == '') continue; // error
       $viewer = $res->stream_count;
       $pid = $hash[$name];
-      $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0';
+      $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
       $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
       
       print "\nname: ".$name." - ".$change_flag."\n";

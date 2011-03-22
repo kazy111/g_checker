@@ -294,7 +294,7 @@ function display_list($sort)
   $st_on = array_slice($streamer_data, 0, $live_num);
   $st_off = array_slice($streamer_data, $live_num);
 */
-  $p = validate_num($_GET['p']) ? $_GET['p'] : 1;
+  $p = (array_key_exists('p', $_GET) && validate_num($_GET['p'])) ? $_GET['p'] : 1;
   $p_num = count($streamer_data) / $GLOBALS['page_size'];
   if($p < 1) $p = 1;
   $offset = ($p - 1) * $GLOBALS['page_size'];
