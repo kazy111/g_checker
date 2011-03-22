@@ -32,17 +32,35 @@ function register_program($arr){
   $manager->set_tag($arr);
 }
 
+// if error occured, return error message / if it's ok, then return ''
+function validate($data){
+
+  if(!array_key_exists('tag', $data)) return 'データが不正です';
+  $tags = explode(',', $data['tag']);
+  if(count($tags) > 8) return 'タグが多過ぎます、8個までです';
+  foreach($tags as $tag){
+    if(mb_strlen($tag, 'UTF-8') > 20) return '長過ぎるタグがあります、20文字以内です';
+  }
+  return '';
+}
+
 $data = get_info(get_key($_GET, 'id'));
 $message = '';
 
 if ( array_key_exists('mode', $_POST) ) {
   // TODO validation
 
-  register_program(sanitize_array($_POST));
-  // TODO error check
+  $message = validate($_POST);
   
-  $data = get_info(get_key($_GET, 'id'));
-  $message = '更新しました';
+  if($message == ''){
+    register_program(sanitize_array($_POST));
+    // TODO error check
+    
+    $data = get_info(get_key($_GET, 'id'));
+    $message = '更新しました';
+  }else{
+    $data = $_POST;
+  }
 }
 
 $data['message'] = $message;
