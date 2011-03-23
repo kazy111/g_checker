@@ -63,6 +63,12 @@ function is_mobile () {
   return preg_match($pattern, $_SERVER['HTTP_USER_AGENT']);
 }
 
+function mb_trim( $string ) 
+{ 
+  $string = preg_replace( "/(^\s+)|(\s+$)/us", "", $string );
+  return $string;
+} 
+
 function format_tag($str){
   $arr = explode(',', $str);
   $result = '';
@@ -71,7 +77,7 @@ function format_tag($str){
     if($v != NULL && $v != ''){
       //if(mb_strlen($v, 'UTF-8') > $cutlen)
       //  $v = mb_substr($v, 0, $cutlen-1, 'UTF-8').'c';
-      $result .= '<span class="tag" rel="tag">'.$v.'</span>';
+      $result .= '<span class="tag" rel="tag">'.mb_trim($v).'</span>';
     }
   }
   return $result;
