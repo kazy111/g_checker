@@ -66,43 +66,6 @@ function check_prev_live($pid, $chs)
   return $ret;
 }
 
-
-function update_status($pid, $live, $viewer, $change_flag, $thumb)
-{
-  global $db;
-
-  $sql_live = $live ? 'TRUE' : 'FALSE';
-  // construct time SQL
-  $sql_time = '';
-  if($change_flag){
-    $now = date('Y-m-d H:i:s');
-    if($live){
-      $sql_time = ', start_time = \''.$now.'\' ';
-    }else{
-      $sql_time = ', end_time = \''.$now.'\' ';
-      // TODO add history
-    }
-  }
-  $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
-         . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 where id = '.$pid;
-  $db->query($sql);
-  log_print($sql);
-}
-
-function add_history($pid, $start_time, $end_time)
-{
-  global $db;
-  try{
-  $sql = 'insert into  history_table (program_id, start_time, end_time) '
-    .' values ('.$pid.', \''.$start_time.'\', \''.$end_time.'\')';
-    log_print($sql);
-    $db->query($sql);
-  } catch (Exception $e) {
-    print("例外キャッチ：". $e->getMessage(). "\n");
-  }
-}
-
-
 // driver function (get channels and call check functions)
 function check()
 {
@@ -162,6 +125,7 @@ function check_ustream()
     $viewer = $live_st ? get_ustream_member($login, $id) : 0;
     $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$id.'_160x120_b.jpg';
     if($live_st || $change_flag)
+      log_print("<b>name:</b> ".$login." / ".$viewer);
       $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
     if($change_flag){
       if($live_st){
@@ -300,7 +264,7 @@ function check_justin()
       $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
       $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
       
-      print "\nname: ".$name." - ".$change_flag."\n";
+      log_print("<b>name:</b> ".$name." / ".$viewer);
       $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
       
       if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
@@ -392,6 +356,8 @@ function check_stickam()
     $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
     
     if($live_st || $change_flag)
+      
+      log_print("<b>name:</b> ".$name." / ".$viewer);
       $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
     if($change_flag){
       if($live_st){
