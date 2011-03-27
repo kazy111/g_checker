@@ -7,7 +7,7 @@ $id = $_GET['id'];
 
 $result = $manager->get_program($id);
 if($result){
-  $manager->delete_streamer($id);
+  $manager->delete_program($id);
 }
 
 // redirect
