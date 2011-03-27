@@ -154,6 +154,27 @@ function check_ustream()
     return $match[1] ? $match[1] : 0;
       */
   }
+
+  function update_ustream($pid, $id, $login, $live_st){
+    global $sid_chs, $chs, $manager;
+    
+    $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
+    $viewer = $live_st ? get_ustream_member($login, $id) : 0;
+    $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$id.'_160x120_b.jpg';
+    if($live_st || $change_flag)
+      $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
+    if($change_flag){
+      if($live_st){
+        if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+          start_tweet($chs[$pid]);
+      }else{
+        $start_time = $chs[$pid]['start_time'];
+        $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
+        if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+          end_tweet($chs[$pid]);
+      }
+    }
+  }
   
   $ids = array();
   $hash = array();
@@ -182,51 +203,42 @@ function check_ustream()
     }
 
     if(count($v) > 1){
-      if($xml->results->err != '') // error
-        log_print('error: '. implode(', ', $v)); // TODO fallback check
-      foreach($xml->results->array as $res){
-        $live_st = live_status($res->result->status);
-        $login = $res->result->user->userName;
-        $name = ''.$res->uid;
-        $pid = $hash[$name];
-        $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
-        $viewer = $live_st ? get_ustream_member($login, $res->result->id) : 0;
-        $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$res->result->id.'_160x120_b.jpg';
-        if($live_st || $change_flag){
-          $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
-        }
-        if($change_flag){
-          if($live_st){
-            if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-              start_tweet($chs[$pid]);
-          }else{
-            $start_time = $chs[$pid]['start_time'];
-            $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
-            if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-              end_tweet($chs[$pid]);
+      if($xml->error != ''){ // error
+        log_print('error: '. implode(', ', $v));
+        
+        // fallback check
+        foreach($v as $tv){
+          $url = 'http://api.ustream.tv/xml/channel/'.$tv.'/getInfo?key='.$ust_apikey;
+          try{
+            $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+          }catch(Exception $e){
+            print $e->getMessage();
+            continue;
           }
+          if($xml->error == ''){
+            update_ustream($hash[$tv], $xml->results->id, $xml->results->user->userName,
+                           live_status($xml->results->status));
+          }else{
+            log_print('<b>illigal channel:</b> '.$tv);
+          }
+        }
+      } else {
+        // normal loop
+        foreach($xml->results->array as $res){
+          $name = ''.$res->uid;
+          update_ustream($hash[$name], $res->result->id, $res->result->user->userName,
+                         live_status($res->result->status));
         }
       }
     }else{
-      $live_st = live_status($xml->results->status);
-      $login = $xml->results->user->userName;
-      $name = $v[0];
-      $pid = $hash[$name];
-      $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
-      $viewer = $live_st ? get_ustream_member($login, $xml->results->id) : 0;
-      $thumb = 'http://static-cdn2.ustream.tv/livethumb/1_'.$xml->results->id.'_160x120_b.jpg';
-      if($live_st || $change_flag)
-        $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
-      if($change_flag){
-        if($live_st){
-          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-            start_tweet($chs[$pid]);
-        }else{
-          $start_time = $chs[$pid]['start_time'];
-          $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
-          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-            end_tweet($chs[$pid]);
-        }
+      
+      if($xml->error != ''){ // error
+        log_print('<b>illigal channel:</b> '.$v[0]);
+      }else{
+        // normal check
+        $name = $v[0];
+        update_ustream($hash[$name], $xml->results->id, $xml->results->user->userName,
+                       live_status($xml->results->status));
       }
     }
   }
@@ -262,7 +274,7 @@ function check_justin()
   try{
     $jsontxt = '';
     $json = new Services_JSON();
-    // URL をオープン
+    // open URL
     $fp = fopen($url, 'r');
     while (! feof($fp)) {
       $jsontxt .= fread($fp, 1024) or '';
@@ -278,7 +290,7 @@ function check_justin()
   
   if($xml){
     foreach($xml as $res){
-      print_r($res);
+      //print_r($res);
       $ch = $res->channel;
       $name = ''.$ch->login;
       if($name == '') $name = ''.$ch->channel;
@@ -327,7 +339,7 @@ function check_stickam()
   $ids = array();
   $hash = array();
   
-  log_print("start checking Ustream.tv...");
+  log_print("start checking Stickam.jp...");
   
   foreach($chs as $k => $v){
     if($v['type']==2){
@@ -394,7 +406,7 @@ function check_stickam()
     }
   }
 
-  log_print('finish checking Stickam.');
+  log_print('finish checking Stickam.jp.');
 }
 
 check();
