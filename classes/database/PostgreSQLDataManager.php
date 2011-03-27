@@ -105,7 +105,7 @@ class PostgreSQLDataManager implements IDataManager {
   }
   
   function get_streamers(){
-    $sql = 'select id, name from streamer_table order by id';
+    $sql = 'select id, name, description, twitter, url, wiki, tag from streamer_table order by id';
     $result = $this->db->query($sql);
     $list = array();
     while($arr = $this->db->fetch($result)){
