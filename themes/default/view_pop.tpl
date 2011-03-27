@@ -2,12 +2,12 @@
 <html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>{$site_title}</title>
-<link rel="shortcut icon" href="http://kazy111.info/checker/favicon.ico" />
+<link rel="shortcut icon" href="{$site_url}/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="http://kazy111.info/checker/css/checker.css" />
-<script type="text/javascript" src="http://kazy111.info/checker/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="{$site_url}/js/jquery-1.4.2.min.js"></script>
 <meta http-equiv="content-script-type" content="text/javascript" /> 
-<script type="text/javascript" src="http://kazy111.info/checker/js/swfobject.js"></script> 
-<script type="text/javascript" src="http://kazy111.info/checker/js/nicoirc20100905.js"></script> 
+<script type="text/javascript" src="{$site_url}/js/swfobject.js"></script> 
+<script type="text/javascript" src="{$site_url}/js/nicoirc20110327.js"></script> 
 
 <script type="text/javascript">
 
@@ -19,15 +19,16 @@ var mode = 'direct';
 
 function select(pid)
 {
-  var ust, jus, t = p_data[pid];
+  var id, t = p_data[pid];
   var width = $(window).width();
   var height = $(window).height()-16;
   if(cur_pid != pid){
     switch(t.type){
-      case 0: ust = t.opt_id; jus = ''; break;
-      case 1: ust = ''; jus = t.ch_id; break;
+      case 0: id = t.opt_id; break;
+      case 1: id = t.ch_id; break;
+      case 2: id = t.ch_id; break;
     }
-    showMovieMode(mboxid, ust, jus, width, height, mode, 'high');
+    showMovieMode(mboxid, t.type, id, width, height, mode, 'high');
     //cur_pid = pid;
   }
 }
@@ -37,7 +38,18 @@ function add_select()
   var s = document.getElementById('select');
   for(var i in p_data){
     var n = document.createElement('span');
-    var type = p_data[i].type == 0 ? 'UST' : 'JUS';
+    var type = '';
+    switch(p_data[i].type){
+    case 0:
+      type = 'UST';
+      break;
+    case 1:
+      type = 'JUS';
+      break;
+    case 2:
+      type = 'SKM';
+      break;
+    }
     n.innerHTML = '<a href="javascript:select('+p_data[i].id+')">'+type+': '+p_data[i].ch_id+'</a> ';
     s.appendChild(n);
   }

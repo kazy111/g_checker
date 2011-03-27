@@ -93,7 +93,7 @@ $data->assign('theme_data', $contents_theme);
 
 $page->add_header('<meta http-equiv="content-script-type" content="text/javascript" />');
 $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
-$page->add_header('<script type="text/javascript" src="'.$site_url.'/js/nicoirc20110305.js"></script>');
+$page->add_header('<script type="text/javascript" src="'.$site_url.'/js/nicoirc20110327.js"></script>');
 $page->set('view', $data);
 $page->set_title($name);
 

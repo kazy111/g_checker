@@ -30,6 +30,9 @@ function create_program_list($arrs)
       case 1: // justin
         $ret .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">'.Jst.'</a> ';
         break;
+      case 2: // stickam
+        $ret .= '<a href="http://www.stickam.jp/profile/'.$v['ch_name'].'">'.Jst.'</a> ';
+        break;
       }
     }
   }
@@ -53,7 +56,7 @@ function get_streamer_data($arrs)
   $ch_ust;
   $ch_jus;
   $ch_chat;
-  $ch_v = 1;
+  $ch_v = 1; // for multiview
   
   foreach($arrs as $k => $v){
     $programs_raw[] = array($v['type'], $v['ch_name'], $v['optional_id'], $v['thumbnail'], $v['live']);
@@ -75,6 +78,13 @@ function get_streamer_data($arrs)
         $ch_v = 3;
         $programs .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">Jst'.$thumb.'</a> ';
         break;
+        
+      case 2: // stickam
+        $live_thumb = $v['thumbnail'];
+        $ch_skm = $v['ch_name'];
+        $ch_v = 5;
+        $programs .= '<a href="http://www.stickam.jp/profile/'.$v['ch_name'].'">Jst'.$thumb.'</a> ';
+        break;
       }
       $ch_chat = substr($v['room'],1);
     }else {
@@ -93,6 +103,7 @@ function get_streamer_data($arrs)
   if(!isset($live_thumb)) $live_thumb = '';
   if(!isset($ch_ust))  $ch_ust = '';
   if(!isset($ch_jus))  $ch_jus = '';
+  if(!isset($ch_skm))  $ch_skm = '';
   if(!isset($ch_chat)) $ch_chat = '';
   
   $i = $arrs[0];
@@ -142,7 +153,7 @@ function get_streamer_data($arrs)
   $data['wiki_url'] = $GLOBALS['wiki_url'];
   $data['url'] = $i['url'];
   $data['twitter'] = $i['twitter'];
-  $data['multi_data'] = '{\'name\':\''.$i['name'].'\',\'chat\':\''.$ch_chat.'\',\'ust\':\''.$ch_ust.'\',\'jus\':\''.$ch_jus.'\',\'v\':'.$ch_v.'}';
+  $data['multi_data'] = '{\'name\':\''.$i['name'].'\',\'chat\':\''.$ch_chat.'\',\'ust\':\''.$ch_ust.'\',\'jus\':\''.$ch_jus.'\',\'skm\':\''.$ch_skm.'\',\'v\':'.$ch_v.'}';
 
   return $data;
 }

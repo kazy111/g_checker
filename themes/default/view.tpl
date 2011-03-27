@@ -51,14 +51,15 @@ function ReadCookie(key) {
 
 function select(pid)
 {
-  var ust, jus, t = p_data[pid];
+  var id, t = p_data[pid];
   //if(cur_pid != pid){
   if(true){
     switch(t.type){
-      case 0: ust = t.opt_id; jus = ''; break;
-      case 1: ust = ''; jus = t.ch_id; break;
+      case 0: id = t.opt_id; break;
+      case 1: id = t.ch_id; break;
+      case 2: id = t.ch_id; break;
     }
-    showMovieMode(mboxid, ust, jus, width, height, mode, 'high');
+    showMovieMode(mboxid, t.type, id, width, height, mode, 'high');
     cur_pid = pid;
   }
   if(enable_chat && cur_cid != t.cid){
@@ -129,7 +130,7 @@ function resize(w, h)
   t = document.getElementById('chat');
   if(t){
     t.style.top = '-'+h;
-    t = t.childNodes[0];
+    if( (t.tagName != 'EMBED' && t.tagName != 'OBJECT')){ t = t.childNodes[0]; }
     // var _w = width*0.75; if(_w<320)_w = 320;
     var _w = height*0.75; if(_w<320)_w = 320;
     if(t){ t.width = _w; t.height = h;  }
@@ -145,16 +146,34 @@ function add_select()
   var l = document.getElementById('link');
   for(var i in p_data){
     var n = document.createElement('span');
-    var type = p_data[i].type == 0 ? 'UST' : 'JUS';
+    var type = '';
+    switch(p_data[i].type){
+    case 0:
+      type = 'UST';
+      break;
+    case 1:
+      type = 'JUS';
+      break;
+    case 2:
+      type = 'SKM';
+      break;
+    }
     n.innerHTML = '<a href="javascript:select('+p_data[i].id+')">'+type+': '+p_data[i].ch_id+'</a> ';
     s.appendChild(n);
 
 
     var n = document.createElement('span');
-    if( p_data[i].type == 0 )
+    switch (p_data[i].type ){
+    case 0:
       n.innerHTML = '<a href="http://www.ustream.tv/channel/'+p_data[i].ch_id+'">Ust: '+p_data[i].ch_id+'</a> ';
-    else
+      break;
+    case 1:
       n.innerHTML = '<a href="http://www.justin.tv/'+p_data[i].ch_id+'">Jus: '+p_data[i].ch_id+'</a> ';
+      break;
+    case 2:
+      n.innerHTML = '<a href="http://www.stickam.jp/profile/'+p_data[i].ch_id+'">Stickam: '+p_data[i].ch_id+'</a> ';
+      break;
+    }
     l.appendChild(n);
   }
 }

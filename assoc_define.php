@@ -3,7 +3,8 @@
 
 
 $service_assoc = array(0 => 'ustream',
-                       1 => 'justin');
+                       1 => 'justin',
+                       2 => 'stickam');
 
 $chat_assoc = array(0 => 'c.ustream.tv',
                     1 => 'irc.mibbit.com',
