@@ -3,7 +3,6 @@
 include 'header.php';
 include_once 'classes/ircbot.php';
 
-set_time_limit(50);
 
 $chs;
 $sid_chs;

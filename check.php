@@ -5,7 +5,6 @@ include_once 'tweet.php';
 // no cron, every 60 seconds check?
 include_once 'classes/JSON.php';
 
-set_time_limit(50);
 
 $ust_apikey = '98F257180583948FC8FAD3042D2A0E7E';
 $chs;
@@ -132,10 +131,14 @@ function check_ustream()
         if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
           start_tweet($chs[$pid]);
       }else{
-        $start_time = $chs[$pid]['start_time'];
-        $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
-        if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-          end_tweet($chs[$pid]);
+        if(intval($chs[$pid]['offline_count']) > 1){
+          $start_time = $chs[$pid]['start_time'];
+          $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
+          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+            end_tweet($chs[$pid]);
+        }else{
+          $manager->increment_offline_count($pid);
+        }
       }
     }
   }
@@ -364,10 +367,14 @@ function check_stickam()
         if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
           start_tweet($chs[$pid]);
       }else{
-        $start_time = $chs[$pid]['start_time'];
+        if(intval($chs[$pid]['offline_count']) > 1){
+          $start_time = $chs[$pid]['start_time'];
           $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
-        if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-          end_tweet($chs[$pid]);
+          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+            end_tweet($chs[$pid]);
+        }else{ 
+          $manager->increment_offline_count($pid);
+        }
       }
     }
   }
