@@ -70,7 +70,7 @@ $data->assign('first_id', $first_id);
 
 $page->add_header('<meta http-equiv="content-script-type" content="text/javascript" />');
 $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
-$page->add_header('<script type="text/javascript" src="'.$site_url.'/js/nicoirc20100905.js"></script>');
+$page->add_header('<script type="text/javascript" src="'.$site_url.'/js/nicoirc20110403.js"></script>');
 print($page->get_once('view_pop',$data));
 //$page->set('view_pop', $data);
 //$page->set_title($name);
