@@ -366,6 +366,13 @@ if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sor
   $sort = $_COOKIE['sort'];
 }
 $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/cookie.js"></script>');
+
+// play sound (probability 1/350)
+if(mt_rand(1, 350) == 111){
+  $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
+  $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/playsound.js"></script>');
+}
+
 $page->set('index'.$extra, display_list($sort));
 
 include 'footer.php';
