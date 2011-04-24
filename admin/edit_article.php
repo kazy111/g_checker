@@ -37,6 +37,8 @@ function get_form($id){
       <textarea name="body" cols="40" rows="10">$body</textarea><br />
       <span class="form_title">priority:</span>
       <input type="edit" name="priority" value="$priority" /><br />
+      <span class="form_title">update time:</span>
+      <input type="checkbox" name="update_time[]" value="on" checked="checked" /><br />
       <input type="submit" value="submit" />
     </form>
 EOD;

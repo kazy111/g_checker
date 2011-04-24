@@ -202,17 +202,23 @@ class MySQLDataManager implements IDataManager {
     }
     return NULL;
   }
-  
-  function set_article($data){
+
+  function set_article($data, $update_time = FALSE){
+    $now = date('Y-m-d H:i:s');
     if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
       // create
-      $now = date('Y-m-d H:i:s');
       $this->db->query('insert into article_table (title, body, priority, created) values (\''
                        .$data['title'].'\', \''.$data['body'].'\', '.$data['priority'].', \''.$now.'\')');
     } else {
       // update
-      $this->db->query('update article_table set title = \''.$data['title'].'\', body = \''
-                       .$data['body'].'\', priority = '.$data['priority'].' where id='.$data['id']);
+      if(in_array('update_time', $data)){
+        $this->db->query('update article_table set title = \''.$data['title'].'\', body = \''
+                         .$data['body'].'\', priority = '.$data['priority'].', created = \''.$now.'\''
+                         .' where id='.$data['id']);
+      } else {
+        $this->db->query('update article_table set title = \''.$data['title'].'\', body = \''
+                         .$data['body'].'\', priority = '.$data['priority'].' where id='.$data['id']);
+      }
     }
   }
 
