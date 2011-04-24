@@ -14,6 +14,9 @@ body{
 a{
   color: orange;
 }
+a:visited{
+  color: orange;
+}
 h1#title{
   font-family: 'FAManiaRegular', sans-serif;
   font-size: 24pt;

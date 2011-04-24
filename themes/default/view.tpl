@@ -9,6 +9,7 @@ var cboxid = 'chat';
 var width, height;
 var mode = 'direct';
 var enable_chat = 1;
+var min_chat_width = 380;
 
 width = ReadCookie('w');  if(width == '')  width = 500;
 height = ReadCookie('h'); if(height == '') height = 400;
@@ -64,7 +65,7 @@ function select(pid)
   }
   if(enable_chat && cur_cid != t.cid){
     var c = c_data[t.cid];
-    var _w = height*0.75; if(_w<320)_w = 320;
+    var _w = height*0.75; if(_w < min_chat_width)_w = min_chat_width;
     switch(c.type){
       case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
       case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
@@ -131,8 +132,8 @@ function resize(w, h)
   if(t){
     t.style.top = '-'+h;
     if( (t.tagName != 'EMBED' && t.tagName != 'OBJECT')){ t = t.childNodes[0]; }
-    // var _w = width*0.75; if(_w<320)_w = 320;
-    var _w = height*0.75; if(_w<320)_w = 320;
+    // var _w = width*0.75; if(_w < min_chat_width)_w = min_chat_width;
+    var _w = height*0.75; if(_w < min_chat_width)_w = min_chat_width;
     if(t){ t.width = _w; t.height = h;  }
   }
   WriteCookie('w', w, 90);
