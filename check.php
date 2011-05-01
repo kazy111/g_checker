@@ -131,14 +131,10 @@ function check_ustream()
         if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
           start_tweet($chs[$pid]);
       }else{
-        if(intval($chs[$pid]['offline_count']) > 1){
-          $start_time = $chs[$pid]['start_time'];
-          $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
-          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-            end_tweet($chs[$pid]);
-        }else{
-          $manager->increment_offline_count($pid);
-        }
+        $start_time = $chs[$pid]['start_time'];
+        $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
+        if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+          end_tweet($chs[$pid]);
       }
     }
   }
