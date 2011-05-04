@@ -54,7 +54,6 @@ function check_irc()
   $config = array(
     'server' => 'c.ustream.tv', 
     'port'   => 6667, 
-    'channel' => '#kazy',
     'name'   => 'ustreamer-01949', 
     'nick'   => 'ustreamer-01949', 
     'pass'   => '', 
@@ -65,7 +64,6 @@ function check_irc()
   $config = array( 
     'server' => 'irc.mibbit.com', 
     'port'   => 6667, 
-    'channel' => '#kazy111',
     'name'   => 'ust-04281', 
     'nick'   => 'ust-04281', 
     'pass'   => '',

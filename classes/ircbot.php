@@ -75,7 +75,7 @@ class IRCBot {
         {
                 $this->send_data('USER', $config['nick'].' g-checker '.$config['nick'].' :'.$config['name']);
                 $this->send_data('NICK', $config['nick']);
-		$this->join_channel($config['channel']);
+                //$this->join_channel($config['channel']);
         }
 
 
