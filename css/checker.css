@@ -85,7 +85,9 @@ div.navigation {
   font-weight: bold;
   border-radius: 3px;
 }
-
+#view{
+  padding: 5px;
+}
 #view #name{
   font-size: 16pt;
   font-weight: bold;
