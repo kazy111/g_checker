@@ -1,6 +1,9 @@
 var arr = new Array('welcome', 'theme', 'theme2');
 
-if (document.createElement) window.onload = function() {
+
+var playsound = ReadCookie('playsound');
+
+if (document.createElement && playsound != 'false') window.onload = function() {
   var ele = document.createElement('div');
   var id = '_playsound';
   ele.id = id;

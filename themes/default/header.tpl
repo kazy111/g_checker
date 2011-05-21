@@ -8,6 +8,7 @@
 <meta name="description" content="{$site_title}" />
 <script type="text/javascript" src="{$site_url}/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="{$site_url}/js/auto_notice.js"></script>
+<script type="text/javascript" src="{$site_url}/js/cookie.js"></script>
 {$additional_header}
 <link rel="stylesheet" type="text/css" href="{$site_url}/css/menu-bar.css" />
 <script type="text/javascript">
@@ -31,6 +32,13 @@ $(document).ready(function(){
 			height: "10px"
 		});
 		$("#main-nav li a.close").fadeOut();
+	});
+
+	var tmp = ReadCookie('playsound');
+	var n = document.getElementById('playsound');
+	if(tmp != 'false') $("#playsound").attr('checked', "checked");
+	$("#playsound").click(function(e){
+		WriteCookie('playsound', (n.checked ? 'true' : 'false'));
 	});
 });
 

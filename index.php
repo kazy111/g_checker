@@ -365,10 +365,9 @@ if(array_key_exists('default_sort', $GLOBALS) && array_key_exists($GLOBALS['defa
 if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sort_assoc)){
   $sort = $_COOKIE['sort'];
 }
-$page->add_header('<script type="text/javascript" src="'.$site_url.'/js/cookie.js"></script>');
 
 // play sound (probability 1/350)
-if(mt_rand(1, 350) == 111){
+if(mt_rand(1, 350) == 11){
   $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
   $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/playsound.js"></script>');
 }

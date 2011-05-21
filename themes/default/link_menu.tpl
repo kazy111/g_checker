@@ -23,6 +23,8 @@
 	  </ul>
 	</li>
 
+	<li><a class="main-link_" href="./about.php">Sound On <input type="checkbox" name="playsound" id="playsound" value="" /></a>
+
 	</li>
 	 <li><a class="close" title="メニューを閉じる" href="#">X</a></li>
       </ul>
@@ -31,5 +33,6 @@
     <b class="round"> <b class="round5"></b> <b class="round4"></b> <b class="round3"></b> <b class="round2"><b></b></b> <b class="round1"><b></b></b></b> </div>
   <!-- End main-handle-->
  </div>
+
 <!-- End wrap -->
 </div>
