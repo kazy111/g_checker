@@ -10,6 +10,7 @@
 <script type="text/javascript" src="{$site_url}/themes/玲/tab_change.js"></script>
 <script type="text/javascript" src="{$site_url}/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="{$site_url}/js/auto_notice.js"></script>
+<script type="text/javascript" src="{$site_url}/js/cookie.js"></script>
 <link rel="stylesheet" type="text/css" href="./css/menu-bar.css" />
 <script type="text/javascript">
 
