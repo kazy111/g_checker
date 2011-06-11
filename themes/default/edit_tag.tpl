@@ -18,7 +18,7 @@
 <form method="POST">
   <input type="hidden" name="mode" value="1" />
   <input type="hidden" name="id" value="{$id}" />
-  <input type="edit" name="tag" value="{$tag}" style="width: 30em" /><br />
+  <input type="edit" name="tag" value="{$tag}" style="width: 35em" /><br />
   <input type="submit" value="登録" />
 </form>
 

@@ -23,7 +23,7 @@
 	  </ul>
 	</li>
 
-	<li><a class="main-link_" href="./about.php">Sound On <input type="checkbox" name="playsound" id="playsound" value="" /></a>
+	<li><a>Sound On <input type="checkbox" name="playsound" id="playsound" value="" /></a>
 
 	</li>
 	 <li><a class="close" title="メニューを閉じる" href="#">X</a></li>

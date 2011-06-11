@@ -69,6 +69,12 @@ img{
 .meta a, .meta a:hover, .meta a:visited{
   color: grey !important;
 }
+.online {
+  background-color: #FFE0E0;
+}
+.online:hover {
+  background-color: #FFD3D3;
+}
 .online .time_diff{
   display: none;
 }

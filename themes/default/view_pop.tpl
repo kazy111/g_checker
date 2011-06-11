@@ -56,7 +56,7 @@ function add_select()
 }
 
 $(document).ready(function() {
-  var footmargin = 16;
+  var footmargin = 18;
   function resizeContainer(e) {
     var containerWidth = $(window).width();
     var containerHeight = $(window).height() - footmargin;
@@ -76,8 +76,7 @@ $(document).ready(function() {
 });
 
 </script>
-<body>
-<div id="view" style="width:100%;height:100%;"></div>
+<body style="overflow: none;">
 <div id="movie" style="width:100%;height:100%;padding:0;margin:0"></div>
 
 <div id="select" style="margin: 0">画面切り替え: </div>

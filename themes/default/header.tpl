@@ -38,7 +38,7 @@ $(document).ready(function(){
 	var n = document.getElementById('playsound');
 	if(tmp != 'false') $("#playsound").attr('checked', "checked");
 	$("#playsound").click(function(e){
-		WriteCookie('playsound', (n.checked ? 'true' : 'false'));
+		WriteCookie('playsound', (n.checked ? 'true' : 'false'),90);
 	});
 });
 
