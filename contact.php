@@ -9,10 +9,10 @@ mb_language('ja'); // for mail encoding
 function get_form(){
   global $db;
 
-  $title   = get_key($_POST, 'title');
-  $name    = get_key($_POST, 'name');
-  $contact = get_key($_POST, 'contact');
-  $body    = get_key($_POST, 'body');
+  $title   = sanitize_html(get_key($_POST, 'title'));
+  $name    = sanitize_html(get_key($_POST, 'name'));
+  $contact = sanitize_html(get_key($_POST, 'contact'));
+  $body    = sanitize_html(get_key($_POST, 'body'));
   $now     = time();
 
   // display form
@@ -45,26 +45,29 @@ function check_and_submit(){
   $body    = $_POST['body'];
   $time    = $_POST['test'];
   
-  if(time() - intval($time) < 5 || $body == ''){
-    return false;
+  if(time() - intval($time) < 5){
+    return 'あなたはBOTですね？';
   }
-  
+  if($body == ''){
+    return 'メッセージを入力して下さい';
+  }
 
   mb_internal_encoding('UTF-8');
   mb_send_mail($GLOBALS['admin_mail'], $title, 'sender: ' . $name.' <'.$contact.">\n\n".$body);
   $_POST['title'] = '';
   $_POST['body']  = '';
-  return true;
+  return '';
 }
 
 $msg = '';
 if ( array_key_exists('test', $_POST) ) {
   // TODO validation
 
-  if(check_and_submit()){
+  $ret = check_and_submit();
+  if($ret == ''){
     $msg = '投稿完了しました！';
   }else{
-    $msg = '投稿失敗しました';
+    $msg = '投稿失敗しました: '.$ret;
   }
 }
 
