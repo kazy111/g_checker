@@ -154,3 +154,14 @@ a{
 a:visited{
   color: #428;
 }
+
+#legend {
+  text-align: center;
+  font-size: small;
+  font-style: italic;
+  margin: 1em;
+}
+.contents #message{
+  color: red;
+  font-weight: bold;
+}

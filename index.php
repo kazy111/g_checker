@@ -333,6 +333,10 @@ function display_list($sort)
     $contents_article .= $page->get_once('article_item', $arr);
   }
 
+  // get random legend
+  $result = $manager->get_random_legend();
+  $legend = sanitize_html($result['body']);
+
   // output page contents
   $data = new Dwoo_Data();
   $data->assign('streamer_online_data', $contents_streamer);
@@ -343,6 +347,7 @@ function display_list($sort)
   $data->assign('site_title', $GLOBALS['site_title']);
   $data->assign('article_data', $contents_article);
   $data->assign('curr_time', time());
+  $data->assign('legend', $legend);
   //TODO Update time
 
   return $data;
@@ -366,8 +371,8 @@ if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sor
   $sort = $_COOKIE['sort'];
 }
 
-// play sound (probability 1/350)
-if(mt_rand(1, 350) == 11){
+// play sound (probability originally 1/350)
+if(mt_rand(1, 128) == 11){
   $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
   $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/playsound.js"></script>');
 }
