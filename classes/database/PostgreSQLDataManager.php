@@ -22,7 +22,7 @@ class PostgreSQLDataManager implements IDataManager {
     $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, description, wiki, twitter, url, tag, '
         .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail, offline_count'
         .' from streamer_table as s, program_table as p, chat_table as c '
-        .' where s.id = p.streamer_id '
+        .' where s.id = p.streamer_id and s.enable=1'
         .' and c.id = p.chat_id order by sid, pid;';
     $result = $this->db->query($sql);
     $list = array();
@@ -38,7 +38,7 @@ class PostgreSQLDataManager implements IDataManager {
   function get_streamer_info($streamer_id){
     $sql = 'select live, name, description, tag, url, wiki, p.id as pid, c.id as cid, ch_name, optional_id, room, c.type as ctype, p.type as ptype '
           .' from streamer_table as s, program_table as p, chat_table c '
-          .' where s.id = '.$streamer_id.' and s.id = p.streamer_id and c.id = p.chat_id';
+          .' where s.id = '.$streamer_id.' and s.id = p.streamer_id and c.id = p.chat_id and s.enable=1';
 
     $result = $this->db->query($sql);
     $list = array();
@@ -104,6 +104,14 @@ class PostgreSQLDataManager implements IDataManager {
     return $this->db->query_ex('select title, body, created, priority from article_table where id = '.$article_id);
   }
   
+  function get_legend($id){
+    return $this->db->query_ex('select body, created from legend_table where id = '.$id);
+  }
+  function get_random_legend(){
+    return $this->db->query_ex('select body, created from legend_table order by random() limit 1');
+  }
+
+
   function get_streamers(){
     $sql = 'select id, name, description, twitter, url, wiki, tag from streamer_table order by id';
     $result = $this->db->query($sql);
@@ -153,6 +161,19 @@ class PostgreSQLDataManager implements IDataManager {
     
     $list = array();
     while($arr = $this->db->fetch($result)){
+      $list[] = $arr;
+    }
+    return $list;
+  }
+
+  function get_legends($pagesize = NULL, $page = 0){
+    $sql = 'select id, body, created from legend_table '
+          .' order by created desc';
+    if($pagesize)
+      $sql .= ' limit '.$pagesize.' offset '.($pagesize * $page).';';
+    $result = $this->db->query($sql);
+    $list = array();
+    while(($arr = $this->db->fetch($result)) != NULL ){
       $list[] = $arr;
     }
     return $list;
@@ -222,6 +243,18 @@ class PostgreSQLDataManager implements IDataManager {
     }
   }
 
+  function set_legend($data){
+    $now = date('Y-m-d H:i:s');
+    if(is_null($data['id']) || $data['id'] == '' || !is_numeric($data['id'])){
+      // create
+      $this->db->query('insert into legend_table (body, created) values (\''
+                       .$data['body'].'\', \''.$now.'\')');
+    } else {
+      // update
+      $this->db->query('update legend_table set body = \''.$data['body'].'\' where id='.$data['id']);
+    }
+  }
+
   function delete_streamer($streamer_id){
     // start transaction
     $this->db->begin();
@@ -266,7 +299,10 @@ class PostgreSQLDataManager implements IDataManager {
   function delete_article($article_id){
     $this->db->query('delete from article_table where id = '.$article_id);
   }
-
+  function delete_legend($id){
+    $this->db->query('delete from legend_table where id = '.$id);
+  }
+  
   // tag maintenance
   function get_tag($id){
     return $this->db->query_ex('select tag from streamer_table where id = '.$id);
@@ -314,6 +350,7 @@ class PostgreSQLDataManager implements IDataManager {
                      .'url VARCHAR(255),'
                      .'wiki INT,'
                      .'tag TEXT DEFAULT \'\','
+                     .'enable SMALLINT DEFAULT 1,'
                      .'PRIMARY KEY (id))');
 
     $this->try_query('CREATE TABLE program_table ('
@@ -353,6 +390,12 @@ class PostgreSQLDataManager implements IDataManager {
                      .'created TIMESTAMP,'
                      .'priority SMALLINT,'
                      .'PRIMARY KEY(id))');
+    
+    $this->try_query('CREATE TABLE legend_table ('
+                     .'id SERIAL NOT NULL,'
+                     .'body TEXT,'
+                     .'created TIMESTAMP,'
+                     .'PRIMARY KEY(id))');
   }
   
   function delete_db(){
@@ -361,6 +404,7 @@ class PostgreSQLDataManager implements IDataManager {
     $this->try_query('drop table chat_table;');
     $this->try_query('drop table history_table;');
     $this->try_query('drop table article_table;');
+    $this->try_query('drop table legend_table;');
   }
   
   function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc){
