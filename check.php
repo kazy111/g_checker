@@ -101,7 +101,12 @@ function check_ustream()
       .$login.'/listAllChannels?key='.$ust_apikey;
     
     log_print($url);
-    $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+    try{
+      $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+      if(! $xml ) throw new Exception('URL open failed : '.$url);
+    }catch(Exception $e){
+      return 0;
+    }
 
     foreach($xml->results->array as $k => $v){
       if(strcmp($v->id, $chid) == 0)
@@ -160,6 +165,7 @@ function check_ustream()
     log_print($url);
     try{
       $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+      if(! $xml ) throw new Exception('URL open failed : '.$url);
     }catch(Exception $e){
       print $e->getMessage();
       continue;
@@ -174,6 +180,7 @@ function check_ustream()
           $url = 'http://api.ustream.tv/xml/channel/'.$tv.'/getInfo?key='.$ust_apikey;
           try{
             $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if(! $xml ) throw new Exception('URL open failed : '.$url);
           }catch(Exception $e){
             print $e->getMessage();
             continue;
@@ -239,6 +246,7 @@ function check_justin()
     $json = new Services_JSON();
     // open URL
     $fp = fopen($url, 'r');
+    if(! $fp ) throw new Exception('URL open failed : '.$url);
     while (! feof($fp)) {
       $jsontxt .= fread($fp, 1024) or '';
     }
@@ -318,6 +326,7 @@ function check_stickam()
     log_print($url);
     try{
       $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+      if(! $xml ) throw new Exception('URL open failed : '.$url);
     }catch(Exception $e){
       print $e->getMessage();
       continue;
