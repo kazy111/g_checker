@@ -144,7 +144,7 @@ function get_streamer_data($arrs, $extra)
   $data['chats_raw'] = $chats_raw;
   $data['time'] = $time;
   $data['time_data'] = $live ? $stime : $etime;
-  $data['time_rfc'] = date("r", $live ? $stime : $etime);
+  $data['time_rfc'] = date(DATE_RFC2822, $live ? $stime : $etime);
   $data['diff'] = $diff;
   $data['live'] = $live;
   $data['description'] = $i['description'];
