@@ -72,7 +72,7 @@ class Page{
     return $themes;
   }
 
-  function get()
+  function get($extra = '')
   {
     global $site_title;
     if(!$this->pname) return '';
@@ -91,7 +91,7 @@ class Page{
     $data->assign('additional_header', implode("\n", $this->header));
     $ret = '';
     
-    $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template(is_mobile()?'header_mobile':'header')), $data);
+    $ret .= $dwoo->get(new Dwoo_Template_File($this->get_template(is_mobile()?$extra.'header':'header')), $data);
     //$ret .= $this->get_safe_contents($dwoo, is_mobile()?'header_mobile':'header', $data);
 
     if($this->data){
@@ -138,9 +138,9 @@ class Page{
     return $dwoo->get(new Dwoo_Template_File($this->get_template($page)), $data);
     //return $this->get_safe_contents($dwoo, $page, $data);
   }
-  function output()
+  function output($extra = '')
   {
-    print $this->get();
+    print $this->get($extra);
   }
 }
 ?>
