@@ -43,9 +43,11 @@ function check_irc()
   foreach($chs as $ch){
     $r = strtolower($ch['room']);
     $rooms[$r] = 0;
-    $ids[$r] = $ch['ctype'];
     $hash[$r] = $ch['cid'];
     $phash[$r] = $ch['pid'];
+    if($ch['ctype'] == 0){
+      $ids[$r] = $ch['ctype'];
+    }
     if($ch['ctype'] == 1)
       $mib[] = $r;
   }
