@@ -8,9 +8,9 @@
 {foreach from=$program_raw item=p}
   {if $p[0] == 0}
    <a target="_blank" href="http://lonsdaleite.jp/uarchives/?channel={$p[2]}">Ust</a>
-  {else}
+  {else}{if $p[0] == 1}
    <a target="_blank" href="http://lonsdaleite.jp/jarchives/?channel={$p[1]}">Jus</a>
-  {/if}
+  {/if}{/if}}
 {/foreach}
   </span></td>
   <td class="chat"><span>{$chat}</span></td>

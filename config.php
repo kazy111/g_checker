@@ -12,7 +12,7 @@ $db_name   = 'gokusotsu';
 // ユーザ名
 $db_user   = 'gokusotsu';
 // パスワード
-$db_passwd = 'Hise78-F';
+$db_passwd = '';
 
 
 /* サイト設定 */
@@ -64,6 +64,13 @@ $tweet_start = FALSE;
 $tweet_end   = FALSE;
 // つぶやくときの末尾
 $tweet_footer = ' #g_checker';
+
+
+/* ニコ生設定 */
+// ログインID (配信チェックに必須)
+$nico_loginid = '';
+// ログインパスワード (配信チェックに必須)
+$nico_loginpw = '';
 
 
 // timezone

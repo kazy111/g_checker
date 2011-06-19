@@ -146,35 +146,18 @@ function add_select()
   var s = document.getElementById('select');
   var l = document.getElementById('link');
   for(var i in p_data){
-    var n = document.createElement('span');
-    var type = '';
-    switch(p_data[i].type){
-    case 0:
-      type = 'UST';
-      break;
-    case 1:
-      type = 'JUS';
-      break;
-    case 2:
-      type = 'SKM';
-      break;
-    }
-    n.innerHTML = '<a href="javascript:select('+p_data[i].id+')">'+type+': '+p_data[i].ch_id+'</a> ';
-    s.appendChild(n);
 
+    // ニコ生、Twitcastingは画面切り替えしない
+    if(p_data[i].type != 3 && p_data[i].type != 4){
 
-    var n = document.createElement('span');
-    switch (p_data[i].type ){
-    case 0:
-      n.innerHTML = '<a href="http://www.ustream.tv/channel/'+p_data[i].ch_id+'">Ust: '+p_data[i].ch_id+'</a> ';
-      break;
-    case 1:
-      n.innerHTML = '<a href="http://www.justin.tv/'+p_data[i].ch_id+'">Jus: '+p_data[i].ch_id+'</a> ';
-      break;
-    case 2:
-      n.innerHTML = '<a href="http://www.stickam.jp/profile/'+p_data[i].ch_id+'">Stickam: '+p_data[i].ch_id+'</a> ';
-      break;
+      var n = document.createElement('span');
+      n.innerHTML = '<a href="javascript:select('+p_data[i].id+')">'+p_data[i].typename+': '+p_data[i].ch_id+'</a> ';
+      s.appendChild(n);
     }
+
+    // add link
+    var n = document.createElement('span');
+    n.innerHTML = p_data[i].org;
     l.appendChild(n);
   }
 }

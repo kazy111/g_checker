@@ -17,22 +17,14 @@ function fold_numbers($arrs, $key, $value)
 
 function create_program_list($arrs)
 {
+  global $service_abb_assoc;
+  
   $ret = '';
   $live = 0;
   foreach($arrs as $k => $v){
     $live |= $v['live'] == 't';
     if($v['live'] == 't'){
-      switch($v['type']){
-      case 0: //ustream
-        $ret .= '<a href="http://www.ustream.tv/channel/'.$v['ch_name'].'">'.Ust.'</a> ';
-        break;
-      case 1: // justin
-        $ret .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">'.Jst.'</a> ';
-        break;
-      case 2: // stickam
-        $ret .= '<a href="http://www.stickam.jp/profile/'.$v['ch_name'].'">'.Jst.'</a> ';
-        break;
-      }
+      $ret .= '<a href="'.get_service_url($v['type'], $v['ch_name']).'">'.$service_abb_assoc[$v['type']].'</a> ';
     }
   }
   return $ret;
@@ -40,6 +32,8 @@ function create_program_list($arrs)
 
 function get_streamer_data($arrs, $extra)
 {
+  global $service_abb_assoc;
+  
   $viewers = fold_numbers($arrs, 'pid', 'viewer');
   $members = fold_numbers($arrs, 'cid', 'member');
   
@@ -52,9 +46,13 @@ function get_streamer_data($arrs, $extra)
   $programs_raw = array();
   $chats_raw = array();
 
-  $ch_ust;
-  $ch_jus;
+  // channel name array (key is type no.)
   $ch_chat;
+  $ch_name = array();
+  for($i = 0; $i < count($GLOBALS['service_assoc']); $i++){
+    $ch_name[(string)$i] = '';
+  }
+  
   $ch_v = 1; // for multiview
   
   foreach($arrs as $k => $v){
@@ -64,35 +62,31 @@ function get_streamer_data($arrs, $extra)
       $live = TRUE;
       $stime = ($stime > strtotime($v['start_time']) && $v['start_time']!='') ? strtotime($v['start_time']) : $stime;
       $thumb = '<img src="'.$v['thumbnail'].'" width="320" height="240" class="thumb"/>';
+      $programs .= '<a href="'.get_service_url($v['type'], $v['ch_name']).'">'.$service_abb_assoc[$v['type']].$thumb.'</a> ';
+      $ch_name[$v['type']] = $v['ch_name'];
       switch($v['type']){
       case 0: //ustream
         if(!isset($live_thumb)){ $live_thumb = $v['thumbnail']; }
-        $ch_ust = $v['optional_id'];
+        $ch_name[$v['type']] = $v['optional_id'];
         $ch_v = 1;
-        $programs .= '<a href="http://www.ustream.tv/channel/'.$v['ch_name'].'">Ust'.$thumb.'</a> ';
         break;
       case 1: // justin
         $live_thumb = $v['thumbnail'];
-        $ch_jus = $v['ch_name'];
         $ch_v = 3;
-        $programs .= '<a href="http://www.justin.tv/'.$v['ch_name'].'">Jst'.$thumb.'</a> ';
         break;
         
       case 2: // stickam
         $live_thumb = $v['thumbnail'];
-        $ch_skm = $v['ch_name'];
         $ch_v = 5;
-        $programs .= '<a href="http://www.stickam.jp/profile/'.$v['ch_name'].'">Jst'.$thumb.'</a> ';
         break;
       }
       $ch_chat = substr($v['room'],1);
     }else {
       if(!isset($live_thumb)) $live_thumb = $v['thumbnail'];
+      $ch_name[$v['type']] = $v['ch_name'];
       switch($v['type']){
       case 0: //ustream
-        if(!isset($ch_ust)) $ch_ust = $v['optional_id'];  break;
-      case 1: // justin
-        if(!isset($ch_jus)) $ch_jus = $v['ch_name']; break;
+        $ch_name[$v['type']] = $v['optional_id']; break;
       }
       if(!isset($ch_chat)) $ch_chat = substr($v['room'],1);
       $etime = $etime < strtotime($v['end_time']) ? strtotime($v['end_time']) : $etime;
@@ -100,9 +94,6 @@ function get_streamer_data($arrs, $extra)
   }
 
   if(!isset($live_thumb)) $live_thumb = '';
-  if(!isset($ch_ust))  $ch_ust = '';
-  if(!isset($ch_jus))  $ch_jus = '';
-  if(!isset($ch_skm))  $ch_skm = '';
   if(!isset($ch_chat)) $ch_chat = '';
   
   $i = $arrs[0];
@@ -153,7 +144,8 @@ function get_streamer_data($arrs, $extra)
   $data['wiki_url'] = $GLOBALS['wiki_url'];
   $data['url'] = $i['url'];
   $data['twitter'] = $i['twitter'];
-  $data['multi_data'] = '{\'name\':\''.$i['name'].'\',\'chat\':\''.$ch_chat.'\',\'ust\':\''.$ch_ust.'\',\'jus\':\''.$ch_jus.'\',\'skm\':\''.$ch_skm.'\',\'v\':'.$ch_v.'}';
+  $data['multi_data'] = '{\'name\':\''.$i['name'].'\',\'chat\':\''.$ch_chat.'\',\'ust\':\''.$ch_name['0']
+    .'\',\'jus\':\''.$ch_name['1'].'\',\'stk\':\''.$ch_name['2'].'\',\'nico\':\''.$ch_name['3'].'\',\'twc\':\''.$ch_name['4'].'\',\'v\':'.$ch_v.'}';
 
   return $data;
 }

@@ -50,18 +50,35 @@ foreach($cids as $a){
 }
 $chat_data = '{'.implode(',', $chat_data).'}';
 
+// open orignal site or view page flag
+$open_original = TRUE;
+
 // construct program data
 $program_data = array();
 foreach($pids as $a){
-  $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id'].'",type:'.$a['type'].',cid:'.$a['cid'].'}';
-  if($a['live'] == 't')
-    if( $a['type'] == 1 /*if justin*/ || !isset($first_id)) $first_id = $a['id'];
+  $org_link = '<a href="'.get_service_url($a['type'], $a['ch_id']).'">'.$service_abb_assoc[$a['type']].': '.$a['ch_id'].'</a> ';
+  $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id']
+    .'",type:'.$a['type'].',cid:'.$a['cid'].',org:\''.$org_link.'\',typename:"'.$service_abb_assoc[$a['type']].'"}';
+  if($a['live'] == 't' || $a['live'] == '1'){
+    if( $a['type'] == 1 /*if justin*/ ||  !isset($first_id) ) { $first_id = $a['id']; }
+    $open_original &= $service_org_assoc[$a['type']];
+    $open_original_url = get_service_url($a['type'], $a['ch_id']);
+  }
 }
+
 if(!isset($first_id)){
   foreach($pids as $p){
     $first_id = $p['id'];
     break;
   }
+  $open_original = FALSE;
+}
+
+if($open_original){
+  // redirect
+  header("HTTP/1.1 301 Moved Permanently");
+  header("Location: ".$open_original_url);
+  exit();
 }
 
 $program_data = '{'.implode(',', $program_data).'}';
