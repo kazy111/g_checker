@@ -34,6 +34,7 @@ function get_form($id){
   $assoc = array();
   foreach($result as $arr)
     $assoc[$arr['id']] = $arr['name'];
+  asort($assoc);
   $sids_html = assoc2select($assoc, 'streamer_id', $streamer_id);
 
   
@@ -42,6 +43,7 @@ function get_form($id){
   foreach($result as $arr)
     $assoc[$arr['id']] = $chat_assoc[$arr['type']].' '.$arr['room'];
 
+  asort($assoc);
   $cids_html = assoc2select($assoc, 'chat_id', $chat_id);
   
   $type_html = assoc2select($service_assoc, 'type', $type);
