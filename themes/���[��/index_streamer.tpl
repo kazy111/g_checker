@@ -9,7 +9,7 @@
 <tr>
  <td>
   <a href="view.php?id={$sid}" target="_blank">
-    <img class="thumbnail" src="{if $live_raw}{$thumbnail}{else}./themes/しーも/offline.png{/if}" width="160" height="120" />
+    <img class="thumbnail" src="{if $live_raw && $thumbnail != ''}{$thumbnail}{else}./themes/しーも/offline.png{/if}" width="160" height="120" />
   </a>
  </td>
  <td width="100%"><span class="st_topic">Topic: {$topic}</span><hr> {if $live_raw}{$diff}{else}{$time}{/if}

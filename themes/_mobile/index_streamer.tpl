@@ -6,5 +6,5 @@
 <small>{$topic}</small>
 <br>
 <span>{$viewer}/{$member}</span>
-{if $live_raw}<br><a class="thumb" href="{$thumbnail}">サムネイル</a>{/if}
+{if $live_raw && $thumbnail != ''}<br><a class="thumb" href="{$thumbnail}">サムネイル</a>{/if}
 <hr>

@@ -1,7 +1,7 @@
 <div class="streamer {$live} old">
   <span class="tweet-img">
   <a href="view.php?id={$sid}" target="_blank">
-    {if $live_raw}
+    {if $live_raw && $thumbnail != ''}
     <img class="thumb" src="{$thumbnail}" width="80" height="60" />
     {else}
       {if $twitter != ''}

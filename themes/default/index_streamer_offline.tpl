@@ -1,5 +1,5 @@
 <tr class="streamer {$live} old">
-  <td class="name"><span class="popup"><a href="view.php?id={$sid}" target="_blank">{$name}{if $live_raw}<img class="thumb" src="{$thumbnail}" width="320" height="240" />{/if}</a></span>
+  <td class="name"><span class="popup"><a href="view.php?id={$sid}" target="_blank">{$name}{if $live_raw && $thumbnail != ''}<img class="thumb" src="{$thumbnail}" width="320" height="240" />{/if}</a></span>
   <span class="tags">{$tag}</span>
   </td>
   <td class="time"><span class="time_diff">{$diff}</span> <span class="time_since">{$time}</span></td>
