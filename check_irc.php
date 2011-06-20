@@ -48,8 +48,11 @@ function check_irc()
     if($ch['ctype'] == 0){
       $ids[$r] = $ch['ctype'];
     }
-    if($ch['ctype'] == 1)
+    if($ch['ctype'] == 1){
       $mib[] = $r;
+      if($r == '#tenga18')
+        $ids[$r] = $ch['ctype'];
+    }
   }
 
   //Sample connection data.
@@ -77,7 +80,7 @@ function check_irc()
     if($v == 0){
       $arr = array_key_exists($k, $ust_bot->info) ? $ust_bot->info[$k] : array(0, '');
     }else if($v == 1) {
-      if($GLOBALS['gokusotsu']){
+      if($k == '#tenga18' && $GLOBALS['gokusotsu']){
         $ret = preg_match('/jus:「([^」]*)」/u', $ust_bot->info['#tenga15ch'][1], $match);
         $arr = array(0, ($ret?$match[1]:'配信者募集中！'));
       }else
