@@ -36,16 +36,6 @@
   {if $url != ''}URL:
   <a target="_blank" href="{$url}">&psi;</a> / 
   {/if}
-  <span class="program">Archive:
-{foreach from=$program_raw item=p}
-  {if $p[0] == 0}
-   <a target="_blank" href="http://lonsdaleite.jp/uarchives/?channel={$p[2]}">Ust</a>
-  {else}{if $p[0] == 1}
-   <a target="_blank" href="http://lonsdaleite.jp/jarchives/?channel={$p[1]}">Jus</a>
-  {/if}{/if}
-{/foreach}
-  </span> / 
-  <span class="chat">IRC: {$chat}</span>
   </span>
 
   </span>

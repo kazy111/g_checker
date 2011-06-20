@@ -65,5 +65,26 @@ function get_service_url($type, $ch_name)
   return $ret;
 }
 
+function get_archive_url($type, $ch_name, $opt_id)
+{
+  switch($type){
+  case 0: //ustream
+    $ret = 'http://lonsdaleite.jp/uarchives/?channel='.$opt_id;
+    break;
+  case 1: // justin
+    $ret = 'http://lonsdaleite.jp/jarchives/?channel='.$ch_name;
+    break;
+  case 2: // stickam
+    $ret = 'http://www.stickam.jp/video/gallery/'.$ch_name;
+    break;
+  case 3: // nicolive
+    $ret = 'http://com.nicovideo.jp/live_archives/'.$ch_name;
+    break;
+  case 4: // twitcasting
+    $ret = 'http://twitcasting.tv/'.$ch_name.'/show/';
+    break;
+  }
+  return $ret;
+}
 
 ?>

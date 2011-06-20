@@ -56,7 +56,9 @@ function get_streamer_data($arrs, $extra)
   $ch_v = 1; // for multiview
   
   foreach($arrs as $k => $v){
-    $programs_raw[] = array($v['type'], $v['ch_name'], $v['optional_id'], $v['thumbnail'], $v['live']);
+    $programs_raw[] = array($v['type'], $v['ch_name'], $v['optional_id'], $v['thumbnail'], $v['live'],
+                            $service_abb_assoc[$v['type']],
+                            get_archive_url($v['type'],$v['ch_name'],$v['optional_id']) );
     $chats_raw[$v['cid']] = array($v['ctype'], $v['room'], $v['topic']);
     if($v['live'] == 't'){
       $live = TRUE;

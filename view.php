@@ -67,9 +67,12 @@ foreach($pids as $a){
 }
 
 if(!isset($first_id)){
+  $tmp = 10000;
   foreach($pids as $p){
-    $first_id = $p['id'];
-    break;
+    if($p['type'] < $tmp){
+      $first_id = $p['id'];
+      $tmp = $p['type'];
+    }
   }
   $open_original = FALSE;
 }

@@ -10,11 +10,9 @@
   <td class="viewer"><span>{$viewer}/{$member}</span></td>
   <td class="program">
 {foreach from=$program_raw item=p}
-  {if $p[0] == 0}
-   <a href="http://lonsdaleite.jp/uarchives/?channel={$p[2]}">Ust</a>
-  {else}{if $p[0] == 1}
-   <a target="_blank" href="http://lonsdaleite.jp/jarchives/?channel={$p[1]}">Jus</a>
-  {/if}{/if}
+  {if $p[6] != ''}
+   <a target="_blank" href="{$p[6]}">{$p[5]}</a>
+  {/if}
 {/foreach}
   </td>
   <td class="wiki">{if $wiki != ''}<a href="http://www21.atwiki.jp/tenga18/pages/{$wiki}.html">■</a>{/if}
