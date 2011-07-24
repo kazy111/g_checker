@@ -11,8 +11,8 @@ var mode = 'direct';
 var enable_chat = 1;
 var min_chat_width = 380;
 
-width = ReadCookie('w');  if(width == '')  width = 500;
-height = ReadCookie('h'); if(height == '') height = 400;
+width = ReadCookie('w');  if(width == '')  width = 512;
+height = ReadCookie('h'); if(height == '') height = 385;
 // ustream bar size = 25
 size = [ [375,295,'x0.75' ], [512,385,'x1.00'], [640,505,'x1.25'], [720,565,'x1.50'], [840,655,'x1.75'], [1024,745,'x2.00'],
          [384,241,'x0.75 wide' ], [512,313,'x1.00 wide'], [640,385,'x1.25 wide'], [768,457,'x1.50 wide'], [896,529,'x1.75 wide'], [1024,601,'x2.00 wide'],
