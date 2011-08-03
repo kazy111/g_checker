@@ -117,18 +117,26 @@ div.navigation {
 #article_list{
   margin: 2px auto 5px; auto;
   width: 100%;
-  height: 120px;
+  height: 138px;
   border: 2px solid black;
   padding: 5px;
   overflow: auto;
 }
 
-#article .article_title{
+.article_title{
   font-weight: bold;
 }
-#article .article_body{
+.article_body{
   margin-left: 1em;
   display: block;
+  margin-bottom: 0.5em;
+  margin-top: 4px;
+}
+#article .article_title{
+  font-size: 11pt;
+}
+#article .article_body{
+  font-size: 10pt;
 }
 
 #view .tags{

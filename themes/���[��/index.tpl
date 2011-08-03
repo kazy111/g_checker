@@ -5,7 +5,7 @@
 {include file="$file_path/themes/default/header_text.tpl"}
 
 <div id="article">
-<h2>お知らせ</h2>
+<h2>お知らせ <a href="info.php" class="navi-triangle">&#x25B6;</a></h2>
 <div id="article_list">
 {$article_data}
 </div>

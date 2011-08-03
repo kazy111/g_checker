@@ -53,6 +53,17 @@ h1{
   content: "+ ";
 }
 
+.article_title {
+  text-decoration: underline;
+  background-color: #FEE;
+  padding: 2px;
+  border-right: solid 1px #DCC;
+  border-bottom: solid 1px #DCC;
+}
+
+.article_body {
+}
+
 .main {
   padding: 10px;
 }
