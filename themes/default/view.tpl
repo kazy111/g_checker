@@ -60,6 +60,8 @@ function select(pid)
       case 1: id = t.ch_id; break;
       case 2: id = t.ch_id; break;
     }
+    $('.sw').removeClass('sw-select');
+    $('#sw-'+pid).addClass('sw-select');
     showMovieMode(mboxid, t.type, id, width, height, mode, 'high');
     cur_pid = pid;
   }
@@ -151,6 +153,8 @@ function add_select()
     if(p_data[i].type != 3 && p_data[i].type != 4){
 
       var n = document.createElement('span');
+      n.id = 'sw-'+p_data[i].id;
+      n.className = 'sw';
       n.innerHTML = '<a href="javascript:select('+p_data[i].id+')">'+p_data[i].typename+': '+p_data[i].ch_id+'</a> ';
       s.appendChild(n);
     }
