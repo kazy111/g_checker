@@ -13,7 +13,7 @@
 	padding-left: 0px;
 }
 #main-handle {
-	width: 390px;
+	width: 395px;
 	float: right;
 	margin: -1px 5px 0 0;
 }
@@ -45,7 +45,6 @@
 .sub-links {
 	display: none;
 	position: absolute;
-	width: 100%;
 	top: -25px;
 	text-align: left;
 	left: 0px;
