@@ -10,6 +10,7 @@ var width, height;
 var mode = 'direct';
 var enable_chat = 1;
 var min_chat_width = 380;
+var layout = parseInt(ReadCookie('l'));  if(layout == '')  layout = 0;
 
 width = ReadCookie('w');  if(width == '')  width = 512;
 height = ReadCookie('h'); if(height == '') height = 385;
@@ -49,7 +50,6 @@ function ReadCookie(key) {
      return "";
 }
 
-
 function select(pid)
 {
   var id, t = p_data[pid];
@@ -67,10 +67,11 @@ function select(pid)
   }
   if(enable_chat && cur_cid != t.cid){
     var c = c_data[t.cid];
-    var _w = height*0.75; if(_w < min_chat_width)_w = min_chat_width;
+    var _w = getChatWidth(), _h = getChatHeight();
+
     switch(c.type){
-      case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
-      case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
+      case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, _h); break;
+      case 1: loadWebChatMibbit(cboxid, c.room, _w, _h); break;
       case 2: socialStream(); break;
     }
   }
@@ -84,10 +85,10 @@ function toggleChat()
     enable_chat = 0;
   }else{
     var c = c_data[cur_cid];
-    var _w = width*0.75; if(_w<320)_w = 320;
+    var _w = getChatWidth(), _h = getChatHeight();
     switch(c.type){
-      case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, height); break;
-      case 1: loadWebChatMibbit(cboxid, c.room, _w, height); break;
+      case 0: loadWebChatUstream(cboxid, c.opt_id, c.room, _w, _h); break;
+      case 1: loadWebChatMibbit(cboxid, c.room, _w, _h); break;
       case 2: socialStream(); break;
     }
     enable_chat = 1;
@@ -121,6 +122,29 @@ function resize_select(str)
   resize(x[0], x[1]);
 }
 
+
+function getChatWidth() {
+  var _w;
+  switch(layout) {
+    case 1:
+      _w = width;  break;
+    default:
+      _w = height*0.75;
+      if(_w < min_chat_width)_w = min_chat_width;
+  }
+  return _w;
+}
+function getChatHeight() {
+  var _h;
+  switch(layout) {
+    case 1:
+      _h = height*0.7;  break;
+    default:
+      _h = height;
+  }
+  return _h;
+}
+
 function resize(w, h)
 {
   width = w; height = h;
@@ -134,9 +158,8 @@ function resize(w, h)
   if(t){
     t.style.top = '-'+h;
     if( (t.tagName != 'EMBED' && t.tagName != 'OBJECT')){ t = t.childNodes[0]; }
-    // var _w = width*0.75; if(_w < min_chat_width)_w = min_chat_width;
-    var _w = height*0.75; if(_w < min_chat_width)_w = min_chat_width;
-    if(t){ t.width = _w; t.height = h;  }
+
+    t.width = getChatWidth(); t.height = getChatHeight();
   }
   WriteCookie('w', w, 90);
   WriteCookie('h', h, 90);
@@ -189,6 +212,24 @@ function ReadCookie(key) {
      }
      return "";                                   // 見つからない時は空文字を返す
 }
+function setLayout(layout) {
+  switch(layout) {
+    case 1:
+      $('#wrapper').css('white-space', 'wrap');
+      $('#chat').css('clear', 'both');
+      break;
+    default:
+      $('#wrapper').css('white-space', 'no-wrap');
+      $('#chat').css('clear', 'none');
+      break;
+  }
+}
+function toggleLayout() {
+  layout ^= 1;
+  setLayout(layout);
+  resize(width, height);
+  WriteCookie('l', layout, 90);
+}
 </script>
 
 <div id="view">
@@ -198,9 +239,10 @@ function ReadCookie(key) {
 
 <div class="navigation" id="select">
  <strong>チャット:</strong> <a href="javascript:toggleChat(cboxid)">■</a>
+ <a href="javascript:toggleLayout()">縦横</a>
  &nbsp;<a href="javascript:mibbitChat(cboxid)">(退避用)</a>
  &nbsp;<a href="javascript:socialStream(cboxid)">(Twitter)</a>
- &nbsp;<strong>画面切り替え:</strong>
+ &nbsp;&nbsp;<strong>画面切り替え:</strong>
  <a onclick="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no,resizable=yes');">Pop</a>
 </div>
 
@@ -209,7 +251,7 @@ function ReadCookie(key) {
  <a onclick="javascript:window.open('edit_tag.php?id={$id}', null, 'width=512,height=150,menubar=no,toolbar=no,resizable=yes');">タグ編集</a>
 </div>
 
-<div class="no-wrap">
+<div id="wrapper">
 <div id="movie">
 </div>
 
@@ -247,6 +289,7 @@ for(var i = 0; i < size.length; i++){
 }
 
 add_select();
+setLayout(layout);
 select({$first_id});
 </script>
 
