@@ -416,8 +416,8 @@ class PostgreSQLDataManager implements IDataManager {
       $arr = $this->db->query_ex($sql);
       $sid = $arr['nextval']; // TODO => create get_sequence_id?
       // -- PostgreSQL
-      $this->db->query('insert into streamer_table (id, name, description) values '
-                 .'('.$sid.', \''.$name.'\', \''.$desc.'\')');
+      $this->db->query('insert into streamer_table (id, name, description, enable) values '
+                 .'('.$sid.', \''.$name.'\', \''.$desc.'\', 1)');
       
       // PostgreSQL
       $tmp = $this->db->query_ex('select id from chat_table where type='

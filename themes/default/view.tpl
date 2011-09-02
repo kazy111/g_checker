@@ -219,7 +219,7 @@ function setLayout(layout) {
       $('#chat').css('clear', 'both');
       break;
     default:
-      $('#wrapper').css('white-space', 'no-wrap');
+      $('#wrapper').css('white-space', 'nowrap');
       $('#chat').css('clear', 'none');
       break;
   }

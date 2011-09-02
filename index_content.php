@@ -85,12 +85,15 @@ function get_streamer_data($arrs, $extra)
       $ch_chat = substr($v['room'],1);
     }else {
       if(!isset($live_thumb)) $live_thumb = $v['thumbnail'];
-      $ch_name[$v['type']] = $v['ch_name'];
-      switch($v['type']){
-      case 0: //ustream
-        $ch_name[$v['type']] = $v['optional_id']; break;
-      }
       if(!isset($ch_chat)) $ch_chat = substr($v['room'],1);
+      if($ch_name[$v['type']] == ''){
+        $ch_name[$v['type']] = $v['ch_name'];
+        switch($v['type']){
+        case 0: //ustream
+          $ch_name[$v['type']] = $v['optional_id']; break;
+        }
+        $ch_chat = substr($v['room'],1); // ch 上書き時は常にチャットも上書き
+      }
       $etime = $etime < strtotime($v['end_time']) ? strtotime($v['end_time']) : $etime;
     }
   }
