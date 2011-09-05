@@ -361,7 +361,7 @@ class PostgreSQLDataManager implements IDataManager {
                      .'thumbnail TEXT,'
                      .'live BOOLEAN,'
                      .'start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,'
-                     .'end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP),'
+                     .'end_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,'
                      .'viewer INT,'
                      .'streamer_id INT,'
                      .'chat_id INT,'
