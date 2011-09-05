@@ -2,12 +2,12 @@
 <html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>{$site_title}</title>
-<link rel="shortcut icon" href="{$site_url}/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="http://kazy111.info/checker/css/checker.css" />
-<script type="text/javascript" src="{$site_url}/js/jquery-1.4.2.min.js"></script>
+<link rel="shortcut icon" href="{$relative_dir_to_top}/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="{$relative_dir_to_top}/css/checker.css" />
+<script type="text/javascript" src="{$relative_dir_to_top}/js/jquery-1.4.2.min.js"></script>
 <meta http-equiv="content-script-type" content="text/javascript" /> 
-<script type="text/javascript" src="{$site_url}/js/swfobject.js"></script> 
-<script type="text/javascript" src="{$site_url}/js/nicoirc20110327.js"></script> 
+<script type="text/javascript" src="{$relative_dir_to_top}/js/swfobject.js"></script> 
+<script type="text/javascript" src="{$relative_dir_to_top}/js/nicoirc20110327.js"></script> 
 
 <script type="text/javascript">
 

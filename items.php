@@ -310,7 +310,6 @@ if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sor
   $sort = $_COOKIE['sort'];
 }
 
-$page->add_header('<script type="text/javascript" src="'.$site_url.'/js/cookie.js"></script>');
 print($page->get_once('json', display_list($sort, $p, $limit)));
 
 

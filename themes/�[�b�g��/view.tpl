@@ -204,7 +204,7 @@ function ReadCookie(key) {
 </script>
 
 <div id="view">
-<a href="{$site_url}">ゼットンチェッカー</a> &gt;&gt; 
+<a href="{$relative_dir_to_top}">ゼットンチェッカー</a> &gt;&gt; 
 <span id="name">{if $url != ''}<a href="{$url}" target="_blank">ゼットン</a>{else}{if $wiki}<a href="{$wiki_url}{$wiki}.html" target="_blank">ゼットン</a>{else}ゼットン{/if}{/if}</span>
 <span id="description">何処へ行ってしまったのぜっとん。</span>
 

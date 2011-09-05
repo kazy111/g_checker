@@ -20,12 +20,12 @@ if(array_key_exists('sort', $_COOKIE) && array_key_exists($_COOKIE['sort'], $sor
 }
 
 // notice streaming start
-$page->add_header('<script type="text/javascript" src="'.$site_url.'/js/auto_notice.js"></script>');
+$page->add_header('<script type="text/javascript" src="./js/auto_notice.js"></script>');
 
 // play sound (probability originally 1/350)
 if(mt_rand(1, 350) == 11){
-  $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/swfobject.js"></script>');
-  $page->add_header('<script type="text/javascript" src="'.$site_url.'/js/playsound.js"></script>');
+  $page->add_header('<script type="text/javascript" src="./js/swfobject.js"></script>');
+  $page->add_header('<script type="text/javascript" src="./js/playsound.js"></script>');
 }
 
 $page->set($GLOBALS['extra'].'index', display_list($sort, $GLOBALS['extra']));

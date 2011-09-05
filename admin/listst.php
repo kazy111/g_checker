@@ -19,6 +19,7 @@ foreach($list as $arr){
 // output page contents
 $data = new Dwoo_Data();
 $data->assign('data', $contents_item);
+$page->set_relative_dir_to_top('..');
 $page->set('list', $data);
 
 include '../footer.php';

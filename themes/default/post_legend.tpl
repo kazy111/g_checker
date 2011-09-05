@@ -2,8 +2,8 @@
 <html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>{$site_title}</title>
-<link rel="shortcut icon" href="http://kazy111.info/checker/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="http://kazy111.info/checker/css/checker.css" />
+<link rel="shortcut icon" href="{$relative_dir_to_top}/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="{$relative_dir_to_top}/css/checker.css" />
 <meta http-equiv="content-script-type" content="text/javascript" />
 
 <body>

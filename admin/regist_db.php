@@ -40,6 +40,7 @@ $page->add_header('<script type="text/javascript" src="../js/jquery-ui-1.8.4.cus
 $page->add_header('<script type="text/javascript" src="../js/jquery-ui-1.8.4_autocomplete.js"></script>');
 $page->add_header('<link rel="stylesheet" type="text/css" href="../css/dot-luv/jquery-ui-1.8.4.custom.css" />');
 
+$page->set_relative_dir_to_top('..');
 $page->set('regist', $data);
 
 include '../footer.php';

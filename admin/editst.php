@@ -72,6 +72,7 @@ if ( array_key_exists('mode', $_POST) ) {
 $contents .= view_form(get_key($_GET, 'id'));
 $data = array();
 $data['contents'] = $contents;
+$page->set_relative_dir_to_top('..');
 $page->set('raw', $data);
 
 include '../footer.php';

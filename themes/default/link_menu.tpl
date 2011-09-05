@@ -4,11 +4,11 @@
   <div id="main-handle">
     <div class="roundfg">
       <ul id="main-nav">
-	<li><a class="main-link_" href="./">Home</a>
+	<li><a class="main-link_" href="{$relative_dir_to_top}/">Home</a>
 	</li>
-	<li><a class="main-link_" href="./info.php">Info</a>
+	<li><a class="main-link_" href="{$relative_dir_to_top}/info.php">Info</a>
 	</li>
-	<li><a class="main-link_" href="./about.php">About</a>
+	<li><a class="main-link_" href="{$relative_dir_to_top}/about.php">About</a>
 	</li>
 	<li><a class="main-link" href="#">Links</a>
 	  <ul class="sub-links">

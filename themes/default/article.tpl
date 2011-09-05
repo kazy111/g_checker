@@ -1,5 +1,5 @@
 <div class="main">
-<h1><a href="{$site_url}">{$site_title}</a> >> 過去のお知らせ</h1>
+<h1><a href="{$relative_dir_to_top}/">{$site_title}</a> >> 過去のお知らせ</h1>
 
 <div class="contents">
 {$contents}

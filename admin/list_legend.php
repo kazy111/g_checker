@@ -2,17 +2,17 @@
 include '../header.php';
 
 
-$list = $manager->get_chats();
+$list = $manager->get_legends();
 
 // construct streamer output
-$contents_item = '';
+$contents_item = '<h1><a href="'.$site_url.'">'.$site_title.'</a> >> 伝説</h1>';
 $data = new Dwoo_Data();
-$data->assign('edit_php', 'editchat.php');
-$data->assign('delete_php', 'delchat.php');
+$data->assign('edit_php', 'edit_legend.php');
+$data->assign('delete_php', 'delete_legend.php');
 
 foreach($list as $arr){
   $data->assign('id', $arr['id']);
-  $data->assign('name', $chat_assoc[$arr['type']] .' - '. $arr['room']);
+  $data->assign('name', $arr['body'] );
   $contents_item .= $page->get_once('list_item', $data);
 }
 

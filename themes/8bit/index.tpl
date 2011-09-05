@@ -2,7 +2,7 @@
 
 <div id="header">
 <h1 id="title">GOKUSOTSU CHECKER</h1>
-&copy; 2010 GOKUSOTSU CHANNEL
+&copy; 2010-2011 GOKUSOTSU CHANNEL
 </div>
 
 

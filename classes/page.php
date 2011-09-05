@@ -8,12 +8,14 @@ class Page{
   var $theme = 'default';
   var $theme_dir = './themes/';
   var $theme_url = './themes/';
+  var $rel_dir = '.';
 
-  function Page()
+  function Page($reldir = '.')
   {
     $this->header = array();
     $this->theme_dir = $GLOBALS['file_path'].'/themes/';
-    $this->theme_url = $GLOBALS['site_url'].'/themes/';
+    $this->theme_url = $reldir.'/themes/';
+    $this->rel_dir = $reldir;
   }
   function set_title($t)
   {
@@ -26,6 +28,10 @@ class Page{
   function get_header()
   {
     return $this->header;
+  }
+  function set_relative_dir_to_top($reldir){
+    $this->theme_url = $reldir.'/themes/';
+    $this->rel_dir = $reldir;
   }
 
   function set($pname, $data)
@@ -84,6 +90,7 @@ class Page{
     $data->assign('site_url', $GLOBALS['site_url']);
     $data->assign('file_path', $GLOBALS['file_path']);
     $data->assign('site_title', $GLOBALS['site_title']);
+    $data->assign('relative_dir_to_top', $this->rel_dir);
     $data->assign('header_description', $GLOBALS['header_description']);
     $data->assign('footer_description', $GLOBALS['footer_description']);
     $data->assign('curr_time', time());
@@ -99,12 +106,14 @@ class Page{
         $this->data['site_url'] = $GLOBALS['site_url'];
         $this->data['file_path'] = $GLOBALS['file_path'];
         $this->data['site_title'] = $GLOBALS['site_title'];
+        $this->data['relative_dir_to_top'] = $this->rel_dir;
         $this->data['header_description'] = $GLOBALS['header_description'];
         $this->data['footer_description'] = $GLOBALS['footer_description'];
       }else{
         $this->data->assign('site_url', $GLOBALS['site_url']);
         $this->data->assign('file_path', $GLOBALS['file_path']);
         $this->data->assign('site_title', $GLOBALS['site_title']);
+        $this->data->assign('relative_dir_to_top', $this->rel_dir);
         $this->data->assign('header_description', $GLOBALS['header_description']);
         $this->data->assign('footer_description', $GLOBALS['footer_description']);
       }
@@ -125,12 +134,14 @@ class Page{
         $data['site_url'] = $GLOBALS['site_url'];
         $data['file_path'] = $GLOBALS['file_path'];
         $data['site_title'] = $GLOBALS['site_title'];
+        $data['relative_dir_to_top'] = $this->rel_dir;
         $data['header_description'] = $GLOBALS['header_description'];
         $data['footer_description'] = $GLOBALS['footer_description'];
       }else{
         $data->assign('site_url', $GLOBALS['site_url']);
         $data->assign('file_path', $GLOBALS['file_path']);
         $data->assign('site_title', $GLOBALS['site_title']);
+        $data->assign('relative_dir_to_top', $this->rel_dir);
         $data->assign('header_description', $GLOBALS['header_description']);
         $data->assign('footer_description', $GLOBALS['footer_description']);
       }
