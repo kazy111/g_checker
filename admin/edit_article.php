@@ -54,6 +54,7 @@ function register_program(){
 $contents = '';
 if ( array_key_exists('mode', $_POST) ) {
   // TODO validation
+  // priority null check
   
   register_program();
   $contents .= '<span class="message">updated information</span>';

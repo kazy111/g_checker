@@ -6,19 +6,22 @@ $service_assoc = array(0 => 'ustream',
                        1 => 'justin',
                        2 => 'stickam',
                        3 => 'nicolive',
-                       4 => 'twitcasting');
+                       4 => 'twitcasting',
+                       5 => 'own3d');
 
 $service_abb_assoc = array(0 => 'Ust',
                            1 => 'Jst',
                            2 => 'Stk',
                            3 => 'Nic',
-                           4 => 'Twc');
+                           4 => 'Twc',
+                           5 => 'Own');
 
 $service_org_assoc = array(0 => FALSE,
                            1 => FALSE,
                            2 => TRUE,
                            3 => TRUE,
-                           4 => TRUE);
+                           4 => TRUE,
+                           5 => FALSE);
 
 $chat_assoc = array(0 => 'c.ustream.tv',
                     1 => 'irc.mibbit.com',
@@ -43,7 +46,7 @@ function assoc2select($assoc, $id, $selected)
   return $html;
 }
 
-function get_service_url($type, $ch_name)
+function get_service_url($type, $ch_name, $ch_id)
 {
   switch($type){
   case 0: //ustream
@@ -60,6 +63,9 @@ function get_service_url($type, $ch_name)
     break;
   case 4: // twitcasting
     $ret = 'http://twitcasting.tv/'.$ch_name;
+    break;
+  case 5: // own3D
+    $ret = 'http://www.own3d.tv/live/'.$ch_id;
     break;
   }
   return $ret;
@@ -82,6 +88,9 @@ function get_archive_url($type, $ch_name, $opt_id)
     break;
   case 4: // twitcasting
     $ret = 'http://twitcasting.tv/'.$ch_name.'/show/';
+    break;
+  case 5: // own3d
+    $ret = '';
     break;
   }
   return $ret;

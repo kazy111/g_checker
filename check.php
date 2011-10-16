@@ -93,6 +93,7 @@ function check()
   check_stickam();
   check_nicolive();
   check_twitcasting();
+  check_own3d();
 }
 
 
@@ -593,6 +594,77 @@ function check_twitcasting()
 
   log_print('finish checking TwitCasting.');
 }
+
+
+
+function check_own3d()
+{
+    
+  global $manager, $chs, $sid_chs;
+
+  $ids = array();
+  $hash = array();
+  
+  log_print("start checking own3D...");
+  
+  foreach($chs as $k => $v){
+    if($v['type']==5){
+      $hash[$v['ch_name']] = $v['pid'];
+      $ids[] = $v['ch_name'];
+    }
+  }
+
+  foreach($ids as $name){
+    
+    $url = 'http://api.own3d.tv/liveCheck.php?live_id=' . $chs[$hash[$name]]['optional_id'];
+    
+    log_print($url);
+    try{
+      $xml = simplexml_load_file($url, 'SimpleXMLElement');
+      if(! $xml ) throw new Exception('URL parse failed : '.$url);
+    }catch(Exception $e){
+      print $e->getMessage();
+      continue;
+    }
+
+    $live_st = FALSE;
+    $viewer = 0;
+    $thumb = '';
+
+    // status judge
+    if(strtolower($xml->liveEvent->isLive) == 'true'){
+      $live_st = TRUE;
+    }
+    $viewer = $xml->liveEvent->liveViewers;
+
+    // save status change
+    $pid = $hash[$name];
+    $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
+    $thumb = 'http://img.own3d.tv/live/live_tn_'.$chs[$hash[$name]]['optional_id'].'_.jpg?'.time();
+
+    if($live_st || $change_flag){
+      
+      log_print("<b>name:</b> ".$name." / ".$viewer);
+      $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
+      
+      if($change_flag){
+        if($live_st){
+          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+            start_tweet($chs[$pid]);
+        }else{
+          $start_time = $chs[$pid]['start_time'];
+          $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
+          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+            end_tweet($chs[$pid]);
+        }
+      }
+    }
+  }
+
+  log_print('finish checking own3D.');
+}
+
+
 
 
 check();

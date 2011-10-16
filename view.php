@@ -56,7 +56,7 @@ $open_original = TRUE;
 // construct program data
 $program_data = array();
 foreach($pids as $a){
-  $org_link = '<a href="'.get_service_url($a['type'], $a['ch_id']).'">'.$service_abb_assoc[$a['type']].': '.$a['ch_id'].'</a> ';
+  $org_link = '<a href="'.get_service_url($a['type'], $a['ch_id'], $a['opt_id']).'">'.$service_abb_assoc[$a['type']].': '.$a['ch_id'].'</a> ';
   $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id']
     .'",type:'.$a['type'].',cid:'.$a['cid'].',org:\''.$org_link.'\',typename:"'.$service_abb_assoc[$a['type']].'"}';
   if($a['live'] == 't' || $a['live'] == '1'){
@@ -65,7 +65,7 @@ foreach($pids as $a){
       $first_id = $a['id'];
     }
     $open_original &= $service_org_assoc[$a['type']];
-    $open_original_url = get_service_url($a['type'], $a['ch_id']);
+    $open_original_url = get_service_url($a['type'], $a['ch_id'], $a['opt_id']);
   }
 }
 

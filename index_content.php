@@ -24,7 +24,7 @@ function create_program_list($arrs)
   foreach($arrs as $k => $v){
     $live |= $v['live'] == 't';
     if($v['live'] == 't'){
-      $ret .= '<a href="'.get_service_url($v['type'], $v['ch_name']).'">'.$service_abb_assoc[$v['type']].'</a> ';
+      $ret .= '<a href="'.get_service_url($v['type'], $v['ch_name'], $v['optional_id']).'">'.$service_abb_assoc[$v['type']].'</a> ';
     }
   }
   return $ret;
@@ -64,7 +64,7 @@ function get_streamer_data($arrs, $extra)
       $live = TRUE;
       $stime = ($stime > strtotime($v['start_time']) && $v['start_time']!='') ? strtotime($v['start_time']) : $stime;
       $thumb = '<img src="'.$v['thumbnail'].'" width="320" height="240" class="thumb"/>';
-      $programs .= '<a href="'.get_service_url($v['type'], $v['ch_name']).'">'.$service_abb_assoc[$v['type']].$thumb.'</a> ';
+      $programs .= '<a href="'.get_service_url($v['type'], $v['ch_name'], $v['optional_id']).'">'.$service_abb_assoc[$v['type']].$thumb.'</a> ';
       $ch_name[$v['type']] = $v['ch_name'];
       switch($v['type']){
       case 0: //ustream
@@ -80,6 +80,10 @@ function get_streamer_data($arrs, $extra)
       case 2: // stickam
         $live_thumb = $v['thumbnail'];
         $ch_v = 5;
+        break;
+      case 5: // own3d
+        $live_thumb = $v['thumbnail'];
+        $ch_v = 7;
         break;
       }
       $ch_chat = substr($v['room'],1);
