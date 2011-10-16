@@ -59,6 +59,7 @@ function select(pid)
       case 0: id = t.opt_id; break;
       case 1: id = t.ch_id; break;
       case 2: id = t.ch_id; break;
+      case 5: id = t.opt_id; break;
     }
     $('.sw').removeClass('sw-select');
     $('#sw-'+pid).addClass('sw-select');
