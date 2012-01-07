@@ -54,7 +54,7 @@ function check_irc()
         $ids[$r] = $ch['ctype'];
     }
   }
-
+print_r($rooms);
   //Sample connection data.
   $config = array(
     'server' => 'c.ustream.tv', 

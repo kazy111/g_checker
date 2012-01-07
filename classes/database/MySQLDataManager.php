@@ -20,7 +20,8 @@ class MySQLDataManager implements IDataManager {
   // raw data for index page
   function get_index_datas(){
     $sql = 'select s.id as sid, p.id as pid, c.id as cid, live, start_time, end_time, topic, optional_id, description, wiki, twitter, url, tag, '
-        .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail, offline_count'
+        .' thumbnail, member, viewer, name, ch_name, p.type as type, c.type as ctype, c.id as cid, room, thumbnail, offline_count, '
+        .' p.title'
         .' from streamer_table as s, program_table as p, chat_table as c '
         .' where s.id = p.streamer_id and s.enable=1'
         .' and c.id = p.chat_id order by sid, pid;';
@@ -54,7 +55,7 @@ class MySQLDataManager implements IDataManager {
     $ret = $this->db->query($sql);
   }
   
-  function update_program($pid, $live, $viewer, $change_flag, $thumb){
+  function update_program($pid, $live, $viewer, $change_flag, $thumb, $title=null){
     $sql_live = $live ? '1' : '0';
     // construct time SQL
     $sql_time = ', start_time = start_time, end_time = end_time ';
@@ -68,7 +69,9 @@ class MySQLDataManager implements IDataManager {
       }
     }
     $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
-          . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 where id = '.$pid;
+          . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 '
+            . ($title != null ? ' ,title = \''. $title .'\' ' : '')
+          . ' where id = '.$pid;
     print($sql);
     $this->db->query($sql);
   }
@@ -358,6 +361,7 @@ class MySQLDataManager implements IDataManager {
                      .'type SMALLINT,'
                      .'ch_name TEXT,'
                      .'optional_id VARCHAR(255),'
+                     .'title VARCHAR(255) DEFAULT \'\','
                      .'thumbnail TEXT,'
                      .'live BOOL,'
                      .'start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,'

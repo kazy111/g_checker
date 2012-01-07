@@ -45,6 +45,7 @@ function get_streamer_data($arrs, $extra)
   $programs = '';
   $programs_raw = array();
   $chats_raw = array();
+  $titles_raw = array();
 
   // channel name array (key is type no.)
   $ch_chat;
@@ -60,10 +61,11 @@ function get_streamer_data($arrs, $extra)
                             $service_abb_assoc[$v['type']],
                             get_archive_url($v['type'],$v['ch_name'],$v['optional_id']) );
     $chats_raw[$v['cid']] = array($v['ctype'], $v['room'], $v['topic']);
+    $titles_raw[] = $v['title'];
     if($v['live'] == 't'){
       $live = TRUE;
       $stime = ($stime > strtotime($v['start_time']) && $v['start_time']!='') ? strtotime($v['start_time']) : $stime;
-      $thumb = '<img src="'.$v['thumbnail'].'" width="320" height="240" class="thumb"/>';
+      $thumb = '<img src="'.$v['thumbnail'].'" width="320" class="thumb"/>';
       $programs .= '<a href="'.get_service_url($v['type'], $v['ch_name'], $v['optional_id']).'">'.$service_abb_assoc[$v['type']].$thumb.'</a> ';
       $ch_name[$v['type']] = $v['ch_name'];
       switch($v['type']){
@@ -80,6 +82,9 @@ function get_streamer_data($arrs, $extra)
       case 2: // stickam
         $live_thumb = $v['thumbnail'];
         $ch_v = 5;
+        break;
+      case 3: // nicolive
+        $live_thumb = $v['thumbnail'];
         break;
       case 5: // own3d
         $live_thumb = $v['thumbnail'];
@@ -134,6 +139,10 @@ function get_streamer_data($arrs, $extra)
   $data['chat'] = implode(' ', $chats);
   $data['topic'] = htmlspecialchars(implode(' ', $topics));
   $data['topic'] = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '<a class="urllink" href="\\0" target="_blank">&psi;</a>' , $data['topic']);
+  // when topic is empty, alter text to program title
+  if(trim($data['topic']) == ''){
+    $data['topic'] = htmlspecialchars(implode(' ', $titles_raw));
+  }
 
   // gokusotsu specific topic process
   if($GLOBALS['gokusotsu'] && $data['chat'] == '#tenga15ch'){

@@ -14,6 +14,7 @@
 	  <ul class="sub-links">
 		<li><a href="http://www.gokusotsu.com/" target="_blank" title="本家">獄卒ch</a> </li>
 		<li><a href="http://blog.livedoor.jp/gchblog/" target="_blank" title="ブログといふものをしてみんとす">獄卒ブログ部</a> </li>
+		<li><a href="http://kazy111.info/blogger/" target="_blank" title="獄卒民のブログ集めたあれ">獄卒ブロガー</a> </li>
 		<li><a href="http://www.gokusotsu.com/3channels.html" target="_blank" title="獄卒3chを同時に視聴できるページ">3窓</a> </li>
 		<li><a href="http://www21.atwiki.jp/tenga18/" target="_blank" title="獄卒配信者の情報とか">配信者Wiki</a> </li>
 		<li><a href="http://www36.atwiki.jp/tengame/" target="_blank" title="獄卒で誰かがやったゲームの情報とか">ゲーム関連Wiki</a> </li>

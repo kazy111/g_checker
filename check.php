@@ -133,7 +133,7 @@ function check_ustream()
       */
   }
 
-  function update_ustream($pid, $id, $login, $live_st){
+  function update_ustream($pid, $id, $login, $live_st, $title){
     global $sid_chs, $chs, $manager;
     
     $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
@@ -141,7 +141,7 @@ function check_ustream()
     $thumb = 'http://static-cdn2.ustream.tv/i/channel/live/1_'.$id.',192x108,b.jpg';
     if($live_st || $change_flag)
       log_print("<b>name:</b> ".$login." / ".$viewer);
-      $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
+    $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb, ($live_st?$title:''));
     if($change_flag){
       if($live_st){
         if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
@@ -198,7 +198,7 @@ function check_ustream()
           }
           if($xml->error == ''){
             update_ustream($hash[$tv], $xml->results->id, $xml->results->user->userName,
-                           live_status($xml->results->status));
+                           live_status($xml->results->status), $xml->result->title.' / '.$xml->result->description);
           }else{
             log_print('<b>illigal channel:</b> '.$tv);
           }
@@ -208,7 +208,7 @@ function check_ustream()
         foreach($xml->results->array as $res){
           $name = ''.$res->uid;
           update_ustream($hash[$name], $res->result->id, $res->result->user->userName,
-                         live_status($res->result->status));
+                         live_status($res->result->status), $res->result->title.' / '.$res->result->description);
         }
       }
     }else{
@@ -219,7 +219,7 @@ function check_ustream()
         // normal check
         $name = $v[0];
         update_ustream($hash[$name], $xml->results->id, $xml->results->user->userName,
-                       live_status($xml->results->status));
+                       live_status($xml->results->status), $xml->result->title.' / '.$xml->result->description);
       }
     }
   }
@@ -461,7 +461,8 @@ function check_nicolive()
 
 
   foreach($ids as $name){
-    
+
+    // get player info
     $api_url = 'http://live.nicovideo.jp/api/getplayerstatus/' . $name; // apiのURL
     $ch = curl_seting( $api_url );
 
@@ -482,15 +483,40 @@ function check_nicolive()
 
     $live_st = FALSE;
     $viewer = 0;
+    $title = null;
     $thumb = '';
     
     $pid = $hash[$name];
+
+    
+    // get community image
+    $api_url = 'http://com.nicovideo.jp/community/getplayerstatus/' . $name; // apiのURL
+    $ch = curl_seting( $api_url );
+
+    curl_setopt( $ch, CURLOPT_COOKIEFILE, $cookie_file );
+    $ch = set_opt( $ch, $cookie_file );
+    
+    $ret = curl_exec( $ch );
+    curl_close($ch);
+
+    log_print($api_url);
+    try{
+      preg_match('/http:\/\/icon\.nimg\.jp\/community\/co[0-9]+\.jpg\?[0-9]+/', $ret, $matches);
+      $thumb = $matches[0];
+    }catch(Exception $e){
+      print $e->getMessage();
+      continue;
+    }
+
+
 
 
     // judge live status
     if(isset($xml->error) || $xml->stream->archive == 1){ // error
     }else{
       $live_st = TRUE;
+      $title = $xml->stream->title . ' / ' . $xml->stream->description;
+      $thumb = 'http://icon.nimg.jp/community/'.$name.'.jpg?'.$xml->stream->base_time;
     }
     
     // save status change
@@ -499,7 +525,7 @@ function check_nicolive()
     if($live_st || $change_flag){
       
       log_print("<b>name:</b> ".$name." / ".$viewer);
-      $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
+      $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb, $title);
       
       if($change_flag){
         if($live_st){

@@ -1,17 +1,75 @@
 <html>
-
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理メニュー</title>
+<style>
+p:before {
+	content: "■";
+}
+</style>
+</head>
 <body>
 <ul>
-<li><a href="../index.php">index</a></li>
-<li><a href="regist_db.php">register from DB</a></li>
-<li>edit
+<li><a href="../index.php">サイトトップへ</a></li>
+<li><a href="regist_db.php">配信者DBから一発登録</a></li>
+<li>編集メニュー
  <ul>
- <li><a href="listst.php">streamer</a> (<a href="editst.php">new</a>)</li>
- <li><a href="listch.php">program</a> (<a href="editch.php">new</a>)</li>
- <li><a href="listchat.php">chat</a> (<a href="editchat.php">new</a>)</li>
- <li><a href="list_article.php">article</a> (<a href="edit_article.php">new</a>)</li>
+ <li><a href="listst.php">配信者</a> (<a href="editst.php">新規</a>)</li>
+ <li><a href="listch.php">チャンネル</a> (<a href="editch.php">新規</a>)</li>
+ <li><a href="listchat.php">チャット</a> (<a href="editchat.php">新規</a>)</li>
+ <li><a href="list_article.php">お知らせ</a> (<a href="edit_article.php">新規</a>)</li>
+ <li><a href="list_legend.php">伝説</a> (<a href="edit_legend.php">新規</a>)</li>
  </ul>
 </li>
-</ul>
+
+<hr>
+<h3>説明</h3>
+<p>
+1つの配信者に複数のチャンネルが紐付き、
+1つのチャットに複数のチャンネルが紐付きます。<br>
+チャットを複数チャンネルで共有すると、チャンネル切り替え時にチャットをリロードしません。
+(Ust、Jusでチャット共有の場合を想定しています)
+</p>
+<p>
+配信者のTwitter IDを設定すると、Twitterテーマでアイコンが自動的に表示されます。
+Wiki IDはconfigファイルでWikiのURLを設定しているとwikiへのリンクとしてテーマ内で使えるようになります。
+URLは何か関連するURLです。公式サイトとか。
+<br>
+配信の個別ページで配信者名のところに、URLがあればURL、URLがなくてWiki IDがあればWikiへリンクが張られます。
+タグは個別ページでも編集できるタグです。半角カンマ区切りです。
+</p>
+
+<p>
+チャンネルでは配信者とチャット、サービスを選び、
+サービスに合わせた情報を入力します。
+<table border="1">
+<tbody>
+<tr><th>サービス</th><th>Channel ID</th><th>Optional ID</th></tr>
+<tr><td>Ustream</td><td>チャンネル名</td><td>チャンネルID(埋め込みソースの/embed/～の～部分の数字)</td></tr>
+<tr><td>Justin</td><td>チャンネル名</td><td>なし</td></tr>
+<tr><td>Stickam</td><td>チャンネル名</td><td>なし</td></tr>
+<tr><td>nicolive</td><td>コミュニティID</td><td>なし</td></tr>
+<tr><td>twitcasting</td><td>Twitter ID</td><td>なし</td></tr>
+<tr><td>Own3d</td><td>チャンネル名(配信URL末尾)</td><td>チャンネルID(配信URLの末尾前の数字)</td></tr>
+</tbody>
+</table>
+</p>
+
+<p>
+チャットは見たままですが、roomには #room のように先頭の#等が必要です。
+なお、modeで+sが指定されているチャンネルはトピックが取得できません。
+</p>
+
+<p>
+お知らせはそのまんまトップに表示されるお知らせです。<br>
+priorityの数字が大きいものがまず優先され、同じ優先度のものでは新しいものが優先されます。
+</p>
+
+<p>
+伝説はジョークです。<br>
+海外サイトでよくある、ページ冒頭でランダム表示される文言です。
+</p>
+
+
 </body>
 </html>
