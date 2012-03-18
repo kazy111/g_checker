@@ -24,9 +24,15 @@ function start_tweet($data, $topic_flag = TRUE)
   $hash = $GLOBALS['tweet_footer'];
   $time = date(' [H:i]');
   if($topic_flag){
-    $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , '／'.$data['topic']);
+    $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , '／'
+                          .(trim($data['topic'])!='' ? trim($data['topic']) : trim($data['title'])));
   }else{
     $topic = '';
+  }
+
+  if($GLOBALS['limit_keywords'] != '' && preg_match('/'.$GLOBALS['limit_keywords'].'/', $topic) == 0 ) {
+    // when set limit keywords, tweet only keyword including
+    return;
   }
 
   $url = ' '.$site_url.'/view.php?id='.$data['sid'];
@@ -47,11 +53,19 @@ function end_tweet($data, $topic_flag = TRUE)
   $hash = $GLOBALS['tweet_footer'];
   $time = date(' [H:i]');
   if($topic_flag){
-    $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , '／'.$data['topic']);
+    $topic = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '$' , '／'
+                          .(trim($data['topic'])!='' ? trim($data['topic']) : trim($data['title'])));
   }else{
     $topic = '';
   }
 
+
+  if($GLOBALS['limit_keywords'] != '' && preg_match('/'.$GLOBALS['limit_keywords'].'/', $topic) == 0 ) {
+    // when set limit keywords, tweet only keyword including
+    return;
+  }
+
+  
   $cutlen = 140-strlen($hash)-mb_strlen($str, 'UTF-8')-strlen($time);
   if(mb_strlen($topic, 'UTF-8') > $cutlen)
     $topic = mb_substr($topic, 0, $cutlen-1, 'UTF-8').'…';
@@ -91,6 +105,7 @@ function check()
   check_ustream();
   check_justin();
   check_stickam();
+  check_nicolive_official();
   check_nicolive();
   check_twitcasting();
   check_own3d();
@@ -419,7 +434,7 @@ function check_nicolive()
 
 
   
-  global $manager, $chs, $sid_chs, $file_path, $nico_loginid, $nico_loginpw;
+  global $manager, $chs, $sid_chs, $file_path, $nico_loginid, $nico_loginpw, $site_url;
 
   $ids = array();
   $hash = array();
@@ -488,36 +503,80 @@ function check_nicolive()
     
     $pid = $hash[$name];
 
-    
-    // get community image
-    $api_url = 'http://com.nicovideo.jp/community/getplayerstatus/' . $name; // apiのURL
-    $ch = curl_seting( $api_url );
-
-    curl_setopt( $ch, CURLOPT_COOKIEFILE, $cookie_file );
-    $ch = set_opt( $ch, $cookie_file );
-    
-    $ret = curl_exec( $ch );
-    curl_close($ch);
-
-    log_print($api_url);
-    try{
-      preg_match('/http:\/\/icon\.nimg\.jp\/community\/co[0-9]+\.jpg\?[0-9]+/', $ret, $matches);
-      $thumb = $matches[0];
-    }catch(Exception $e){
-      print $e->getMessage();
-      continue;
-    }
-
-
 
 
     // judge live status
-    if(isset($xml->error) || $xml->stream->archive == 1){ // error
+    if(isset($xml->error)){ // error
+      // if api error, then retry
+      if( $xml->error->code == 'server_error' || $xml->error->code == 'notlogin'
+          || $xml->error->code == 'full' || $xml->error->code == 'unknown' ){
+        continue;
+      }
+      
+      // retry 3 time
+      if(intval($chs[$hash[$name]]['offline_count']) > 1){
+      }else{
+        $manager->increment_offline_count($hash[$name]);
+        continue;
+      }
+    }elseif( $xml->stream->archive == 1){
+      // offline
     }else{
       $live_st = TRUE;
       $title = $xml->stream->title . ' / ' . $xml->stream->description;
-      $thumb = 'http://icon.nimg.jp/community/'.$name.'.jpg?'.$xml->stream->base_time;
+      $chs[$pid]['title'] = $title;
     }
+
+
+    // cache image
+    $cachefile = $file_path.'/classes/compiled/'.$name.'.jpg';
+    
+    // if not exists or 1day older
+    if( !file_exists($cachefile) || ( $live_st && filectime($cachefile) + 86400 < time() ) ){
+
+      log_print('get community image...');
+
+      // get community image
+      $api_url = 'http://com.nicovideo.jp/community/' . $name; // apiのURL
+      $ch = curl_seting( $api_url );
+      
+      curl_setopt( $ch, CURLOPT_COOKIEFILE, $cookie_file );
+      $ch = set_opt( $ch, $cookie_file );
+    
+      $ret = curl_exec( $ch );
+      curl_close($ch);
+
+      log_print($api_url);
+      try{
+        if( preg_match('/http:\/\/icon\.nimg\.jp\/community\/(.+\/)?(?P<cm>co[0-9]+\.jpg)\?[0-9]+/', $ret, $matches) ){
+          $thumb = $matches[0];
+
+
+          print_r($matches);
+          $api_url = $matches[0];
+          $ch = curl_seting( $api_url );
+          curl_setopt( $ch, CURLOPT_COOKIEFILE, $cookie_file );
+          $ch = set_opt( $ch, $cookie_file );
+          $ret = curl_exec( $ch );
+          curl_close($ch);
+          log_print($api_url);
+
+          if(strpos($ret, '<?xml') === FALSE && strlen($ret) > 0){
+            $fp = fopen($cachefile, "w");
+            fwrite($fp, $ret);
+            fclose($fp);
+          }
+        }
+      }catch(Exception $e){
+        print $e->getMessage();
+        continue;
+      }
+    }
+    $thumb = $site_url.'/classes/compiled/'.$name.'.jpg';
+
+
+
+
     
     // save status change
     $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
@@ -544,6 +603,56 @@ function check_nicolive()
   
   log_print('finish checking NicoLive.');
 }
+
+
+
+// check nicolive(official) function
+//  ** register programs to temporary
+function check_nicolive_official()
+{
+  
+  global $manager;
+
+  // when set  no limit_keywords, return this function
+  if ($GLOBALS['limit_keywords'] == '') {
+    return;
+  }
+
+  log_print('start checking nicolive(official).');
+
+  
+  $url = 'http://live.nicovideo.jp/rss';
+  
+  log_print($url);
+  try{
+    $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+    if (! $xml ) throw new Exception('URL open failed : '.$url);
+
+    // clear temporary
+    $manager->clear_temporary();
+    
+    // add to temporary
+    $items = $xml->channel->item;
+    if ($items) {
+      for ($i = 0; $i < count($items); $i++) {
+        //set online
+        $check = $items[$i]->title;
+        $desc = addslashes(strip_tags($items[$i]->description));
+        if (preg_match('/'.$GLOBALS['limit_keywords'].'/', $check) > 0){
+          log_print('register to temporary '.$items[$i]->title);
+          $manager->register($items[$i]->title, $desc,
+                             2, '', 3, $items[$i]->guid, NULL, 1);
+        }
+      }
+    }
+  }catch(Exception $e){
+    print $e->getMessage();
+    continue;
+  }
+
+  log_print('finish checking nicolive(official).');
+}
+
 
 
 function check_twitcasting()

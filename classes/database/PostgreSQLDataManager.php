@@ -70,7 +70,7 @@ class PostgreSQLDataManager implements IDataManager {
     }
     $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
           . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 '
-            . ($title != null ? ' ,title = \''. $title .'\' ' : '')
+            . ($title != null ? ' ,title = \''. addslashes($title) .'\' ' : '')
           . ' where id = '.$pid;
     $this->db->query($sql);
   }
@@ -354,6 +354,7 @@ class PostgreSQLDataManager implements IDataManager {
                      .'wiki INT,'
                      .'tag TEXT DEFAULT \'\','
                      .'enable SMALLINT DEFAULT 1,'
+                     .'temporary SMALLINT DEFAULT 0,'
                      .'PRIMARY KEY (id))');
 
     $this->try_query('CREATE TABLE program_table ('
@@ -420,8 +421,8 @@ class PostgreSQLDataManager implements IDataManager {
       $arr = $this->db->query_ex($sql);
       $sid = $arr['nextval']; // TODO => create get_sequence_id?
       // -- PostgreSQL
-      $this->db->query('insert into streamer_table (id, name, description, enable) values '
-                 .'('.$sid.', \''.$name.'\', \''.$desc.'\', 1)');
+      $this->db->query('insert into streamer_table (id, name, description, twitter, url, wiki, enable) values '
+                 .'('.$sid.', \''.$name.'\', \''.$desc.'\', NULL, NULL, NULL, 1)');
       
       // PostgreSQL
       $tmp = $this->db->query_ex('select id from chat_table where type='
@@ -447,8 +448,78 @@ class PostgreSQLDataManager implements IDataManager {
       
       $this->db->commit();
     }catch(Exception $e){
+      print $e->getMessage();
       $this->db->rollback();
     }
+    
+  }
+
+
+  function register($name, $desc, $chat_type, $room, $pg_type, $pg_id, $opt_no, $temporary = 0){
+    $this->db->begin();
+
+    try{
+      // PostgreSQL
+      $sql = 'select nextval(\'streamer_table_id_seq\')';
+      $arr = $this->db->query_ex($sql);
+      $sid = $arr['nextval']; // TODO => create get_sequence_id?
+      // -- PostgreSQL
+      $this->db->query('insert into streamer_table (id, name, description, twitter, url, wiki, enable, temporary) values '
+                 .'('.$sid.', \''.$name.'\', \''.$desc.'\', NULL, NULL, NULL, 1, '.$temporary.')');
+
+      // PostgreSQL
+      $tmp = $this->db->query_ex('select id from chat_table where type='
+                                 .$chat_type.' and room=\''.$room.'\'');
+      if(is_null($tmp) || !is_numeric($tmp['id'])){
+        $arr = $this->db->query_ex('select nextval(\'chat_table_id_seq\')');
+        $cid = $arr['nextval']; // TODO => create get_sequence_id?
+        // -- PostgreSQL
+        $this->db->query('insert into chat_table (id, room, type) values '
+                         .'('.$cid.', \''.$room.'\', '.$chat_type.')');
+      }else{
+        $cid = $tmp['id'];
+      }
+      
+      $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'
+                       .' values ('.$sid.', '.$cid.', '.$pg_type.', \''.$pg_id.'\',\''.$opt_no.'\')');
+      
+      $this->db->commit();
+    }catch(Exception $e){
+      print $e->getMessage();
+      $this->db->rollback();
+    }
+    
+  }
+
+  function clear_temporary() {
+    try{
+      $sql = 'select id from streamer_table where temporary = 1';
+      $result = $this->db->query($sql);
+      
+      while($arr = $this->db->fetch($result)){
+        $this->delete_streamer($arr['id']);
+      }
+      $this->truncate_increment_counter();
+      $this->db->commit();
+    }catch(Exception $e){
+      print $e->getMessage();
+      $this->db->rollback();
+    }
+    
+  }
+
+  function truncate_increment_counter() {
+
+    function _truncate($db, $table_name, $column) {
+      $result = $db->query_ex('select MAX('.$column.') as id from '.$table_name);
+      if(!is_null($result) && is_numeric($result['id'])){
+        $next_id = $result['id'] + 1;
+        $db->query('select setval((pg_get_serial_sequence(\''.$table_name.'\', \''.$column.'\')), '.$next_id.', false)');
+      }
+    }
+    _truncate($this->db, 'streamer_table', 'id');
+    _truncate($this->db, 'program_table', 'id');
+    _truncate($this->db, 'chat_table', 'id');
     
   }
 }
