@@ -24,6 +24,8 @@ $site_url = 'http://kazy111.info/checker';
 $file_path = '/usr/home/kazy/public_html/checker/';
 // メールフォームの送り先メールアドレス
 $admin_mail = 'kazy@kazy111.info';
+// サイトキーワード (検索エンジン用)
+$keywords = 'ゲーム配信';
 
 // トップページヘッダに表示する説明
 $header_description = '<a href="http://www.gokusotsu.com/top/?cat=3">獄卒ch</a>関係な人の配信をチェック/視聴するページ ／ 獄卒チェッカー通知Twitter→<a href="http://twitter.com/g_checker">&psi;</a>';
@@ -45,6 +47,11 @@ $ontop = array();
 $ontop[] = 2;
 $ontop[] = 60;
 $ontop[] = 61;
+
+// 限定キーワード (|区切)
+//   これがトピック、タイトルに含まれていると、indexで上位配置、配信通知する対象にする)
+$limit_keywords = 'アイマス|アイドルマスター|ライブフォーユー|L4U|Ｌ４Ｕ|ステージフォーユー|S4U|Ｓ４Ｕ|グラビアフォーユー|G4U|Ｇ４Ｕ|プロデュース|写真撮影';
+
 
 // wikiリンク用URL (このURL + wikiの値.html にリンクされます)
 $wiki_url = '';

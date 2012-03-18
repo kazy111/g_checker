@@ -2,13 +2,13 @@
   <span class="tweet-img">
   <a href="view.php?id={$sid}" target="_blank">
     {if $live_raw && $thumbnail != ''}
-    <img class="thumb" src="{$thumbnail}" width="80" height="60" />
+    <img class="thumb" src="{$thumbnail}" width="80" />
     {else}
       {if $twitter != ''}
     <img class="thumb" src="http://gadgtwit.appspot.com/twicon/{$twitter}/bigger" width="73" height="73" />
     <span class="thumb_offline">offline</span>
       {else}
-    <img class="thumb" src="./themes/Twitter/offline.png" width="80" height="60" />
+    <img class="thumb" src="./themes/Twitter/offline.png" width="80" />
       {/if}
     {/if}
   </a>

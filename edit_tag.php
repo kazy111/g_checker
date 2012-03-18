@@ -11,17 +11,20 @@ function get_info($id){
 
   $data = array();
   $tag = '';
+  $name = '';
 
   if($id){
     // get info from DB
-    $result = $manager->get_tag($id);
+    $result = $manager->get_streamer($id);
     if($result){
       $tag = $result['tag'];
+      $name = $result['name'];
     }
   }
 
   $data['id'] = $id;
   $data['tag'] = $tag;
+  $data['name'] = $name;
 
   return $data;
 }
@@ -64,6 +67,7 @@ if ( array_key_exists('mode', $_POST) ) {
 }
 
 $data['message'] = $message;
+$data['name'] = 
 
 print($page->get_once('edit_tag', $data));
 

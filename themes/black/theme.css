@@ -58,6 +58,9 @@ table.list-table th{
 .offline .time_diff{
   display: none;
 }
+.old{
+  display: none;
+}
 
 /*popup*/
 .popup img.thumb {

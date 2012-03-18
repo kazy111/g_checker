@@ -47,6 +47,9 @@ function get_streamer_data($arrs, $extra)
   $chats_raw = array();
   $titles_raw = array();
 
+  // if live, show live service topic only
+  $live_topics = array();
+
   // channel name array (key is type no.)
   $ch_chat;
   $ch_name = array();
@@ -92,6 +95,7 @@ function get_streamer_data($arrs, $extra)
         break;
       }
       $ch_chat = substr($v['room'],1);
+      $live_topics[] = trim($v['topic']) != '' ? trim($v['topic']) : trim($v['title']);
     }else {
       if(!isset($live_thumb)) $live_thumb = $v['thumbnail'];
       if(!isset($ch_chat)) $ch_chat = substr($v['room'],1);
@@ -137,7 +141,12 @@ function get_streamer_data($arrs, $extra)
     $topics[] = $c[2];
   }
   $data['chat'] = implode(' ', $chats);
-  $data['topic'] = htmlspecialchars(implode(' ', $topics));
+
+  if(count($live_topics) > 0){
+    $data['topic'] = htmlspecialchars($live_topics[0]);
+  }else{
+    $data['topic'] = htmlspecialchars(implode(' ', $topics));
+  }
   $data['topic'] = preg_replace('/(https?|ftp)(:\/\/[[:alnum:]\+\$\;\?\.%,!#~*\/:@&=_-]+)/i', '<a class="urllink" href="\\0" target="_blank">&psi;</a>' , $data['topic']);
   // when topic is empty, alter text to program title
   if(trim($data['topic']) == ''){
@@ -172,15 +181,38 @@ function display_list($sort, $extra)
 {
   global $ontop, $page;
   // streamers compare function for sort
-  function cmp_viewer( $a, $b ){
+
+  function cmp_common( $a, $b ){
     global $ontop;
+    
     if( in_array($a['sid'], $ontop) && !in_array($b['sid'], $ontop) ){
       return FALSE;
     }else if( !in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
       return TRUE;
     }else if( in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
-      return $a['sid'] > $b['sid'];
+      return $a['name'] > $b['name'];
     }
+    if($GLOBALS['limit_keywords'] != '' && $a['live'] && $b['live'] ){
+      // when set limit keywords, give priority to keyword including
+      $atitle = $a['topic'];
+      $btitle = $b['topic'];
+      $_keywords = '/'.$GLOBALS['limit_keywords'].'/';
+      
+      if( preg_match($_keywords, $atitle) > 0 && preg_match($_keywords, $btitle) == 0 ) {
+        return FALSE;
+      }
+      if( preg_match($_keywords, $atitle) == 0 && preg_match($_keywords, $btitle) > 0 ) {
+        return TRUE;
+      }
+    }
+
+    return null;
+  }
+  
+  function cmp_viewer( $a, $b ){
+
+    $ret = cmp_common($a, $b);
+    if($ret !== null) return $ret;
     
     if( $a['live'] ){
       if( $b['live'] ){
@@ -198,14 +230,9 @@ function display_list($sort, $extra)
   }
   // name
   function cmp_name( $a, $b ){
-    global $ontop;
-    if( in_array($a['sid'], $ontop) && !in_array($b['sid'], $ontop) ){
-      return FALSE;
-    }else if( !in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
-      return TRUE;
-    }else if( in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
-      return $a['sid'] > $b['sid'];
-    }
+
+    $ret = cmp_common($a, $b);
+    if($ret !== null) return $ret;
     
     global $ontop;
     if( in_array($a['sid'], $ontop) && !in_array($a['sid'], $ontop) ){
@@ -231,14 +258,9 @@ function display_list($sort, $extra)
   }
   // time
   function cmp_time( $a, $b ){
-    global $ontop;
-    if( in_array($a['sid'], $ontop) && !in_array($b['sid'], $ontop) ){
-      return FALSE;
-    }else if( !in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
-      return TRUE;
-    }else if( in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
-      return $a['sid'] > $b['sid'];
-    }
+
+    $ret = cmp_common($a, $b);
+    if($ret !== null) return $ret;
     
     global $ontop;
     if( in_array($a['sid'], $ontop) && !in_array($a['sid'], $ontop) ){
@@ -265,14 +287,9 @@ function display_list($sort, $extra)
   // random
   srand(time());
   function cmp_random( $a, $b ){
-    global $ontop;
-    if( in_array($a['sid'], $ontop) && !in_array($b['sid'], $ontop) ){
-      return FALSE;
-    }else if( !in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
-      return TRUE;
-    }else if( in_array($a['sid'], $ontop) && in_array($b['sid'], $ontop) ){
-      return $a['sid'] > $b['sid'];
-    }
+
+    $ret = cmp_common($a, $b);
+    if($ret !== null) return $ret;
 
     if( $a['live'] ){
       if( $b['live'] ){
@@ -345,7 +362,7 @@ function display_list($sort, $extra)
 
   // get random legend
   $result = $manager->get_random_legend();
-  $legend = sanitize_html($result['body']);
+  $legend = $result['body'];
 
   // output page contents
   $data = new Dwoo_Data();

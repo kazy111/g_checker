@@ -8,7 +8,7 @@
 
 <body>
 
-<h2>タグ編集</h2>
+<h2>タグ編集 - {$name}</h2>
 
 
 <div class="message"><strong>{$message}</strong></div>

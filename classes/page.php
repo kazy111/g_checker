@@ -95,6 +95,7 @@ class Page{
     $data->assign('footer_description', $GLOBALS['footer_description']);
     $data->assign('curr_time', time());
     $data->assign('site_title', ($this->title?$this->title.' - ':'').$site_title);
+    $data->assign('keywords', $GLOBALS['keywords']);
     $data->assign('additional_header', implode("\n", $this->header));
     $ret = '';
     
@@ -106,6 +107,7 @@ class Page{
         $this->data['site_url'] = $GLOBALS['site_url'];
         $this->data['file_path'] = $GLOBALS['file_path'];
         $this->data['site_title'] = $GLOBALS['site_title'];
+        $this->data['keywords'] = $GLOBALS['keywords'];
         $this->data['relative_dir_to_top'] = $this->rel_dir;
         $this->data['header_description'] = $GLOBALS['header_description'];
         $this->data['footer_description'] = $GLOBALS['footer_description'];
@@ -113,6 +115,7 @@ class Page{
         $this->data->assign('site_url', $GLOBALS['site_url']);
         $this->data->assign('file_path', $GLOBALS['file_path']);
         $this->data->assign('site_title', $GLOBALS['site_title']);
+        $this->data->assign('keywords', $GLOBALS['keywords']);
         $this->data->assign('relative_dir_to_top', $this->rel_dir);
         $this->data->assign('header_description', $GLOBALS['header_description']);
         $this->data->assign('footer_description', $GLOBALS['footer_description']);
@@ -134,6 +137,7 @@ class Page{
         $data['site_url'] = $GLOBALS['site_url'];
         $data['file_path'] = $GLOBALS['file_path'];
         $data['site_title'] = $GLOBALS['site_title'];
+        $data['keywords'] = $GLOBALS['keywords'];
         $data['relative_dir_to_top'] = $this->rel_dir;
         $data['header_description'] = $GLOBALS['header_description'];
         $data['footer_description'] = $GLOBALS['footer_description'];
@@ -141,6 +145,7 @@ class Page{
         $data->assign('site_url', $GLOBALS['site_url']);
         $data->assign('file_path', $GLOBALS['file_path']);
         $data->assign('site_title', $GLOBALS['site_title']);
+        $data->assign('keywords', $GLOBALS['keywords']);
         $data->assign('relative_dir_to_top', $this->rel_dir);
         $data->assign('header_description', $GLOBALS['header_description']);
         $data->assign('footer_description', $GLOBALS['footer_description']);

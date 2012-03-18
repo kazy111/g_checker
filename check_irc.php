@@ -86,8 +86,9 @@ print_r($rooms);
       }else
         $arr = array(0, '');
     }
+    $arr[1] = mb_convert_encoding($arr[1], 'utf-8', 'utf-8');
 
-    log_print('room='.$arr[0].', topic=\''.$arr[1]);
+    log_print('room='.$arr[0].', topic=\''.$arr[1].'\'');
     $manager->update_chat($hash[$k], $manager->sanitize($arr[0]), $manager->sanitize($arr[1]));
   }
   
