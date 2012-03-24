@@ -101,6 +101,10 @@ function check()
       $chs[$p['pid']] = $p;
     }
   }
+
+  
+  // clear temporary streamers
+  $manager->clear_temporary();
   
   check_ustream();
   check_justin();
@@ -627,9 +631,6 @@ function check_nicolive_official()
   try{
     $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
     if (! $xml ) throw new Exception('URL open failed : '.$url);
-
-    // clear temporary
-    $manager->clear_temporary();
     
     // add to temporary
     $items = $xml->channel->item;
