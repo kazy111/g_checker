@@ -364,7 +364,7 @@ class MySQLDataManager implements IDataManager {
                      .'optional_id VARCHAR(255),'
                      .'title VARCHAR(255) DEFAULT \'\','
                      .'thumbnail TEXT,'
-                     .'live BOOL,'
+                     .'live BOOL DEFAULT FALSE,'
                      .'start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,'
                      .'end_time TIMESTAMP DEFAULT 0,'
                      .'viewer INT,'
@@ -446,6 +446,20 @@ class MySQLDataManager implements IDataManager {
     
   }
 
+  function check_already_registered($pg_type, $pg_id, $opt_no) {
+    try{
+      $tmp = $this->db->query_ex('select id from program_table where type='
+                                 .$pg_type.' and ch_name=\''.$pg_id.'\' and optional_id=\''.$opt_no.'\'');
+      if (is_null($tmp) || !is_numeric($tmp['id'])) {
+        return FALSE;
+      } else {
+        return TRUE;
+      }
+    } catch (Exception $e) {
+      print $e->getMessage();
+      return FALSE;
+    }
+  }
 
   function register($name, $desc, $chat_type, $room, $pg_type, $pg_id, $opt_no, $temporary = 0){
     $this->db->begin();
@@ -464,8 +478,8 @@ class MySQLDataManager implements IDataManager {
       }else
         $cid = $tmp['id'];
       
-      $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id)'
-                       .' values ('.$sid.', '.$cid.', '.$pg_type.', \''.$pg_id.'\',\''.$opt_no.'\')');
+      $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id, live)'
+                       .' values ('.$sid.', '.$cid.', '.$pg_type.', \''.$pg_id.'\',\''.$opt_no.'\', false)');
       
       $this->db->commit();
     }catch(Exception $e){
@@ -477,7 +491,8 @@ class MySQLDataManager implements IDataManager {
 
   function clear_temporary() {
     try{
-      $sql = 'select id from streamer_table where temporary = 1';
+      // clear temporary (and not live) streaming
+      $sql = 'SELECT DISTINCT s.id FROM streamer_table s LEFT JOIN program_table p ON s.id = p.streamer_id AND p.live WHERE p.id IS NULL AND temporary = 1';
       $result = $this->db->query($sql);
       
       while($arr = $this->db->fetch($result)){

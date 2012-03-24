@@ -635,7 +635,12 @@ function check_nicolive_official()
     $items = $xml->channel->item;
     if ($items) {
       for ($i = 0; $i < count($items); $i++) {
-        //set online
+        // if already added, then skip
+        if ($manager->check_already_registered(3, $items[$i]->guid, NULL)) {
+          continue;
+        }
+        
+        // now add streamer as templrary
         $check = $items[$i]->title;
         $desc = addslashes(strip_tags($items[$i]->description));
         if (preg_match('/'.$GLOBALS['limit_keywords'].'/', $check) > 0){

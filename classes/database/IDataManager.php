@@ -42,6 +42,7 @@ interface IDataManager {
   function initialize_db();
   function delete_db();
   function register_onece($name, $room, $chat_type, $ust_id, $jus_id, $ust_no, $desc);
+  function check_already_registered($pg_type, $pg_id, $opt_no);
   function register($name, $desc, $chat_type, $room, $pg_type, $pg_id, $opt_no, $temporary = 0);
   function clear_temporary();
   function truncate_increment_counter();
