@@ -194,8 +194,8 @@ function display_list($sort, $extra)
     }
     if($GLOBALS['limit_keywords'] != '' && $a['live'] && $b['live'] ){
       // when set limit keywords, give priority to keyword including
-      $atitle = $a['topic'];
-      $btitle = $b['topic'];
+      $atitle = $a['topic'] . ' ' . $a['name'];
+      $btitle = $b['topic'] . ' ' . $b['name'];
       $_keywords = '/'.$GLOBALS['limit_keywords'].'/';
       
       if( preg_match($_keywords, $atitle) > 0 && preg_match($_keywords, $btitle) == 0 ) {

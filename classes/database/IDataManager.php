@@ -7,7 +7,7 @@ interface IDataManager {
 
   // status update
   function update_chat($cid, $member, $topic);
-  function update_program($pid, $live, $viewer, $change_flag, $thumb, $title = null);
+  function update_program($pid, $live, $viewer, $change_flag, $thumb, $title = null, $live_id=null);
   
   function increment_offline_count($pid);
   

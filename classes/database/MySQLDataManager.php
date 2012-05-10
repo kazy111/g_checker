@@ -55,7 +55,7 @@ class MySQLDataManager implements IDataManager {
     $ret = $this->db->query($sql);
   }
   
-  function update_program($pid, $live, $viewer, $change_flag, $thumb, $title=null){
+  function update_program($pid, $live, $viewer, $change_flag, $thumb, $title=null, $live_id=null){
     $sql_live = $live ? '1' : '0';
     // construct time SQL
     $sql_time = ', start_time = start_time, end_time = end_time ';
@@ -65,12 +65,12 @@ class MySQLDataManager implements IDataManager {
         $sql_time = ', start_time = \''.$now.'\' ';
       }else{
         $sql_time = ', end_time = \''.$now.'\' ';
-        // TODO add history
       }
     }
     $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
           . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 '
             . ($title != null ? ' ,title = \''. addslashes($title) .'\' ' : '')
+            . ($live_id != null ? ' ,optional_id = \''. addslashes($live_id) .'\' ' : '')
           . ' where id = '.$pid;
     print($sql);
     $this->db->query($sql);

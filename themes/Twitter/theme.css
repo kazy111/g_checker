@@ -88,7 +88,7 @@ img{
 
 .streamer:hover .tweet-menu{
   display: block;
-  float: right;
+  text-align: right;
 }
 
 .content-arrow{

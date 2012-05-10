@@ -16,7 +16,7 @@ function notice_process(data)
 		else{
 			$('#notice').html(names.join('、')+'配信が始まりました！');
 		}
-		$('#notice').bind("click", function(){ location.reload(); })
+		$('#notice').bind("click", function(){ location.reload(true); })
 		$('#notice').slideDown();
 	}else{
 		$('#notice').slideUp();

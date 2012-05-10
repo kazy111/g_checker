@@ -55,7 +55,7 @@ class PostgreSQLDataManager implements IDataManager {
     $ret = $this->db->query($sql);
   }
   
-  function update_program($pid, $live, $viewer, $change_flag, $thumb, $title=null){
+  function update_program($pid, $live, $viewer, $change_flag, $thumb, $title=null, $live_id=null){
     $sql_live = $live ? 'TRUE' : 'FALSE';
     // construct time SQL
     $sql_time = '';
@@ -65,12 +65,12 @@ class PostgreSQLDataManager implements IDataManager {
         $sql_time = ', start_time = \''.$now.'\' ';
       }else{
         $sql_time = ', end_time = \''.$now.'\' ';
-        // TODO add history
       }
     }
     $sql = 'update program_table set live = '.$sql_live.' , viewer = '.$viewer
           . $sql_time.', thumbnail = \''. $thumb .'\', offline_count = 0 '
             . ($title != null ? ' ,title = \''. addslashes($title) .'\' ' : '')
+            . ($live_id != null ? ' ,optional_id = \''. addslashes($live_id) .'\' ' : '')
           . ' where id = '.$pid;
     $this->db->query($sql);
   }

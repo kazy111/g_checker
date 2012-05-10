@@ -30,7 +30,8 @@ function start_tweet($data, $topic_flag = TRUE)
     $topic = '';
   }
 
-  if($GLOBALS['limit_keywords'] != '' && preg_match('/'.$GLOBALS['limit_keywords'].'/', $topic) == 0 ) {
+  $check = $topic . ' ' . $data['name'];
+  if($GLOBALS['limit_keywords'] != '' && preg_match('/'.$GLOBALS['limit_keywords'].'/', $check) == 0 ) {
     // when set limit keywords, tweet only keyword including
     return;
   }
@@ -59,13 +60,12 @@ function end_tweet($data, $topic_flag = TRUE)
     $topic = '';
   }
 
-
-  if($GLOBALS['limit_keywords'] != '' && preg_match('/'.$GLOBALS['limit_keywords'].'/', $topic) == 0 ) {
+  $check = $topic . ' ' . $data['name'];
+  if($GLOBALS['limit_keywords'] != '' && preg_match('/'.$GLOBALS['limit_keywords'].'/', $check) == 0 ) {
     // when set limit keywords, tweet only keyword including
     return;
   }
 
-  
   $cutlen = 140-strlen($hash)-mb_strlen($str, 'UTF-8')-strlen($time);
   if(mb_strlen($topic, 'UTF-8') > $cutlen)
     $topic = mb_substr($topic, 0, $cutlen-1, 'UTF-8').'…';
@@ -113,6 +113,8 @@ function check()
   check_nicolive();
   check_twitcasting();
   check_own3d();
+  check_livetube();
+  check_cavetube();
 }
 
 
@@ -625,7 +627,7 @@ function check_nicolive_official()
   log_print('start checking nicolive(official).');
 
   
-  $url = 'http://live.nicovideo.jp/rss';
+  $url = 'http://live.nicovideo.jp/recent/rss';
   
   log_print($url);
   try{
@@ -636,14 +638,21 @@ function check_nicolive_official()
     $items = $xml->channel->item;
     if ($items) {
       for ($i = 0; $i < count($items); $i++) {
+
+        
         // if already added, then skip
         if ($manager->check_already_registered(3, $items[$i]->guid, NULL)) {
           continue;
         }
+        // if program type is community, then skip
+        $nicolive = $items[$i]->children('http://live.nicovideo.jp/');
+        if ($nicolive->type == 'community') {
+          continue;
+        }
         
         // now add streamer as templrary
-        $check = $items[$i]->title;
         $desc = addslashes(strip_tags($items[$i]->description));
+        $check = $items[$i]->title . ' ' . $desc;
         if (preg_match('/'.$GLOBALS['limit_keywords'].'/', $check) > 0){
           log_print('register to temporary '.$items[$i]->title);
           $manager->register($items[$i]->title, $desc,
@@ -805,6 +814,147 @@ function check_own3d()
   log_print('finish checking own3D.');
 }
 
+
+
+// check LiveTube function
+function check_livetube()
+{
+  
+  global $manager, $chs, $sid_chs;
+
+  $ids = array();
+  $hash = array();
+  $live = array();
+
+  log_print('start checking LiveTube.');
+
+  foreach($chs as $k => $v){
+    if($v['type']==6){
+      $hash[$v['ch_name']] = $v['pid'];
+      $ids[] = $v['ch_name'];
+      $live[$v['pid']] = 0;
+    }
+  }
+
+  $url = 'http://livetube.cc/index.live.xml';
+  
+  log_print($url);
+  try{
+    $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+    if (! $xml ) throw new Exception('URL open failed : '.$url);
+    
+    foreach($xml->entry as $ch){
+      //print_r($ch);
+      
+      $name = (string)$ch->author->name;
+      if(!$name || $name == '' || !array_key_exists($name, $hash)) continue; // error
+      
+      $title = $ch->title;
+      $live_id = urldecode(substr($ch->id, 19));
+      $viewer = 0;
+      $pid = $hash[$name];
+      $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
+      $thumb = '';
+      
+      log_print("<b>name:</b> ".$name." / ".$viewer);
+      $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $live_id);
+      
+      if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+        start_tweet($chs[$pid]);
+      
+      $live[$pid] = 1;
+    }
+
+    foreach($live as $k => $v){
+      if( $v == 0 && ($chs[$k]['live']=='t' || $chs[$k]['live']=='1') ){
+        
+        $manager->update_program($k, FALSE, 0, 1, '');
+        
+        $start_time = $chs[$k]['start_time'];
+        $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
+        if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
+          end_tweet($chs[$k]);
+
+      }
+    }
+  }catch(Exception $e){
+    print $e->getMessage();
+    continue;
+  }
+
+  log_print('finish checking LiveTube.');
+}
+
+
+
+// check CaveTube function
+function check_cavetube()
+{
+  
+  global $manager, $chs, $sid_chs;
+
+  $ids = array();
+  $hash = array();
+  $live = array();
+
+  log_print('start checking CaveTube.');
+
+  foreach($chs as $k => $v){
+    if($v['type']==7){
+      $hash[$v['ch_name']] = $v['pid'];
+      $ids[] = $v['ch_name'];
+      $live[$v['pid']] = 0;
+    }
+  }
+
+  $url = 'http://gae.cavelis.net/index_live.xml';
+  
+  log_print($url);
+  try{
+    $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+    if (! $xml ) throw new Exception('URL open failed : '.$url);
+    
+    foreach($xml->entry as $ch){
+      //print_r($ch);
+      
+      $name = (string)$ch->author->name;
+      if(!$name || $name == '' || !array_key_exists($name, $hash)) continue; // error
+      
+      $title = $ch->title . ' / ' . $ch->content;
+      $live_id = substr($ch->id, 28);
+      $viewer = 0;
+      $pid = $hash[$name];
+      $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
+      $thumb = 'http://img.cavelis.net/userthumbnails/m/'.$name.'.jpg';
+      
+      log_print("<b>name:</b> ".$name." / ".$viewer);
+      $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $live_id);
+      
+      if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+        start_tweet($chs[$pid]);
+      
+      $live[$pid] = 1;
+    }
+
+    foreach($live as $k => $v){
+      if( $v == 0 && ($chs[$k]['live']=='t' || $chs[$k]['live']=='1') ){
+        
+        $manager->update_program($k, FALSE, 0, 1, '');
+        
+        $start_time = $chs[$k]['start_time'];
+        $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
+        if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
+          end_tweet($chs[$k]);
+
+      }
+    }
+  }catch(Exception $e){
+    print $e->getMessage();
+    continue;
+  }
+
+  log_print('finish checking CaveTube.');
+}
 
 
 
