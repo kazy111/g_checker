@@ -617,54 +617,56 @@ function check_nicolive()
 function check_nicolive_official()
 {
   
-  global $manager;
 
   // when set  no limit_keywords, return this function
   if ($GLOBALS['limit_keywords'] == '') {
     return;
   }
 
-  log_print('start checking nicolive(official).');
-
-  
-  $url = 'http://live.nicovideo.jp/recent/rss';
-  
-  log_print($url);
-  try{
-    $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
-    if (! $xml ) throw new Exception('URL open failed : '.$url);
-    
-    // add to temporary
-    $items = $xml->channel->item;
-    if ($items) {
-      for ($i = 0; $i < count($items); $i++) {
-
+  function inner_check($url){
+    global $manager;
+    log_print($url);
+    try{
+      $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
+      if (! $xml ) throw new Exception('URL open failed : '.$url);
+      
+      // add to temporary
+      $items = $xml->channel->item;
+      if ($items) {
+        for ($i = 0; $i < count($items); $i++) {
+          
+          
+          // if already added, then skip
+          if ($manager->check_already_registered(3, $items[$i]->guid, NULL)) {
+            continue;
+          }
+          // if program type is community, then skip
+          $nicolive = $items[$i]->children('http://live.nicovideo.jp/');
+          if ($nicolive->type == 'community') {
+            continue;
+          }
         
-        // if already added, then skip
-        if ($manager->check_already_registered(3, $items[$i]->guid, NULL)) {
-          continue;
-        }
-        // if program type is community, then skip
-        $nicolive = $items[$i]->children('http://live.nicovideo.jp/');
-        if ($nicolive->type == 'community') {
-          continue;
-        }
-        
-        // now add streamer as templrary
-        $desc = addslashes(strip_tags($items[$i]->description));
-        $check = $items[$i]->title . ' ' . $desc;
-        if (preg_match('/'.$GLOBALS['limit_keywords'].'/', $check) > 0){
-          log_print('register to temporary '.$items[$i]->title);
-          $manager->register($items[$i]->title, $desc,
-                             2, '', 3, $items[$i]->guid, NULL, 1);
+          // now add streamer as templrary
+          $desc = addslashes(strip_tags($items[$i]->description));
+          $check = $items[$i]->title . ' ' . $desc;
+          if (preg_match('/'.$GLOBALS['limit_keywords'].'/', $check) > 0){
+            log_print('register to temporary '.$items[$i]->title);
+            $manager->register($items[$i]->title, $desc,
+                               2, '', 3, $items[$i]->guid, NULL, 1);
+          }
         }
       }
+    }catch(Exception $e){
+      print $e->getMessage();
+      continue;
     }
-  }catch(Exception $e){
-    print $e->getMessage();
-    continue;
   }
 
+  log_print('start checking nicolive(official).');
+
+  inner_check('http://live.nicovideo.jp/rss');
+  inner_check('http://live.nicovideo.jp/recent/rss');
+  
   log_print('finish checking nicolive(official).');
 }
 

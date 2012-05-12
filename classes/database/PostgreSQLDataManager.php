@@ -494,8 +494,8 @@ class PostgreSQLDataManager implements IDataManager {
         $cid = $tmp['id'];
       }
       
-      $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id, live)'
-                       .' values ('.$sid.', '.$cid.', '.$pg_type.', \''.$pg_id.'\',\''.$opt_no.'\', false)');
+      $this->db->query('insert into program_table (streamer_id, chat_id, type, ch_name, optional_id, live, title)'
+                       .' values ('.$sid.', '.$cid.', '.$pg_type.', \''.$pg_id.'\',\''.$opt_no.'\', false, \''.$desc.'\')');
       
       $this->db->commit();
     }catch(Exception $e){
