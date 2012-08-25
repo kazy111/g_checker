@@ -52,7 +52,7 @@ function assoc2select($assoc, $id, $selected)
   return $html;
 }
 
-function get_service_url($type, $ch_name, $ch_id)
+function get_service_url($type, $ch_name, $ch_id, $live = FALSE)
 {
   switch($type){
   case 0: //ustream
@@ -65,7 +65,11 @@ function get_service_url($type, $ch_name, $ch_id)
     $ret = 'http://www.stickam.jp/profile/'.$ch_name;
     break;
   case 3: // nicolive
-    $ret = 'http://live.nicovideo.jp/watch/'.$ch_name;
+    if(substr($ch_name, 0, 2) == 'co' && !$live){
+      $ret = 'http://com.nicovideo.jp/community/'.$ch_name;
+    }else{
+      $ret = 'http://live.nicovideo.jp/watch/'.$ch_name;
+    }
     break;
   case 4: // twitcasting
     $ret = 'http://twitcasting.tv/'.$ch_name;

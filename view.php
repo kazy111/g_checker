@@ -65,9 +65,10 @@ foreach($pids as $a){
       $first_id = $a['id'];
     }
     $open_original &= $service_org_assoc[$a['type']];
-    $open_original_url = get_service_url($a['type'], $a['ch_id'], $a['opt_id']);
+    $open_original_url = get_service_url($a['type'], $a['ch_id'], $a['opt_id'], TRUE);
   }
 }
+
 
 if(!isset($first_id)){
   $tmp = 10000;
@@ -78,6 +79,14 @@ if(!isset($first_id)){
     }
   }
   $open_original = FALSE;
+}
+
+// redirect if only 1 redirect program is registered
+reset($pids);
+$a = current($pids);
+if(!$open_original && count($pids) === 1 && $service_org_assoc[$a['type']]){
+  $open_original = TRUE;
+  $open_original_url = get_service_url($a['type'], $a['ch_id'], $a['opt_id']);
 }
 
 if($open_original){
