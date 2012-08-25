@@ -90,12 +90,12 @@ class IRCBot {
         {
           while(1){
             $data = fgets($this->socket, 1024);
-                
+
             //echo nl2br($data);
             
-            flush();
+            //flush();
 
-            $this->ex = explode(' ', $data);
+            $this->ex = explode(' ', $data, 11);
 
             if($this->ex[0] == 'PING') {
               $this->send_data('PONG', $this->ex[1]); //Plays ping-pong with the server to stay connected.
@@ -104,7 +104,7 @@ class IRCBot {
             //print($data."\n");
             switch($this->ex[1]){
             case '322':
-              if(array_key_exists(strtolower($this->ex[3]), $rooms)){
+              if(isset($rooms[strtolower($this->ex[3])])){
                 array_shift($this->ex); array_shift($this->ex); array_shift($this->ex);
                 $r = strtolower(array_shift($this->ex));
                 $m = array_shift($this->ex); array_shift($this->ex);
@@ -120,10 +120,12 @@ class IRCBot {
             case '376':
               $this->send_data('LIST');
               break;
-            case '433':
+            case '433': // nick conflict
               $config['nick'] .= '_';
               $this->send_data('NICK', $config['nick']);
               break;
+            //default:
+            //  print($data."<br>\n");
             }
           }
         }

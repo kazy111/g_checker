@@ -162,6 +162,9 @@ function check_ustream()
     $thumb = 'http://static-cdn2.ustream.tv/i/channel/live/1_'.$id.',192x108,b.jpg';
     if($live_st || $change_flag)
       log_print("<b>name:</b> ".$login." / ".$viewer);
+    
+    if(mb_strlen($title, 'UTF-8') > 255)
+      $title = mb_substr($title, 0, 255-1, 'UTF-8').'…';
     $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb, ($live_st?$title:''));
     if($change_flag){
       if($live_st){
