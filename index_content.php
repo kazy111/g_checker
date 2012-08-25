@@ -58,6 +58,8 @@ function get_streamer_data($arrs, $extra)
   }
   
   $ch_v = 1; // for multiview
+  $live_thumb = '';
+  $ch_chat ='';
   
   foreach($arrs as $k => $v){
     $programs_raw[] = array($v['type'], $v['ch_name'], $v['optional_id'], $v['thumbnail'], $v['live'],
@@ -71,9 +73,10 @@ function get_streamer_data($arrs, $extra)
       $thumb = '<img src="'.$v['thumbnail'].'" width="320" class="thumb"/>';
       $programs .= '<a href="'.get_service_url($v['type'], $v['ch_name'], $v['optional_id']).'">'.$service_abb_assoc[$v['type']].$thumb.'</a> ';
       $ch_name[$v['type']] = $v['ch_name'];
+
       switch($v['type']){
       case 0: //ustream
-        if(!isset($live_thumb)){ $live_thumb = $v['thumbnail']; }
+        if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         $ch_name[$v['type']] = $v['optional_id'];
         $ch_v = 1;
         break;
@@ -97,8 +100,8 @@ function get_streamer_data($arrs, $extra)
       $ch_chat = substr($v['room'],1);
       $live_topics[] = trim($v['topic']) != '' ? trim($v['topic']) : trim($v['title']);
     }else {
-      if(!isset($live_thumb)) $live_thumb = $v['thumbnail'];
-      if(!isset($ch_chat)) $ch_chat = substr($v['room'],1);
+      if($live_thumb === '') $live_thumb = $v['thumbnail'];
+      if($ch_chat === '') $ch_chat = substr($v['room'],1);
       if($ch_name[$v['type']] == ''){
         $ch_name[$v['type']] = $v['ch_name'];
         switch($v['type']){
@@ -110,9 +113,6 @@ function get_streamer_data($arrs, $extra)
       $etime = $etime < strtotime($v['end_time']) ? strtotime($v['end_time']) : $etime;
     }
   }
-
-  if(!isset($live_thumb)) $live_thumb = '';
-  if(!isset($ch_chat)) $ch_chat = '';
   
   $i = $arrs[0];
 
@@ -135,6 +135,7 @@ function get_streamer_data($arrs, $extra)
   $data['program'] = $programs;
   $data['program_raw'] = $programs_raw;
   $data['thumbnail'] = $live_thumb;
+
   $chats = array(); $topics = array();
   foreach($chats_raw as $c){
     $chats[] = $c[1];
