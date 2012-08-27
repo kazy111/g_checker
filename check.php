@@ -160,6 +160,7 @@ function check_ustream()
     $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
     $viewer = $live_st ? get_ustream_member($login, $id) : 0;
     $thumb = 'http://static-cdn2.ustream.tv/i/channel/live/1_'.$id.',192x108,b.jpg';
+    $title = str_replace(array("\r\n", "\n", "\r"), ' ', $title);
     if($live_st || $change_flag)
       log_print("<b>name:</b> ".$login." / ".$viewer);
     
