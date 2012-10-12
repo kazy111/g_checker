@@ -1,4 +1,4 @@
-var arr = new Array('welcome', 'theme', 'theme2', 'y1', 'y2', 'y3', 'g1');
+var arr = new Array('welcome', 'theme', 'theme2', 'y1', 'y2', 'y3', 'g1', 'dkcn');
 
 
 var playsound = ReadCookie('playsound');
