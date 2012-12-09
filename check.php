@@ -273,66 +273,70 @@ function check_justin()
       $live[$v['pid']] = 0;
     }
   }
-  $url = 'http://api.justin.tv/api/stream/list.json?channel='.implode(',', $ids);
-  
-  log_print($url);
-  
-  try{
-    $jsontxt = '';
-    $json = new Services_JSON();
-    // open URL
-    $fp = fopen($url, 'r');
-    if(! $fp ) throw new Exception('URL open failed : '.$url);
-    while (! feof($fp)) {
-      $jsontxt .= fread($fp, 1024) or '';
-    }
-    fclose($fp);
 
-    $xml = $json->decode($jsontxt);
-  }catch(Exception $e){
-    print $e->getMessage();
-    return;
-  }
+  if ( count($ids) > 0 ) {
+    $url = 'http://api.justin.tv/api/stream/list.json?channel='.implode(',', $ids);
+  
+    log_print($url);
+    
+    try{
+      $jsontxt = '';
+      $json = new Services_JSON();
+      // open URL
+      $fp = fopen($url, 'r');
+      if(! $fp ) throw new Exception('URL open failed : '.$url);
+      while (! feof($fp)) {
+        $jsontxt .= fread($fp, 1024) or '';
+      }
+      fclose($fp);
 
-  
-  if($xml){
-    foreach($xml as $res){
-      //print_r($res);
-      $ch = $res->channel;
-      $name = ''.$ch->login;
-      if($name == '') $name = ''.$ch->channel;
-      if($name == '') continue; // error
-      $viewer = $res->stream_count;
-      $pid = $hash[$name];
-      $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
-      $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
-      
-      log_print("<b>name:</b> ".$name." / ".$viewer);
-      $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
-      
-      if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-        start_tweet($chs[$pid]);
-      
-      $live[$pid] = 1;
+      $xml = $json->decode($jsontxt);
+    }catch(Exception $e){
+      print $e->getMessage();
+      return;
     }
-  }
-  
-  foreach($live as $k => $v){
-    if( $v == 0 && ($chs[$k]['live']=='t' || $chs[$k]['live']=='1') ){
-      if(intval($chs[$k]['offline_count']) > 1){
-        //$thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
+
+    
+    if($xml){
+      foreach($xml as $res){
+        //print_r($res);
+        $ch = $res->channel;
+        $name = ''.$ch->login;
+        if($name == '') $name = ''.$ch->channel;
+        if($name == '') continue; // error
+        $viewer = $res->stream_count;
+        $pid = $hash[$name];
+        $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
+        $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
         
-        $manager->update_program($k, FALSE, 0, 1, '');
+        log_print("<b>name:</b> ".$name." / ".$viewer);
+        $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
         
-        $start_time = $chs[$k]['start_time'];
-        $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
-        if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
-          end_tweet($chs[$k]);
-      }else{
-        $manager->increment_offline_count($k);
+        if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+          start_tweet($chs[$pid]);
+        
+        $live[$pid] = 1;
+      }
+    }
+    
+    foreach($live as $k => $v){
+      if( $v == 0 && ($chs[$k]['live']=='t' || $chs[$k]['live']=='1') ){
+        if(intval($chs[$k]['offline_count']) > 1){
+          //$thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
+          
+          $manager->update_program($k, FALSE, 0, 1, '');
+          
+          $start_time = $chs[$k]['start_time'];
+          $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
+          if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
+            end_tweet($chs[$k]);
+        }else{
+          $manager->increment_offline_count($k);
+        }
       }
     }
   }
+  
   
   log_print('finish checking Justin.tv.');
 }
@@ -523,8 +527,8 @@ function check_nicolive()
         continue;
       }
       
-      // retry 3 time
-      if(intval($chs[$hash[$name]]['offline_count']) > 1){
+      // retry 1 time
+      if(intval($chs[$hash[$name]]['offline_count']) > 0){
       }else{
         $manager->increment_offline_count($hash[$name]);
         continue;
