@@ -71,9 +71,13 @@ foreach($pids as $a){
 
 
 if(!isset($first_id)){
-  $tmp = 10000;
+  $tmp = 100000;
   foreach($pids as $p){
-    if($p['type'] < $tmp){
+    if($p['type'] == 1){
+      $first_id = $p['id'];
+      $tmp = $p['type'];
+
+    }else if($p['type'] < $tmp){
       $first_id = $p['id'];
       $tmp = $p['type'];
     }
@@ -125,7 +129,7 @@ $data->assign('theme_data', $contents_theme);
 
 $page->add_header('<meta http-equiv="content-script-type" content="text/javascript" />');
 $page->add_header('<script type="text/javascript" src="./js/swfobject.js"></script>');
-$page->add_header('<script type="text/javascript" src="./js/nicoirc20111016.js"></script>');
+$page->add_header('<script type="text/javascript" src="./js/nicoirc20131214.js"></script>');
 $page->set('view', $data);
 $page->set_title($name);
 

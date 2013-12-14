@@ -307,8 +307,7 @@ function check_justin()
         $viewer = $res->stream_count;
         $pid = $hash[$name];
         $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
-        $thumb = 'http://static-cdn.justin.tv/previews/live_user_'.$name.'-320x240.jpg';
-        
+        $thumb = 'http://static-cdn.jtvnw.net/previews-ttv/live_user_'.$name.'-320x200.jpg';
         log_print("<b>name:</b> ".$name." / ".$viewer);
         $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
         

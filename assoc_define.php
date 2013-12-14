@@ -94,7 +94,8 @@ function get_archive_url($type, $ch_name, $opt_id)
     $ret = 'http://lonsdaleite.jp/uarchives/?channel='.$opt_id;
     break;
   case 1: // justin
-    $ret = 'http://lonsdaleite.jp/jarchives/?channel='.$ch_name;
+    //$ret = 'http://lonsdaleite.jp/jarchives/?channel='.$ch_name;
+    $ret = 'http://www.justin.tv/'.$ch_name.'/videos';
     break;
   case 2: // stickam
     $ret = 'http://www.stickam.jp/video/gallery/'.$ch_name;

@@ -110,6 +110,7 @@ class IRCBot {
                 $m = array_shift($this->ex); array_shift($this->ex);
                 //$m = substr($m, 1, strlen($m)-2);
                 $t = str_replace(array("\r\n", "\n", "\r"), '', implode(' ', $this->ex));
+                if($t == ''){ $t = '　'; }
                 //print 'ch: '.$r.' mem: '.$m.' topic: '.$t;
                 $this->info[$r] = array($m, $t);
                 //print'.';

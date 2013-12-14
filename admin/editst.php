@@ -22,12 +22,12 @@ function view_form($id){
     // get info from DB
     $result = $manager->get_streamer($id);
     if($result){
-      $name = $result['name'];
-      $description = $result['description'];
-      $twitter = $result['twitter'];
-      $url = $result['url'];
+      $name = htmlspecialchars($result['name']);
+      $description = htmlspecialchars($result['description']);
+      $twitter = htmlspecialchars($result['twitter']);
+      $url = htmlspecialchars($result['url']);
       $wiki = $result['wiki'];
-      $tag = $result['tag'];
+      $tag = htmlspecialchars($result['tag']);
     }
   }
   // display form
