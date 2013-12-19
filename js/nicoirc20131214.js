@@ -45,8 +45,8 @@ function showMovieMode(boxid, type, id, w, h, mode, quality)
     var Safari = /a/.__proto__=='//';
     box.innerHTML = '<div id="jtv_embed_holder_'+id+'">'+
 	'<object type="application/x-shockwave-flash" height="'+h+'" width="'+w+'"'
-	    + 'id="m'+boxid+'" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='
-	    + jus + (false? '&amp;consumer_key=hQ3kBxqRXXBZJlPmu03JnA' : '') + '" bgcolor="#000000">'
+	    + 'id="m'+boxid+'" data="http://www.justin.tv/swflibs/JustinPlayer.swf?channel='
+	    + id + (false? '&amp;consumer_key=hQ3kBxqRXXBZJlPmu03JnA' : '') + '" bgcolor="#000000">'
 	    + '<param name="allowFullScreen" value="true" />'
 // if Safari, then allowScriptAccess
 //	    + (Safari ? '<param name="allowScriptAccess" value="always" />' : '')
@@ -54,7 +54,7 @@ function showMovieMode(boxid, type, id, w, h, mode, quality)
 	    + '<param name="allownetworking" value="all" />'
 	    + '<param name="wmode" value="'+ mode +'"/>'
 	    + '<param name="quality" value="'+quality+'"/>'
-	    + '<param name="movie" value="http://www.justin.tv/widgets/live_embed_player.swf" />'
+	    + '<param name="movie" value="http://www.justin.tv/swflibs/JustinPlayer.swf" />'
 	    + '<param name="hasPriority" value="true"/>'
 	    + '<param name="flashvars" value="channel='+ id +'&amp;auto_play='
 	    + 'true&amp;start_volume=25'+  (false? '&amp;consumer_key=hQ3kBxqRXXBZJlPmu03JnA' : '') +'" />'
@@ -89,6 +89,27 @@ swfobject.addDomLoadEvent(function() {
 	 box.innerHTML = '<iframe height="'+h+'" width="'+w+'" frameborder="0"'
 	+ ' src="http://www.own3d.tv/liveembed/'+id+'?autoPlay=true"></iframe>';
 	break;
+
+  case 8:
+    var Safari = /a/.__proto__=='//';
+    box.innerHTML = '<div id="jtv_embed_holder_'+id+'">'+
+	'<object type="application/x-shockwave-flash" height="'+h+'" width="'+w+'"'
+	    + 'id="m'+boxid+'" data="http://www.twitch.tv/widgets/live_embed_player.swf?channel='
+	    + id + (false? '&amp;consumer_key=hQ3kBxqRXXBZJlPmu03JnA' : '') + '" bgcolor="#000000">'
+	    + '<param name="allowFullScreen" value="true" />'
+// if Safari, then allowScriptAccess
+//	    + (Safari ? '<param name="allowScriptAccess" value="always" />' : '')
+	    + '<param name="allowScriptAccess" value="always" />'
+	    + '<param name="allownetworking" value="all" />'
+	    + '<param name="wmode" value="'+ mode +'"/>'
+	    + '<param name="quality" value="'+quality+'"/>'
+	    + '<param name="movie" value="http://www.twitch.tv/widgets/live_embed_player.swf" />'
+	    + '<param name="hasPriority" value="true"/>'
+	    + '<param name="flashvars" value="hostname=www.twitch.tv&channel='+ id +'&auto_play='
+	    + 'true&amp;start_volume=25'+  (false? '&amp;consumer_key=hQ3kBxqRXXBZJlPmu03JnA' : '') +'" />'
+	    + '</object>'
+	    + '</div>';
+    break;
   }
 }
 

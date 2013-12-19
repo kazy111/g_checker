@@ -5,7 +5,7 @@ include_once 'tweet.php';
 // no cron, every 60 seconds check?
 include_once 'classes/JSON.php';
 
-
+$cavetube_devkey = '5C7FF292491441848B6D00FBA149DB00';
 $ust_apikey = '98F257180583948FC8FAD3042D2A0E7E';
 $chs;
 $sid_chs;
@@ -108,6 +108,7 @@ function check()
   
   check_ustream();
   check_justin();
+  //check_twitch();
   check_stickam();
   check_nicolive_official();
   check_nicolive();
@@ -254,7 +255,28 @@ function check_ustream()
 }
 
 // check justin function
+function get_justin_viewers($id){
+  $url = 'http://api.justin.tv/api/stream/summary.json?channel='.$id;
+    log_print($url);
+    
+    try{
+      $jsontxt = '';
+      $json = new Services_JSON();
+      // open URL
+      $fp = fopen($url, 'r');
+      if(! $fp ) throw new Exception('URL open failed : '.$url);
+      while (! feof($fp)) {
+        $jsontxt .= fread($fp, 1024) or '';
+      }
+      fclose($fp);
 
+      $obj = $json->decode($jsontxt);
+      return $obj->viewers_count;
+    }catch(Exception $e){
+      print $e->getMessage();
+      return 0;
+    }
+}
 function check_justin()
 {
   global $manager, $chs, $sid_chs;
@@ -266,7 +288,7 @@ function check_justin()
   log_print("start checking Justin.tv...");
   
   foreach($chs as $k => $v){
-    if($v['type']==1){
+    if($v['type']==1 || $v['type']==8){
       $cn = strtolower($v['ch_name']);
       $hash[$cn] = $v['pid'];
       $ids[] = $cn;
@@ -304,7 +326,8 @@ function check_justin()
         $name = ''.$ch->login;
         if($name == '') $name = ''.$ch->channel;
         if($name == '') continue; // error
-        $viewer = $res->stream_count;
+        $viewer = $res->channel_count;
+        //$viewer = get_justin_viewers($name);
         $pid = $hash[$name];
         $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
         $thumb = 'http://static-cdn.jtvnw.net/previews-ttv/live_user_'.$name.'-320x200.jpg';
@@ -338,6 +361,96 @@ function check_justin()
   
   
   log_print('finish checking Justin.tv.');
+}
+
+
+// check twitch function
+
+function check_twitch()
+{
+  global $manager, $chs, $sid_chs;
+
+  $ids = array();
+  $hash = array();
+  $live = array();
+  
+  log_print("start checking Twitch.tv...");
+  
+  foreach($chs as $k => $v){
+    if($v['type']==8){
+      $cn = strtolower($v['ch_name']);
+      $hash[$cn] = $v['pid'];
+      $ids[] = $cn;
+      $live[$v['pid']] = 0;
+    }
+  }
+
+  if ( count($ids) > 0 ) {
+    $url = 'https://api.twitch.tv/kraken/streams?channel='.implode(',', $ids);
+  
+    log_print($url);
+    
+    try{
+      $jsontxt = '';
+      $json = new Services_JSON();
+      // open URL
+      $fp = fopen($url, 'r');
+      if(! $fp ) throw new Exception('URL open failed : '.$url);
+      while (! feof($fp)) {
+        $jsontxt .= fread($fp, 1024) or '';
+      }
+      fclose($fp);
+
+      $xml = $json->decode($jsontxt);
+    }catch(Exception $e){
+      print $e->getMessage();
+      continue;
+    }
+
+    if($xml->streams){
+      foreach($xml->streams as $res){
+        //print_r($res);
+        if ($res && $res->channel) {
+          $name = $res->channel->name;
+          $viewer = $res->viewers;
+        }else{
+          $name = '';
+        }
+        if($name == '') continue; // error
+        
+        $pid = $hash[$name];
+        $pid = $hash[$name];
+        $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
+        $thumb = 'http://static-cdn.jtvnw.net/previews-ttv/live_user_'.$name.'-320x200.jpg';
+        log_print("<b>name:</b> ".$name." / ".$viewer);
+        $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb);
+        
+        if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+          start_tweet($chs[$pid]);
+        
+        $live[$pid] = 1;
+      }
+    }
+    
+    foreach($live as $k => $v){
+      if( $v == 0 && ($chs[$k]['live']=='t' || $chs[$k]['live']=='1') ){
+        if(intval($chs[$k]['offline_count']) > 1){
+          
+          $manager->update_program($k, FALSE, 0, 1, '');
+          
+          $start_time = $chs[$k]['start_time'];
+          $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
+          if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
+            end_tweet($chs[$k]);
+        }else{
+          $manager->increment_offline_count($k);
+        }
+      }
+    }
+  }
+  
+  
+  log_print('finish checking Twitch.tv.');
 }
 
 
@@ -897,6 +1010,53 @@ function check_livetube()
 
 
 // check CaveTube function
+function get_cavetube_stream($id){
+  $url = 'http://gae.cavelis.net//live_url?user='.$id;
+  log_print($url);
+    
+  try{
+    $jsontxt = '';
+    $json = new Services_JSON();
+    // open URL
+    $fp = fopen($url, 'r');
+    if(! $fp ) throw new Exception('URL open failed : '.$url);
+    while (! feof($fp)) {
+      $jsontxt .= fread($fp, 1024) or '';
+    }
+    fclose($fp);
+    
+    $obj = $json->decode($jsontxt);
+    return $obj->stream_name;
+  }catch(Exception $e){
+    print $e->getMessage();
+    return 0;
+  }
+}
+function get_cavetube_summary($stream_name){
+  global $cavetube_devkey;
+  
+  $url = 'http://gae.cavelis.net/api/summary?devkey='.$cavetube_devkey.'&stream_name='.$stream_name;
+  log_print($url);
+    
+  try{
+    $jsontxt = '';
+    $json = new Services_JSON();
+    // open URL
+    $fp = fopen($url, 'r');
+    if(! $fp ) throw new Exception('URL open failed : '.$url);
+    while (! feof($fp)) {
+      $jsontxt .= fread($fp, 1024) or '';
+    }
+    fclose($fp);
+    
+    $obj = $json->decode($jsontxt);
+    return $obj;
+  }catch(Exception $e){
+    print $e->getMessage();
+    return 0;
+  }
+}
+
 function check_cavetube()
 {
   
@@ -916,7 +1076,7 @@ function check_cavetube()
     }
   }
 
-  $url = 'http://gae.cavelis.net/index_live.xml';
+  $url = 'http://rss.cavelis.net/index_live.xml';
   
   log_print($url);
   try{
@@ -931,12 +1091,18 @@ function check_cavetube()
       
       $title = $ch->title . ' / ' . $ch->content;
       $live_id = substr($ch->id, 28);
-      $viewer = 0;
+
       $pid = $hash[$name];
       $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
-      $thumb = 'http://img.cavelis.net/userthumbnails/m/'.$name.'.jpg';
+      
+      $stream_name = get_cavetube_stream($name);
+      $summary = get_cavetube_summary($stream_name);
+      $viewer = $summary->listener;
+      //$thumb = 'http://img.cavelis.net/userthumbnails/m/'.$name.'.jpg';
+      $thumb = 'http://ss.cavelis.net:3001/?url=rtmp://nwa2.cavelis.net/live/'.$stream_name.'?'.time();
       
       log_print("<b>name:</b> ".$name." / ".$viewer);
+
       $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $live_id);
       
       if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))

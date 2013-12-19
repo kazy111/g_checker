@@ -9,7 +9,8 @@ $service_assoc = array(0 => 'ustream',
                        4 => 'twitcasting',
                        5 => 'own3d',
                        6 => 'livetube',
-                       7 => 'cavetube');
+                       7 => 'cavetube',
+                       8 => 'twitch');
 
 $service_abb_assoc = array(0 => 'Ust',
                            1 => 'Jst',
@@ -18,7 +19,8 @@ $service_abb_assoc = array(0 => 'Ust',
                            4 => 'Twc',
                            5 => 'Own',
                            6 => 'Lvt',
-                           7 => 'Cvt');
+                           7 => 'Cvt',
+                           8 => 'Tch');
 
 $service_org_assoc = array(0 => FALSE,
                            1 => FALSE,
@@ -27,7 +29,8 @@ $service_org_assoc = array(0 => FALSE,
                            4 => TRUE,
                            5 => FALSE,
                            6 => TRUE,
-                           7 => TRUE);
+                           7 => TRUE,
+                           8 => FALSE);
 
 $chat_assoc = array(0 => 'c.ustream.tv',
                     1 => 'irc.mibbit.com',
@@ -83,6 +86,9 @@ function get_service_url($type, $ch_name, $ch_id, $live = FALSE)
   case 7: // CaveTube
     $ret = ($ch_id == null ? 'http://gae.cavelis.net/user/'.$ch_name : 'http://gae.cavelis.net/view/'.$ch_id);
     break;
+  case 8: // Twitch
+    $ret = 'http://www.twitch.tv/'.$ch_name;
+    break;
   }
   return $ret;
 }
@@ -95,7 +101,7 @@ function get_archive_url($type, $ch_name, $opt_id)
     break;
   case 1: // justin
     //$ret = 'http://lonsdaleite.jp/jarchives/?channel='.$ch_name;
-    $ret = 'http://www.justin.tv/'.$ch_name.'/videos';
+    $ret = 'http://www.justin.tv/'.$ch_name.'/videos?kind=past_broadcasts';
     break;
   case 2: // stickam
     $ret = 'http://www.stickam.jp/video/gallery/'.$ch_name;
@@ -118,6 +124,9 @@ function get_archive_url($type, $ch_name, $opt_id)
     break;
   case 7: // cavetube
     $ret = 'http://gae.cavelis.net/user/'.$ch_name;
+    break;
+  case 8: // Twitch.tv
+    $ret = 'http://www.twitch.tv/'.$ch_name.'/profile/pastBroadcasts';
     break;
   }
   return $ret;

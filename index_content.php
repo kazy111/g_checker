@@ -96,6 +96,10 @@ function get_streamer_data($arrs, $extra)
         $live_thumb = $v['thumbnail'];
         $ch_v = 7;
         break;
+      case 8: // twitch
+        $live_thumb = $v['thumbnail'];
+        $ch_v = 3;
+        break;
       }
       $ch_chat = substr($v['room'],1);
       $live_topics[] = trim($v['topic']) != '' ? trim($v['topic']) : trim($v['title']);
