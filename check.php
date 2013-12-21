@@ -113,7 +113,8 @@ function check()
   check_nicolive_official();
   check_nicolive();
   check_twitcasting();
-  check_own3d();
+  // obsolate
+  //check_own3d();
   check_livetube();
   check_cavetube();
 }
@@ -958,33 +959,45 @@ function check_livetube()
     }
   }
 
-  $url = 'http://livetube.cc/index.live.xml';
+  $url = 'http://livetube.cc/index.live.json';
   
   log_print($url);
   try{
-    $xml = simplexml_load_file($url, 'SimpleXMLElement', LIBXML_NOCDATA);
-    if (! $xml ) throw new Exception('URL open failed : '.$url);
+    $jsontxt = '';
+    $json = new Services_JSON();
+    // open URL
+    $fp = fopen($url, 'r');
+    if(! $fp ) throw new Exception('URL open failed : '.$url);
+    while (! feof($fp)) {
+      $jsontxt .= fread($fp, 1024) or '';
+    }
+    fclose($fp);
     
-    foreach($xml->entry as $ch){
-      //print_r($ch);
+    $obj = $json->decode($jsontxt);
+
+    if ($obj) {
+    
+      foreach($obj as $ch){
+        //print_r($ch);
       
-      $name = (string)$ch->author->name;
-      if(!$name || $name == '' || !array_key_exists($name, $hash)) continue; // error
+        $name = (string)$ch->author;
+        if(!$name || $name == '' || !array_key_exists($name, $hash)) continue; // error
       
-      $title = $ch->title;
-      $live_id = urldecode(substr($ch->id, 19));
-      $viewer = 0;
-      $pid = $hash[$name];
-      $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
-      $thumb = '';
+        $title = $ch->title;
+        $live_id = $ch->id;
+        $viewer = $ch->viewing;
+        $pid = $hash[$name];
+        $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
+        $thumb = 'http://livetube.cc/stream/'.$live_id.'.snapshot.jpg';
       
-      log_print("<b>name:</b> ".$name." / ".$viewer);
-      $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $live_id);
+        log_print("<b>name:</b> ".$name." / ".$viewer);
+        $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $live_id);
       
-      if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-        start_tweet($chs[$pid]);
+        if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+          start_tweet($chs[$pid]);
       
-      $live[$pid] = 1;
+        $live[$pid] = 1;
+      }
     }
 
     foreach($live as $k => $v){

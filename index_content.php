@@ -96,6 +96,9 @@ function get_streamer_data($arrs, $extra)
         $live_thumb = $v['thumbnail'];
         $ch_v = 7;
         break;
+      case 6: // livetube
+        $live_thumb = $v['thumbnail'];
+        break;
       case 7: // cavetube
         $live_thumb = $v['thumbnail'];
         break;

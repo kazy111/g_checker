@@ -81,7 +81,7 @@ function get_service_url($type, $ch_name, $ch_id, $live = FALSE)
     $ret = 'http://www.own3d.tv/live/'.$ch_id;
     break;
   case 6: // LiveTube
-    $ret = 'http://livetube.cc/'.($ch_id == '' ? $ch_name : $ch_id);
+    $ret = 'http://livetube.cc/'.($ch_id == '' ? $ch_name : 'stream/' . $ch_id);
     break;
   case 7: // CaveTube
     $ret = 'http://gae.cavelis.net/live/'.$ch_name;
