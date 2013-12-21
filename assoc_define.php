@@ -84,7 +84,7 @@ function get_service_url($type, $ch_name, $ch_id, $live = FALSE)
     $ret = 'http://livetube.cc/'.($ch_id == '' ? $ch_name : $ch_id);
     break;
   case 7: // CaveTube
-    $ret = ($ch_id == null ? 'http://gae.cavelis.net/user/'.$ch_name : 'http://gae.cavelis.net/view/'.$ch_id);
+    $ret = 'http://gae.cavelis.net/live/'.$ch_name;
     break;
   case 8: // Twitch
     $ret = 'http://www.twitch.tv/'.$ch_name;

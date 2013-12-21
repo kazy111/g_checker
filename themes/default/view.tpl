@@ -174,8 +174,8 @@ function add_select()
   var l = document.getElementById('link');
   for(var i in p_data){
 
-    // ニコ生、Twitcastingは画面切り替えしない
-    if(p_data[i].type != 3 && p_data[i].type != 4){
+    // ニコ生、Twitcasting、Livetube、Cavetubeは画面切り替えしない
+    if(p_data[i].type != 3 && p_data[i].type != 4 && p_data[i].type != 6 && p_data[i].type != 7){
 
       var n = document.createElement('span');
       n.id = 'sw-'+p_data[i].id;

@@ -57,27 +57,33 @@ $open_original = TRUE;
 $program_data = array();
 foreach($pids as $a){
   $org_link = '<a href="'.get_service_url($a['type'], $a['ch_id'], $a['opt_id']).'">'.$service_abb_assoc[$a['type']].': '.$a['ch_id'].'</a> ';
-  $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id']
-    .'",type:'.$a['type'].',cid:'.$a['cid'].',org:\''.$org_link.'\',typename:"'.$service_abb_assoc[$a['type']].'"}';
+
   if($a['live'] == 't' || $a['live'] == '1'){
-    if( $a['type'] == 1 /*if justin*/ ||  !isset($first_id) ) {
+    // bold live channel org_link
+    $org_link = '<strong>' . $org_link . '</strong>';
+    
+    if( $a['type'] == 1 || $a['type'] == 8 /*if justin or twitch*/ ||  !isset($first_id) ) {
     //if( $a['type'] == 0 /*if ust*/ ||  !isset($first_id) ) {
-      $first_id = $a['id'];
+      if (!$service_org_assoc[$a['type']]) { // only embed view channel
+        $first_id = $a['id'];
+      }
     }
     $open_original &= $service_org_assoc[$a['type']];
     $open_original_url = get_service_url($a['type'], $a['ch_id'], $a['opt_id'], TRUE);
   }
-}
 
+  $program_data[] = $a['id'].':{id:'.$a['id'].', ch_id:"'.$a['ch_id'].'",opt_id:"'.$a['opt_id']
+    .'",type:'.$a['type'].',cid:'.$a['cid'].',org:\''.$org_link.'\',typename:"'.$service_abb_assoc[$a['type']].'"}';
+}
 
 if(!isset($first_id)){
   $tmp = 100000;
   foreach($pids as $p){
-    if($p['type'] == 1){
+    if($p['type'] == 1 || $p['type'] == 8){ // if justin or twitch
       $first_id = $p['id'];
       $tmp = $p['type'];
 
-    }else if($p['type'] < $tmp){
+    }else if(!isset($first_id)){
       $first_id = $p['id'];
       $tmp = $p['type'];
     }

@@ -1011,7 +1011,7 @@ function check_livetube()
 
 // check CaveTube function
 function get_cavetube_stream($id){
-  $url = 'http://gae.cavelis.net//live_url?user='.$id;
+  $url = 'http://gae.cavelis.net/live_url?user='.$id;
   log_print($url);
     
   try{
@@ -1084,26 +1084,32 @@ function check_cavetube()
     if (! $xml ) throw new Exception('URL open failed : '.$url);
     
     foreach($xml->entry as $ch){
-      //print_r($ch);
       
       $name = (string)$ch->author->name;
       if(!$name || $name == '' || !array_key_exists($name, $hash)) continue; // error
       
+      //print_r($ch);
+      
+      $ct = $ch->children("http://gae.cavelis.net");
+      
       $title = $ch->title . ' / ' . $ch->content;
-      $live_id = substr($ch->id, 28);
+      $stream_name = $ct->stream_name;
 
       $pid = $hash[$name];
       $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
       
-      $stream_name = get_cavetube_stream($name);
-      $summary = get_cavetube_summary($stream_name);
-      $viewer = $summary->listener;
+      //$stream_name = get_cavetube_stream($name);
+      //$summary = get_cavetube_summary($stream_name);
+
+      $viewer = $ct->listener;
+      //$viewer = $summary->listener;
+      
       //$thumb = 'http://img.cavelis.net/userthumbnails/m/'.$name.'.jpg';
       $thumb = 'http://ss.cavelis.net:3001/?url=rtmp://nwa2.cavelis.net/live/'.$stream_name.'?'.time();
       
       log_print("<b>name:</b> ".$name." / ".$viewer);
 
-      $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $live_id);
+      $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $stream_name);
       
       if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
         start_tweet($chs[$pid]);
