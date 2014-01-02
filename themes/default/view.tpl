@@ -155,6 +155,8 @@ function resize(w, h)
     t.width = w; t.height = h;
     t = t.childNodes[0];
     if(t && (t.tagName == 'EMBED' || t.tagName == 'OBJECT')){ t.width = w; t.height = h; }
+    $('#movie').width(w);
+    $('#movie').height(h);
   }
   t = document.getElementById('chat');
   if(t){
@@ -260,6 +262,8 @@ function toggleLayout() {
 <div id="chat">
 </div>
 
+<br />
+
 <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja">ツイート</a>
 <script>!function(d,s,id) { var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)) { js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
@@ -280,6 +284,7 @@ function toggleLayout() {
 <div class="navigation">
   テーマ変更: {$theme_data}</div>
 
+
 <script type="text/javascript">
 
 var sel  = document.getElementById('resize_select');
@@ -296,6 +301,14 @@ for(var i = 0; i < size.length; i++){
 add_select();
 setLayout(layout);
 select({$first_id});
+
+$("#movie").resizable({
+  helper: "ui-resizable-helper",
+  stop: function(e, ui){
+    resize(ui.element.width(), ui.element.height());
+  }
+}).css("padding-bottom", "15px").css("background-color", "gray");
+
 </script>
 
 </div>

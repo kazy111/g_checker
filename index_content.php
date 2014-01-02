@@ -58,8 +58,8 @@ function get_streamer_data($arrs, $extra)
   }
   
   $ch_v = 1; // for multiview
-  $live_thumb = '';
   $ch_chat ='';
+  $live_thumb = '';
   
   foreach($arrs as $k => $v){
     $programs_raw[] = array($v['type'], $v['ch_name'], $v['optional_id'], $v['thumbnail'], $v['live'],
@@ -84,23 +84,22 @@ function get_streamer_data($arrs, $extra)
         $live_thumb = $v['thumbnail'];
         $ch_v = 3;
         break;
-        
       case 2: // stickam
-        $live_thumb = $v['thumbnail'];
+        if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         $ch_v = 5;
         break;
       case 3: // nicolive
-        $live_thumb = $v['thumbnail'];
+        if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         break;
       case 5: // own3d
-        $live_thumb = $v['thumbnail'];
+        if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         $ch_v = 7;
         break;
       case 6: // livetube
-        $live_thumb = $v['thumbnail'];
+        if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         break;
       case 7: // cavetube
-        $live_thumb = $v['thumbnail'];
+        if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         break;
       case 8: // twitch
         $live_thumb = $v['thumbnail'];
@@ -110,7 +109,7 @@ function get_streamer_data($arrs, $extra)
       $ch_chat = substr($v['room'],1);
       $live_topics[] = trim($v['topic']) != '' ? trim($v['topic']) : trim($v['title']);
     }else {
-      if($live_thumb === '') $live_thumb = $v['thumbnail'];
+      //if($live_thumb === '') $live_thumb = $v['thumbnail'];
       if($ch_chat === '') $ch_chat = substr($v['room'],1);
       if($ch_name[$v['type']] == ''){
         $ch_name[$v['type']] = $v['ch_name'];

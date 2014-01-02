@@ -4,10 +4,13 @@
 <title>{$site_title}</title>
 <link rel="shortcut icon" href="{$relative_dir_to_top}/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="{$relative_dir_to_top}/css/checker.css" />
-<link rel="alternate" type="application/rss+xml" href="{$relative_dir_to_top}/rss.php" title="RSS 2.0" />
+<link rel="stylesheet" type="text/css" href="{$relative_dir_to_top}/css/dot-luv/jquery-ui-1.10.3.custom.min.css" />
+<link rel="alternate" type="application/rss+xml" href="{$relative_dir_to_top}/rss.php" title="RSS 2.0" />
 <meta name="keywords" content="{$keywords}" />
 <meta name="description" content="{$site_title}" />
-<script type="text/javascript" src="{$relative_dir_to_top}/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="{$relative_dir_to_top}/js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="{$relative_dir_to_top}/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="{$relative_dir_to_top}/js/auto_notice.js"></script>
 <script type="text/javascript" src="{$relative_dir_to_top}/js/cookie.js"></script>
 {$additional_header}
 <link rel="stylesheet" type="text/css" href="{$relative_dir_to_top}/css/menu-bar.css" />

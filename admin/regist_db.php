@@ -35,11 +35,6 @@ $data = array();
 $data['ctype_html'] = assoc2select($chat_assoc, 'chat_type', 0);
 $data['message'] = $message;
 
-$page->add_header('<script type="text/javascript" src="../js/jquery-1.4.2.min.js"></script>');
-$page->add_header('<script type="text/javascript" src="../js/jquery-ui-1.8.4.custom.min.js"></script>');
-$page->add_header('<script type="text/javascript" src="../js/jquery-ui-1.8.4_autocomplete.js"></script>');
-$page->add_header('<link rel="stylesheet" type="text/css" href="../css/dot-luv/jquery-ui-1.8.4.custom.css" />');
-
 $page->set_relative_dir_to_top('..');
 $page->set('regist', $data);
 
