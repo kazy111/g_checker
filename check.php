@@ -161,7 +161,7 @@ function check_ustream()
     
     $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
     $viewer = $live_st ? get_ustream_member($login, $id) : 0;
-    $thumb = 'http://static-cdn2.ustream.tv/i/channel/live/1_'.$id.',192x108,b.jpg';
+    $thumb = $live_st ? 'http://static-cdn2.ustream.tv/i/channel/live/1_'.$id.',192x108,b.jpg' : '';
     $title = str_replace(array("\r\n", "\n", "\r"), ' ', $title);
     if($live_st || $change_flag)
       log_print("<b>name:</b> ".$login." / ".$viewer);
@@ -560,7 +560,6 @@ function check_nicolive()
   }
 
 
-  
   global $manager, $chs, $sid_chs, $file_path, $nico_loginid, $nico_loginpw, $site_url;
 
   $ids = array();
@@ -631,7 +630,6 @@ function check_nicolive()
     $pid = $hash[$name];
 
 
-
     // judge live status
     if(isset($xml->error)){ // error
       // if api error, then retry
@@ -699,10 +697,7 @@ function check_nicolive()
         continue;
       }
     }
-    $thumb = $site_url.'/classes/compiled/'.$name.'.jpg';
-
-
-
+    $thumb = $live_st ? $site_url.'/classes/compiled/'.$name.'.jpg' : '';
 
     
     // save status change
@@ -715,6 +710,7 @@ function check_nicolive()
       
       if($change_flag){
         if($live_st){
+          $chs[$pid]['title'] = $title;
           if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
             start_tweet($chs[$pid]);
         }else{
@@ -993,6 +989,7 @@ function check_livetube()
         log_print("<b>name:</b> ".$name." / ".$viewer);
         $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $live_id);
       
+        $chs[$pid]['title'] = $title;
         if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
           start_tweet($chs[$pid]);
       
@@ -1106,6 +1103,7 @@ function check_cavetube()
       $ct = $ch->children("http://gae.cavelis.net");
       
       $title = $ch->title . ' / ' . $ch->content;
+      
       $stream_name = $ct->stream_name;
 
       $pid = $hash[$name];
@@ -1118,12 +1116,13 @@ function check_cavetube()
       //$viewer = $summary->listener;
       
       //$thumb = 'http://img.cavelis.net/userthumbnails/m/'.$name.'.jpg';
-      $thumb = 'http://ss.cavelis.net:3001/?url=rtmp://nwa2.cavelis.net/live/'.$stream_name.'?'.time();
+      $thumb = 'http://ss.cavelis.net:3001/?url='.$ct->host_url.'/'.$stream_name.'?'.time();
       
       log_print("<b>name:</b> ".$name." / ".$viewer);
 
       $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title, $stream_name);
-      
+
+      $chs[$pid]['title'] = $title;
       if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
         start_tweet($chs[$pid]);
       
@@ -1137,6 +1136,7 @@ function check_cavetube()
         
         $start_time = $chs[$k]['start_time'];
         $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
+        
         if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
           end_tweet($chs[$k]);
 
