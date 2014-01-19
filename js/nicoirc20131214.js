@@ -87,7 +87,7 @@ swfobject.addDomLoadEvent(function() {
 	break;
   case 5:
 	 box.innerHTML = '<iframe height="'+h+'" width="'+w+'" frameborder="0"'
-	+ ' src="http://hitbox.tv/#!/embed/'+id+'" allowfullscreen></iframe>';
+	+ ' src="http://hitbox.tv/#!/embed/'+id+'?autoplay=true" allowfullscreen></iframe>';
 	break;
 
   case 8:
