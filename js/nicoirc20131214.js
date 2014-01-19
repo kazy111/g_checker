@@ -87,7 +87,7 @@ swfobject.addDomLoadEvent(function() {
 	break;
   case 5:
 	 box.innerHTML = '<iframe height="'+h+'" width="'+w+'" frameborder="0"'
-	+ ' src="http://www.own3d.tv/liveembed/'+id+'?autoPlay=true"></iframe>';
+	+ ' src="http://hitbox.tv/#!/embed/'+id+'" allowfullscreen></iframe>';
 	break;
 
   case 8:
@@ -176,6 +176,12 @@ function loadWebChatMibbit(boxid, ch, w, h)
     +'" scrolling="No" style="border:0" src="http://widget.mibbit.com/?settings=c7b9cac76249db973f5bc61336ff8c65&amp;channel='+ch+'&amp;noServerTab=false&amp;nick=justin-%3F%3F%3F%3F%3F&amp;autoConnect=true&amp;delay=2"></iframe>'
 }
 
+function loadWebChatCavetube(boxid, ch, w, h)
+{
+  //document.getElementById(boxid).innerHTML = '<iframe width="'+w+'" height="'+h
+  //  +'" scrolling="No" style="border:0" src="http://gae.cavelis.net/popup/' + ch + '"></iframe>'
+  window.open('http://gae.cavelis.net/popup/' + ch, 'cavechat', 'width='+w+',height='+h);
+}
 
 function loadSocialStream(boxid, ustid, w, h)
 {

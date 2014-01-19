@@ -113,8 +113,7 @@ function check()
   check_nicolive_official();
   check_nicolive();
   check_twitcasting();
-  // obsolate
-  //check_own3d();
+  check_hitbox();
   check_livetube();
   check_cavetube();
 }
@@ -866,71 +865,87 @@ function check_twitcasting()
 
 
 
-function check_own3d()
+function check_hitbox()
 {
     
   global $manager, $chs, $sid_chs;
 
   $ids = array();
   $hash = array();
+  $live = array();
   
-  log_print("start checking own3D...");
+  log_print("start checking hitbox...");
   
   foreach($chs as $k => $v){
     if($v['type']==5){
       $hash[$v['ch_name']] = $v['pid'];
       $ids[] = $v['ch_name'];
+      $live[$v['pid']] = 0;
     }
   }
 
-  foreach($ids as $name){
-    
-    $url = 'http://api.own3d.tv/liveCheck.php?live_id=' . $chs[$hash[$name]]['optional_id'];
-    
-    log_print($url);
-    try{
-      $xml = simplexml_load_file($url, 'SimpleXMLElement');
-      if(! $xml ) throw new Exception('URL parse failed : '.$url);
-    }catch(Exception $e){
-      print $e->getMessage();
-      continue;
+  $url = 'http://api.hitbox.tv/media/live/list';
+
+  $obj = FALSE;
+  $jsontxt = '';
+  $json = new Services_JSON();
+  // open URL
+  try {
+    $fp = fopen($url, 'r');
+    if(! $fp ) throw new Exception('URL open failed : '.$url);
+    while (! feof($fp)) {
+      $jsontxt .= fread($fp, 1024) or '';
     }
+    fclose($fp);
+    
+    $obj = $json->decode($jsontxt);
 
-    $live_st = FALSE;
-    $viewer = 0;
-    $thumb = '';
-
-    // status judge
-    if(strtolower($xml->liveEvent->isLive) == 'true'){
-      $live_st = TRUE;
-    }
-    $viewer = $xml->liveEvent->liveViewers;
-
-    // save status change
-    $pid = $hash[$name];
-    $change_flag = ($chs[$pid]['live']=='t' || $chs[$pid]['live']=='1') ^ $live_st;
-    $thumb = 'http://img.own3d.tv/live/live_tn_'.$chs[$hash[$name]]['optional_id'].'_.jpg?'.time();
-
-    if($live_st || $change_flag){
+    if ($obj !== FALSE && $obj->livestream) {
+      foreach ($obj->livestream as $stream) {
       
-      log_print("<b>name:</b> ".$name." / ".$viewer);
-      $manager->update_program($pid, $live_st, $viewer, $change_flag, $thumb);
+        $name = $stream->media_user_name;
+
+        // check registered channel
+        if (!$name || $name == '' || !array_key_exists($name, $hash)) continue; // error
+
       
-      if($change_flag){
-        if($live_st){
-          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-            start_tweet($chs[$pid]);
-        }else{
-          $start_time = $chs[$pid]['start_time'];
-          $manager->add_history($pid, $start_time, date('Y-m-d H:i:s'));
-          if(!check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
-            end_tweet($chs[$pid]);
+        // prepare data
+        $pid = $hash[$name];
+        $change_flag = $chs[$pid]['live'] == 'f' || $chs[$pid]['live'] == '0' || $chs[$pid]['live'] == '';
+        
+        $viewer = $stream->media_views;
+        $title = $stream->media_status;
+        $thumb = 'http://edge.vie.hitbox.tv/static/img/live/'.$name.'_mid_000.jpg'.'?'.time();
+
+        log_print("<b>name:</b> ".$name." / ".$viewer);
+        
+        $manager->update_program($pid, TRUE, $viewer, $change_flag, $thumb, $title);
+        
+        $chs[$pid]['title'] = $title;
+        if($change_flag && !check_prev_live($pid, $sid_chs[$chs[$pid]['sid']]))
+          start_tweet($chs[$pid]);
+      
+        $live[$pid] = 1;
+      }
+
+      foreach($live as $k => $v){
+        if( $v == 0 && ($chs[$k]['live']=='t' || $chs[$k]['live']=='1') ){
+
+          $manager->update_program($k, FALSE, 0, 1, '');
+
+          $start_time = $chs[$k]['start_time'];
+          $manager->add_history($k, $start_time, date('Y-m-d H:i:s'));
+
+          if(!check_prev_live($k, $sid_chs[$chs[$k]['sid']]))
+            end_tweet($chs[$k]);
         }
       }
     }
+  } catch(Exception $e) {
+    print $e->getMessage();
   }
 
-  log_print('finish checking own3D.');
+  log_print('finish checking hitbox.');
 }
 
 
@@ -1144,7 +1159,6 @@ function check_cavetube()
     }
   }catch(Exception $e){
     print $e->getMessage();
-    continue;
   }
 
   log_print('finish checking CaveTube.');

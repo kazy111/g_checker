@@ -91,7 +91,7 @@ function get_streamer_data($arrs, $extra)
       case 3: // nicolive
         if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         break;
-      case 5: // own3d
+      case 5: // hitbox
         if($live_thumb === ''){ $live_thumb = $v['thumbnail']; }
         $ch_v = 7;
         break;

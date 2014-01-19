@@ -59,7 +59,7 @@ function select(pid)
       case 0: id = t.opt_id; break;
       case 1: id = t.ch_id; break;
       case 2: id = t.ch_id; break;
-      case 5: id = t.opt_id; break;
+      case 5: id = t.ch_id; break;
       case 8: id = t.ch_id; break;
     }
     $('.sw').removeClass('sw-select');
@@ -102,6 +102,22 @@ function mibbitChat()
 {
   var c = c_data[cur_cid];
   loadWebChatMibbit(cboxid, c.room, width*0.75, height);
+}
+
+function cavetubeChat()
+{
+  var p = p_data[cur_pid];
+  if (p.type != 7) {
+    for(var i in p_data){
+      if(p_data[i].type == 7){
+        p = p_data[i];
+        break;
+      }
+    }
+  }
+  if (p.type != 7 && !p.opt_id) return;
+
+  loadWebChatCavetube(cboxid, p.opt_id, width*0.75, height);
 }
 
 function socialStream()
@@ -245,6 +261,14 @@ function toggleLayout() {
  <strong>チャット:</strong> <a href="javascript:toggleChat(cboxid)">■</a>
  <a href="javascript:toggleLayout()">縦横</a>
  &nbsp;<a href="javascript:mibbitChat(cboxid)">(退避用)</a>
+ <script type="text/javascript">
+    for(var i in p_data){
+      if(p_data[i].type == 7){
+        document.write('&nbsp;<a href="javascript:cavetubeChat(cboxid)">(壁)</a>');
+        break;
+      }
+    }
+ </script>
  &nbsp;<a href="javascript:socialStream(cboxid)">(Twitter)</a>
  &nbsp;&nbsp;<strong>画面切り替え:</strong>
  <a onclick="javascript:window.open('view_pop.php?id={$id}', null, 'width=512,height=385,menubar=no,toolbar=no,resizable=yes');">Pop</a>

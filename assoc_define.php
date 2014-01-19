@@ -7,7 +7,7 @@ $service_assoc = array(0 => 'ustream',
                        2 => 'stickam',
                        3 => 'nicolive',
                        4 => 'twitcasting',
-                       5 => 'own3d',
+                       5 => 'hitbox',
                        6 => 'livetube',
                        7 => 'cavetube',
                        8 => 'twitch');
@@ -17,7 +17,7 @@ $service_abb_assoc = array(0 => 'Ust',
                            2 => 'Stk',
                            3 => 'Nic',
                            4 => 'Twc',
-                           5 => 'Own',
+                           5 => 'Hit',
                            6 => 'Lvt',
                            7 => 'Cvt',
                            8 => 'Tch');
@@ -77,8 +77,8 @@ function get_service_url($type, $ch_name, $ch_id, $live = FALSE)
   case 4: // twitcasting
     $ret = 'http://twitcasting.tv/'.$ch_name;
     break;
-  case 5: // own3D
-    $ret = 'http://www.own3d.tv/live/'.$ch_id;
+  case 5: // hitbox
+    $ret = 'http://www.hitbox.tv/'.$ch_name;
     break;
   case 6: // LiveTube
     $ret = 'http://livetube.cc/'.($ch_id == '' ? $ch_name : 'stream/' . $ch_id);
@@ -116,8 +116,8 @@ function get_archive_url($type, $ch_name, $opt_id)
   case 4: // twitcasting
     $ret = 'http://twitcasting.tv/'.$ch_name.'/show/';
     break;
-  case 5: // own3d
-    $ret = '';
+  case 5: // hitbox
+    $ret = 'http://www.hitbox.tv/'.$ch_name;
     break;
   case 6: // livetube
     $ret = 'http://livetube.cc/'.$ch_name;
